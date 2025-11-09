@@ -1,0 +1,41 @@
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.loadingBanner {
+    padding: 10px;
+    background-color: #fff3cd;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.form {
+    margin-bottom: 20px;
+}
+
+.inputDate,
+.inputText {
+    margin-right: 10px;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+.listItem {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+}
+
+.deleteButton {
+    color: red;
+    cursor: pointer;
+}
+
+.deleteButton:disabled {
+    cursor: not-allowed;
+}
