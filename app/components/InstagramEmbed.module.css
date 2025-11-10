@@ -1,11 +1,13 @@
-/*.custom-instagram {*/
-/*    background: #fff;*/
-/*    border: 0;*/
-/*    border-radius: 3px;*/
-/*    box-shadow: 0 0 1px 0 rgba(0,0,0,0.5), 0 1px 10px 0 rgba(0,0,0,0.15);*/
-/*    margin: 1px;*/
-/*    max-width: 540px;*/
-/*    min-width: 326px;*/
-/*    padding: 0;*/
-/*    width: calc(100% - 2px);*/
-/*}*/
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.instagram-media {
+    width: 100% !important;
+    max-width: 420px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(147, 51, 234, 0.35) !important;
+    box-shadow: 0 0 18px rgba(147, 51, 234, 0.45);
+}

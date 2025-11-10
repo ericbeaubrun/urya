@@ -7,9 +7,28 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {supabase_client} from "@/lib/supabase_client";
 import styles from "./CalendarPage.module.css";
+import {useRouter} from "next/navigation";
 
 export default function CalendarPage() {
     const [events, setEvents] = useState([]);
+
+    const router = useRouter();
+    function handleDateClick(dateStr: string) {
+        router.push(`/prestation-form?date=${dateStr}`);
+    }
+
+
+    function getColorByStatus(statut: string) {
+        switch (statut) {
+            case "confirmee":
+                return "#10b981"; // vert
+            case "terminee":
+                return "#6366f1"; // bleu
+            default:
+                return "#6b7280"; // gris
+        }
+    }
+
     useEffect(() => {
         async function loadEvents() {
             const {data, error} = await supabase_client
@@ -32,8 +51,8 @@ export default function CalendarPage() {
                 const eventData: any = {
                     id: ev.id,
                     title: title,
-                    backgroundColor: getColorByStatus(ev.statut),
-                    borderColor: getColorByStatus(ev.statut),
+                    // backgroundColor: getColorByStatus(ev.statut),
+                    // borderColor: getColorByStatus(ev.statut),
                     extendedProps: {
                         type: ev.type,
                         statut: ev.statut,
@@ -84,16 +103,7 @@ export default function CalendarPage() {
         loadEvents();
     }, []);
 
-    function getColorByStatus(statut: string) {
-        switch (statut) {
-            case "confirmee":
-                return "#10b981"; // vert
-            case "terminee":
-                return "#6366f1"; // bleu
-            default:
-                return "#6b7280"; // gris
-        }
-    }
+
 
     function renderEventContent(eventInfo: any) {
         const {extendedProps} = eventInfo.event;
@@ -116,7 +126,7 @@ export default function CalendarPage() {
 
     return (
         <div className={styles.container}>
-            <h1>Calendrier des prestations</h1>
+            <h1>Choisir une date de prestation</h1>
 
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -141,7 +151,9 @@ export default function CalendarPage() {
                 }}
 
 
-                height="auto"
+                height="750px"
+                expandRows={true}
+
                 locale="fr"
                 // slotMinTime="06:00:00"
                 // slotMaxTime="22:00:00"
@@ -150,10 +162,17 @@ export default function CalendarPage() {
                     today.setHours(0, 0, 0, 0);
 
                     if (arg.date < today) {
-                        return styles.pastDay;
+                        return `${styles.pastDay} ${styles.dayHover}`;
                     }
-                    return "";
+                    return `${styles.dayHover}`;
                 }}
+
+                dayCellDidMount={(info) => {
+                    if (info.date >= new Date().setHours(0,0,0,0)) {
+                        info.el.setAttribute("title", "Demander une prestation à cette date");
+                    }
+                }}
+
                 allDaySlot={false}
                 nowIndicator={true}
                 eventContent={renderEventContent}
