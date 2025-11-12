@@ -49,3 +49,16 @@ body {
     0%   { opacity: 0.35; filter: blur(120px); }
     100% { opacity: 0.75; filter: blur(200px); }
 }
+
+/* hauteur header + évite recouvrement */
+/*:root {*/
+/*    --header-h: 64px;*/
+/*}*/
+/*main {*/
+/*    padding-top: var(--header-h);*/
+/*}*/
+/*section {*/
+/*    scroll-margin-top: calc(var(--header-h) + 12px);*/
+/*}*/
+
+

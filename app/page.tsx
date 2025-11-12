@@ -1,30 +1,37 @@
 import CalendarPage from "@/app/components/CalendarPage";
 import Hero from "@/app/components/Hero";
 import Prestations from "@/app/components/Prestations";
-import InstagramEmbed from "@/app/components/InstagramEmbed";
-import TikTokEmbed from "@/app/components/TikTokEmbed";
-import PrestationForm from "@/app/prestation-form/PrestationForm";
 import SocialMediaShowcase from "@/app/components/SocialMediaShowcase";
 import ContactForm from "@/app/components/ContactForm";
+import StatsSection from "@/app/components/StatsSection";
 
 export default function Home() {
     return (
         <div>
-            <main>
-                <Hero/>
-                {/*<Prestations/>*/}
+            <main id="top">
+                <section id="hero" aria-label="Section héro">
+                    <Hero/>
+                </section>
 
-                <SocialMediaShowcase/>
-                {/*<InstagramEmbed instagramUrl={"https://www.instagram.com/reel/DO3VFXCCAvF/"}/>*/}
-                {/*<TikTokEmbed tiktokUrl="https://www.tiktok.com/@djxuryax77/video/7566774986745122070" />*/}
+                <section id="stats" aria-label="Section stats">
+                    <StatsSection/>
+                </section>
 
-                <Prestations/>
-                {/*<PrestationForm/>*/}
+                <section id="prestations" aria-label="Section prestations">
+                    <Prestations/> {/* >> PrestationForm */}
+                </section>
 
-                <CalendarPage/>
+                {/*<section id="calendrier" aria-label="Section calendrier">*/}
+                {/*    <CalendarPage/>*/}
+                {/*</section>*/}
 
-                <ContactForm/>
+                <section id="reseaux" aria-label="Section héro">
+                    <SocialMediaShowcase/> {/* >> InstagramEmbed + TikTokEmbed */}
+                </section>
 
+                <section id="contact" aria-label="Section contact">
+                    <ContactForm/>
+                </section>
             </main>
         </div>
     );

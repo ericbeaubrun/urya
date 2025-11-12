@@ -1,0 +1,74 @@
+.wrapper {
+    /*padding: 80px 40px;*/
+    /*background: #05060a;*/
+    text-align: center;
+}
+
+.title {
+    color: #f5f3ff;
+    font-size: 3rem;
+
+    /*margin-bottom: 50px;*/
+    /*text-shadow: 0 0 14px #9333ea;*/
+}
+
+/* GRID */
+.grid {
+    display: flex;
+
+
+    /*align-items: center;*/
+    justify-content: center;
+    margin: 0 auto;
+
+    /*display: grid;*/
+    /*gap: 50px;*/
+    /* Deux colonnes côte à côte sur les écrans suffisamment larges, tout en s'adaptant sur mobile */
+    /*grid-template-columns: repeat(2, minmax(280px, 1fr));*/
+    justify-items: center;
+    background: #fff;
+    background: transparent;
+    /*width: 100%;*/
+    /*margin-left: 30vw;*/
+    /*margin-right: 30vw;*/
+    /*min-width: 700px;*/
+    border-radius: 25px;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+/* CARD BLOCK */
+.card {
+    padding-left: 20px;
+    padding-right: 20px;
+    /*width: 100%;*/
+    max-width: 420px;
+    text-align: center;
+}
+
+/* HEADER (logo + @) */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.icon {
+    filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.85));
+}
+
+.handle {
+    color: #fff;
+    font-weight: 600;
+    /*text-shadow: 0 0 14px rgba(236, 72, 153, 0.9);*/
+    transition: 0.25s;
+    font-size: 1.5rem;
+}
+
+.handle:hover {
+    color: white;
+    text-shadow: 0 0 18px #ec4899;
+}

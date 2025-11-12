@@ -2,19 +2,21 @@
 
 import InstagramEmbed from "./InstagramEmbed";
 import TikTokEmbed from "./TikTokEmbed";
-import styles from "./SocialMediaShowcase.module.css";
+import styles from "../styles/SocialMediaShowcase.module.css";
 import Image from "next/image";
 
 export default function SocialMediaShowcase() {
-    const instagramHandle = "@TON_COMPTE_INSTAGRAM";
-    const tiktokHandle = "@TON_COMPTE_TIKTOK";
+    const instagramHandle = "@djxuryax77";
+    const tiktokHandle = "@djxuryax77";
 
     const instagramProfileUrl = "https://www.instagram.com/djxuryax77/";
     const tiktokProfileUrl = "https://www.tiktok.com/@djxuryax77";
 
     return (
         <section className={styles.wrapper}>
-            <h2 className={styles.title}>Suivez le DJ sur les réseaux 🎧</h2>
+            <h2 className={styles.title}>
+                Suivez votre DJ sur les réseaux
+            </h2>
 
             <div className={styles.grid}>
 
@@ -24,8 +26,8 @@ export default function SocialMediaShowcase() {
                         <Image
                             src="/insta.png"
                             alt="Instagram"
-                            width={26}
-                            height={26}
+                            width={56}
+                            height={56}
                             className={styles.icon}
                         />
                         <a href={instagramProfileUrl} target="_blank" className={styles.handle}>
@@ -42,8 +44,8 @@ export default function SocialMediaShowcase() {
                         <Image
                             src="/tiktok.png"
                             alt="TikTok"
-                            width={26}
-                            height={26}
+                            width={56}
+                            height={56}
                             className={styles.icon}
                         />
                         <a href={tiktokProfileUrl} target="_blank" className={styles.handle}>

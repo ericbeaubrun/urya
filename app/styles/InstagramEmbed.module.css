@@ -1,0 +1,11 @@
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    border: 6px solid #9569f9;
+    border: 6px solid #fff;
+    border-radius: 8px;
+    border-radius: 16px;
+    min-height: 80%;
+}

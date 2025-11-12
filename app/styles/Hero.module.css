@@ -1,0 +1,203 @@
+.hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 8%;
+    padding: 1vw 9vw 3vw 9vw;
+    min-height: 100vh;
+    /*background: #000;*/
+    color: #fff;
+    overflow: hidden;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    max-width: 600px;
+}
+
+.subTitle {
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    opacity: 0.75;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 8rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    margin: 0;
+}
+
+.description {
+    font-size: 1rem;
+    line-height: 1.7;
+    opacity: 0.75;
+    margin-bottom: 2.5rem;
+
+
+    color: #d1d5db;
+    /*font-size: 1.25rem;*/
+    line-height: 1.7;
+    /*margin-bottom: 50px;*/
+    opacity: 0.9;
+
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.cta,
+.cta:after {
+    width: 150px;
+    height: 76px;
+    line-height: 78px;
+    font-size: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    background: linear-gradient(45deg, transparent 5%, #9a66f4 5%);
+    border: 0;
+    color: #fff;
+    letter-spacing: 3px;
+    /*box-shadow: 6px 0px 0px #00E6F6;*/
+    outline: transparent;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: 0.3s ease;
+}
+
+
+    .cta:after {
+        --slice-0: inset(50% 50% 50% 50%);
+        --slice-1: inset(80% -6px 0 0);
+        --slice-2: inset(50% -6px 30% 0);
+        --slice-3: inset(10% -6px 85% 0);
+        --slice-4: inset(40% -6px 43% 0);
+        --slice-5: inset(80% -6px 5% 0);
+
+        content: 'ALTERNATE TEXT';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 3%, #ffffff 3%, #d2d2d2 5%, #dd01ff 5%);
+        text-shadow: -3px -3px 0px #25f805, 3px 3px 0px #f6f200;
+        clip-path: var(--slice-0);
+    }
+
+    .cta:hover:after {
+        animation: 1s glitch;
+        animation-timing-function: steps(2, end);
+    }
+
+    @keyframes glitch {
+        0% {
+            clip-path: var(--slice-1);
+            transform: translate(-20px, -10px);
+        }
+        10% {
+            clip-path: var(--slice-3);
+            transform: translate(10px, 10px);
+        }
+        20% {
+            clip-path: var(--slice-1);
+            transform: translate(-10px, 10px);
+        }
+        30% {
+            clip-path: var(--slice-3);
+            transform: translate(0px, 5px);
+        }
+        40% {
+            clip-path: var(--slice-2);
+            transform: translate(-5px, 0px);
+        }
+        50% {
+            clip-path: var(--slice-3);
+            transform: translate(5px, 0px);
+        }
+        60% {
+            clip-path: var(--slice-4);
+            transform: translate(5px, 10px);
+        }
+        70% {
+            clip-path: var(--slice-2);
+            transform: translate(-10px, 10px);
+        }
+        80% {
+            clip-path: var(--slice-5);
+            transform: translate(20px, -10px);
+        }
+        90% {
+            clip-path: var(--slice-1);
+            transform: translate(-10px, 0px);
+        }
+        100% {
+            clip-path: var(--slice-1);
+            transform: translate(0);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .cta,
+        .cta:after {
+            width: 200px;
+            height: 86px;
+            line-height: 88px;
+        }
+    }
+
+
+.cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px #b400ff;
+}
+
+.socials {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.socials a:hover {
+    opacity: 1;
+}
+
+.media {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+    position: relative;
+}
+
+.video {
+    width: 100%;
+    max-height: 650px;
+    margin-left: 20px;
+    object-fit: cover;
+    border-radius: 12px;
+    /*box-shadow: 0 0 80px rgba(255, 0, 170, 0.4), 0 0 90px rgba(0, 90, 255, 0.4);*/
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .media {
+        margin-top: 3rem;
+    }
+}

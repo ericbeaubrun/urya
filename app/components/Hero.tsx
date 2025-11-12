@@ -1,107 +1,140 @@
-import styles from "./Hero.module.css";
-import Link from "next/link";
+"use client";
+
+import styles from "../styles/Hero.module.css";
+import MusicPlayingEffect from "@/app/components/MusicPlayingEffect";
+import { motion } from "framer-motion";
+import {ANIMATION_ONCE} from "@/app/config/config";
 
 export default function Hero() {
+
+    const appear = (index) => ({
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                delay: index * 0.15, // <--- délai progressif
+                ease: "easeOut",
+            },
+        },
+    });
+
     return (
         <section className={styles.hero}>
-            {/*<div className={styles.overlay}></div>*/}
 
             <div className={styles.content}>
-                <p className={styles.subTitle}>WELCOME TO THE PARTY</p>
-                <h1 className={styles.title}>
-                    JOIN THE <br /> CLUB
-                </h1>
+                <motion.h1
+                    className={styles.title}
+                    variants={appear(0)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                >
+                    DJ <br /> <MusicPlayingEffect/> URYA
+                </motion.h1>
 
-                <p className={styles.description}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Commodo adipiscing faucibus nunc amet convallis posuere diam nulla. Pellentesque vulputate dui posuere orci tellus dolor, semper convallis sed.
-                </p>
+                <motion.p
+                    className={styles.subTitle}
+                    variants={appear(1)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                >
+                    Je suis votre DJ
+                </motion.p>
 
-                <div className={styles.actions}>
-                    <button className={styles.cta}>Get in Touch</button>
+                <motion.p
+                    className={styles.description}
+                    variants={appear(2)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                >
+                    Bienvenue dans l’univers de DJ URYA passionnée de musique et créateur d’ambiances inoubliables.
+                    Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre DJ pour faire
+                    de chaque instant un moment unique.
+                </motion.p>
 
-                    <div className={styles.socials}>
-                        <Link href="#">FB</Link>
-                        <span>—</span>
-                        <Link href="#">INST</Link>
-                        <span>—</span>
-                        <Link href="#">TW</Link>
-                    </div>
-                </div>
+                <motion.div
+                    className={styles.actions}
+                    variants={appear(3)}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                >
+                    <button className={styles.cta}>Contacter</button>
+                </motion.div>
             </div>
 
-            <div className={styles.media}>
+            <motion.div
+                className={styles.media}
+                variants={appear(4)}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}>
                 <video autoPlay muted loop playsInline className={styles.video}>
                     <source src="/video.mp4" type="video/mp4"/>
                 </video>
-            </div>
+            </motion.div>
+
         </section>
     );
 }
 
 
-// "use client";
-//
-// import styles from './Hero.module.css';
+
+// import styles from "../styles/Hero.module.css";
+// import Link from "next/link";
+// import MusicPlayingEffect from "@/app/components/MusicPlayingEffect";
 //
 // export default function Hero() {
 //     return (
 //         <section className={styles.hero}>
-//             <div className={styles.container}>
-//                 <div className={styles.content}>
-//                     <div className={styles.titleSection}>
-//                         <h1 className={styles.title}>
-//                             DJ Urya – Votre DJ, tous styles, toutes ambiances 🎶
-//                         </h1>
-//                         <p className={styles.subtitle}>
-//                             Bienvenue dans l'univers de DJ URYA passionnée de musique et créateur d'ambiances inoubliables.
-//                         </p>
-//                     </div>
+//             {/*<div className={styles.overlay}></div>*/}
 //
-//                     <div className={styles.description}>
-//                         <p>
-//                             Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre DJ pour faire de chaque instant un moment unique.
-//                         </p>
-//                         <p>
-//                             Avec une sélection musicale variée — des classiques intemporels aux derniers hits —, j'adapte chaque mix à votre public, à vos goûts et à l'énergie du moment.
-//                             Mon objectif : créer une atmosphère festive et élégante, où chaque invité profite pleinement de la fête.
-//                         </p>
-//                     </div>
+//             <div className={styles.content}>
+//                 <h1 className={styles.title}>
+//                     DJ
+//                     <br/> <MusicPlayingEffect/>
+//                     URYA
+//                 </h1>
 //
-//                     <div className={styles.features}>
-//                         <div className={styles.feature}>
-//                             <span className={styles.icon}>🎵</span>
-//                             <span>Mixs dynamiques et transitions fluides</span>
-//                         </div>
-//                         <div className={styles.feature}>
-//                             <span className={styles.icon}>🔊</span>
-//                             <span>Sonorisation et éclairage professionnels</span>
-//                         </div>
-//                         <div className={styles.feature}>
-//                             <span className={styles.icon}>✨</span>
-//                             <span>Ambiance garantie du début à la fin</span>
-//                         </div>
-//                     </div>
+//                 <p className={styles.subTitle}>
+//                     Je suis votre DJ
 //
-//                     <div className={styles.cta}>
-//                         <button className={styles.ctaButton}>
-//                             🎧 Réservez votre DJ
-//                         </button>
-//                         <button className={styles.ctaButtonSecondary}>
-//                             📅 Voir mes disponibilités
-//                         </button>
-//                     </div>
+//                 </p>
+//
+//
+//
+//                 <p className={styles.description}>
+//                     Bienvenue dans l’univers de DJ URYA passionnée de musique et créateur d’ambiances inoubliables.
+//                     Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre DJ pour faire
+//                     de chaque instant un moment unique.
+//                 </p>
+//
+//                 <div className={styles.actions}>
+//                     <button className={styles.cta}>
+//                         Contacter
+//                     </button>
+//                     {/*<div className={styles.socials}>*/}
+//                     {/*    <Link href="#">FB</Link>*/}
+//                     {/*    <span>—</span>*/}
+//                     {/*    <Link href="#">INST</Link>*/}
+//                     {/*    <span>—</span>*/}
+//                     {/*    <Link href="#">TW</Link>*/}
+//                     {/*</div>*/}
+//
 //                 </div>
+//             </div>
 //
-//                 <div className={styles.visualElement}>
-//                     <div className={styles.djIcon}>🎧</div>
-//                     <div className={styles.musicWaves}>
-//                         <div className={styles.wave}></div>
-//                         <div className={styles.wave}></div>
-//                         <div className={styles.wave}></div>
-//                         <div className={styles.wave}></div>
-//                     </div>
-//                 </div>
+//             <div className={styles.media}>
+//                 <video autoPlay muted loop playsInline className={styles.video}>
+//                     <source src="/video.mp4" type="video/mp4"/>
+//                 </video>
 //             </div>
 //         </section>
 //     );
 // }
+//
+//
