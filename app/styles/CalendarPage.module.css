@@ -1,29 +1,29 @@
 
-/* --- CONTAINER --- */
-.container {
-    max-width: 1400px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #0b0f17;
-    border-radius: 14px;
-    box-shadow: 0 0 30px rgba(200, 0, 255, 0.2);
+.wrapper {
+    margin-top: 200px;
+    margin-bottom: 200px;
 }
 
-.container h1 {
+.container {
+    max-width: 1400px;
+    /*margin: 40px auto;*/
+    padding: 36px;
+    background: rgba(0, 0, 0, 0.40);
+    border-radius: 14px;
+}
+
+.calendarTitle {
     text-align: center;
-    margin-bottom: 30px;
+    /*margin-bottom: 30px;*/
     color: #f5f3ff;
     font-size: 2.4rem;
     letter-spacing: 1px;
-    text-shadow: 0 0 14px #b026ff;
 }
 
-/* --- EVENT CARD --- */
 .eventContent {
     padding: 6px 8px;
     font-size: 0.9rem;
     color: #f5f3ff;
-    text-shadow: 0 0 6px rgba(255,255,255,0.3);
 }
 
 .eventTime {
@@ -42,17 +42,19 @@
     opacity: 0.85;
 }
 
-/* --- FULLCALENDAR GLOBAL DARK MODE --- */
 .container :global(.fc) {
     font-family: 'Montserrat', sans-serif;
     color: #d1d5db;
 }
 
-/* Header */
 .container :global(.fc-toolbar-title) {
-    color: #f5f3ff;
-    text-shadow: 0 0 10px #9333ea;
+    color: #fff;
+    background-color: #2f3e51;
+    border-radius: 6px;
+    padding: 0.4em 0.65em;
     font-weight: 700;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .container :global(.fc-col-header-cell) {
@@ -63,33 +65,31 @@
     border-bottom: 1px solid rgba(147, 51, 234, 0.2);
 }
 
-/* Buttons */
 .container :global(.fc-button) {
-    background: linear-gradient(90deg, #9333ea, #ec4899);
     border: none;
     color: white;
     text-transform: capitalize;
     border-radius: 6px;
-    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
 }
 
 .container :global(.fc-button:hover) {
     filter: brightness(1.25);
-    box-shadow: 0 0 14px rgba(236, 72, 153, 0.8);
 }
 
 .container :global(.fc-button-active) {
     filter: brightness(1.15);
 }
 
-/* Today highlight */
 .container :global(.fc-day-today) {
-    background: rgba(147, 51, 234, 0.12) !important;
-    border: 1px solid rgba(147, 51, 234, 0.45);
-    box-shadow: inset 0 0 12px rgba(147, 51, 234, 0.5);
+    /*border: rgb(91, 161, 89) solid 2px !important;*/
+    /*border: rgb(161, 255, 140) dashed 2px !important;*/
+    /*border: rgba(140, 251, 255, 0.58) solid 2px !important;*/
+    background-color: #0e1321 !important;
+    background-color: rgb(59, 33, 70) !important;
 }
 
-/* Slots + Borders */
+
+/* Jours à venir */
 .container :global(.fc-timegrid-slot),
 .container :global(.fc-daygrid-day) {
     background: #0e1321;
@@ -97,161 +97,312 @@
     border-color: rgba(255, 255, 255, 0.16);
 }
 
-/* Event blocks */
+/* Perstations */
 .container :global(.fc-event) {
     cursor: pointer;
     border-radius: 6px;
     color: white;
     border: none;
-    box-shadow: 0 0 12px rgba(236, 72, 153, 0.65);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #c98cff;
 }
 
 .container :global(.fc-event:hover) {
     transform: scale(1.04);
-    box-shadow: 0 0 18px rgba(236, 72, 153, 1), 0 0 30px rgba(147, 51, 234, 0.8);
 }
 
-/* --- PAST DAYS (désactivées) --- */
+.dayHover:hover {
+    cursor: pointer;
+}
+
+
+/* Jours passés */
 .pastDay {
     background-color: #1b2333 !important;
     color: #6b7280 !important;
     opacity: 0.4;
+
+    :hover {
+        cursor: default;
+    }
 }
 
-/* --- HOVER EFFECT SUR LES CELLS --- */
-.dayHover:hover {
-    background: rgba(236, 72, 153, 0.15);
-    cursor: pointer;
-    box-shadow: inset 0 0 10px rgba(236, 72, 153, 0.4);
-    /*transition: 0.25s ease-in-out;*/
-}
 
 .dayHover {
     position: relative;
 }
 
-.dayHover:hover::after {
-    content: "Demander une prestation à cette date";
+
+.dayHover {
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+}
+
+.dayHover:not(.pastDay):hover::after {
+    content: "Demander une prestation";
+    /*content: "Demander pour cette date";*/
     position: absolute;
-    bottom: -30px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(147, 51, 234, 0.95);
-    padding: 6px 10px;
-    border-radius: 6px;
+    transform: translate(-50%, -50%);
+    background: rgb(75, 164, 58);
+    background: rgb(69, 180, 65);
+    background: rgb(70, 125, 140);
+    color: #0b0f17;
     color: white;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    box-shadow: 0 0 12px rgba(147, 51, 234, 0.7);
+    font-weight: bold;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    width: 85%;
+    word-break: break-word;
     pointer-events: none;
     opacity: 1;
-    z-index: 9999;
+    z-index: 10;
+}
+
+.container :global(.fc-timegrid-slot),
+.container :global(.fc-daygrid-day) {
+    border: 1px solid white;
+}
+
+.container :global(.fc-day),
+.container :global(.fc-scroller-harness),
+.container :global(.fc-scrollgrid-section),
+.container :global(.fc-scrollgrid-sync-table) {
+    border: 1px solid white;
 }
 
 
+.container :global(.fc-day) {
+    border: 1px solid rgba(255, 255, 255, 0.40);
+}
 
-/*.container {*/
-/*    max-width: 1400px;*/
-/*    margin: 40px auto;*/
-/*    padding: 20px;*/
-/*}*/
-
-/*.container h1 {*/
-/*    text-align: center;*/
-/*    margin-bottom: 30px;*/
-/*    color: #1f2937;*/
-/*    font-size: 2rem;*/
-/*}*/
-
-/*!* Style personnalisé pour les événements *!*/
-/*.eventContent {*/
-/*    padding: 2px 4px;*/
-/*    overflow: hidden;*/
-/*    font-size: 0.85rem;*/
-/*}*/
-
-/*.eventTime {*/
-/*    font-size: 0.75rem;*/
-/*    margin-bottom: 2px;*/
-/*}*/
-
-/*.eventTitle {*/
-/*    font-weight: 500;*/
-/*    white-space: nowrap;*/
-/*    overflow: hidden;*/
-/*    text-overflow: ellipsis;*/
-/*}*/
-
-/*.eventLocation {*/
-/*    font-size: 0.7rem;*/
-/*    opacity: 0.9;*/
-/*    margin-top: 2px;*/
-/*    white-space: nowrap;*/
-/*    overflow: hidden;*/
-/*    text-overflow: ellipsis;*/
-/*}*/
-
-/*!* Personnalisation globale de FullCalendar *!*/
-/*.container :global(.fc) {*/
-/*    font-family: inherit;*/
-/*}*/
-
-/*.container :global(.fc-toolbar-title) {*/
-/*    font-size: 1.5rem;*/
-/*    font-weight: 600;*/
-/*    color: #1f2937;*/
-/*}*/
-
-/*.container :global(.fc-button) {*/
-/*    background-color: #3b82f6;*/
-/*    border-color: #3b82f6;*/
-/*    text-transform: capitalize;*/
-/*}*/
-
-/*.container :global(.fc-button:hover) {*/
-/*    background-color: #2563eb;*/
-/*    border-color: #2563eb;*/
-/*}*/
-
-/*.container :global(.fc-button-active) {*/
-/*    background-color: #1d4ed8 !important;*/
-/*    border-color: #1d4ed8 !important;*/
-/*}*/
-
-/*.container :global(.fc-event) {*/
-/*    cursor: pointer;*/
-/*    border-radius: 4px;*/
-/*    padding: 2px;*/
-/*}*/
-
-/*.container :global(.fc-event:hover) {*/
-/*    opacity: 0.85;*/
-/*}*/
-
-/*.container :global(.fc-day-today) {*/
-/*    background-color: #fef3c7 !important;*/
-/*}*/
-
-/*.container :global(.fc-timegrid-slot) {*/
-/*    height: 3rem;*/
-/*}*/
-
-/*.container :global(.fc-col-header-cell) {*/
-/*    padding: 10px 0;*/
-/*    background-color: #f3f4f6;*/
-/*    font-weight: 600;*/
-/*}*/
+.container {
+    /*height: 100vh;*/
+    overflow: hidden;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 1400px;
+    background: rgba(0, 0, 0, 0.40);
+    border-radius: 14px;
+}
 
 
-/*.pastDay {*/
-/*    background-color: #f3f4f6 !important; !* gris clair *!*/
-/*    color: #6b7280 !important; !* texte gris *!*/
-/*    opacity: 0.7;*/
-/*}*/
+.container {
+    width: 96%;
+    height: auto;
 
-/*.dayHover:hover {*/
-/*    background-color: red; !* bleu clair *!*/
-/*    cursor: pointer;*/
-/*    transition: background-color 0.2s ease-in-out;*/
-/*}*/
+
+    overflow-x: hidden;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.calendarTitle {
+    font-size: 3rem;
+    margin: 1rem 0;
+    margin-top: 1rem;
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 50px;
+    padding: 0 1rem;
+}
+
+
+.container :global(.fc) {
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    /*.container :global(.fc-toolbar) {*/
+    /*    flex-direction: column !important;*/
+    /*    gap: 0.6rem;*/
+    /*    align-items: center;*/
+    /*}*/
+    .container :global(.fc-toolbar-title) {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .container :global(.fc-button-group) {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    .container :global(.fc-button) {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem;
+    }
+
+    .container :global(.fc-col-header-cell),
+    .container :global(.fc-daygrid-day) {
+        font-size: 0.75rem;
+        padding: 0.4rem;
+    }
+
+    .container :global(.fc-event) {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.4rem;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 500px) {
+    .container {
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
+
+    .calendarTitle {
+        font-size: 1.2rem;
+    }
+
+    .container :global(.fc-toolbar) {
+        gap: 0.4rem;
+    }
+
+    .container :global(.fc-toolbar-title) {
+        font-size: 1rem;
+    }
+
+    .container :global(.fc-daygrid-day-frame) {
+        padding: 2px !important;
+    }
+
+    .container :global(.fc-daygrid-day),
+    .container :global(.fc-timegrid-slot) {
+        border: none;
+    }
+}
+
+.container :global(.fc-view-harness) {
+    min-height: 70vh;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.container :global(.fc-scroller) {
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+}
+
+.container :global(.fc-button) {
+    touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+    .dayHover:hover::after {
+        display: none;
+    }
+}
+
+
+.container :global(.fc),
+.container :global(.fc-view-harness),
+.container :global(.fc-scroller),
+.container :global(.fc-scrollgrid),
+.container :global(.fc-scrollgrid-sync-table),
+.container :global(.fc-scrollgrid-section) {
+    overflow-x: hidden !important;
+}
+
+.container :global(.fc-scrollgrid-sync-table),
+.container :global(.fc-scrollgrid-section),
+.container :global(.fc-daygrid-body),
+.container :global(.fc-daygrid-body table) {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+.container :global(.fc-header-toolbar),
+.container :global(.fc-toolbar),
+.container :global(.fc-col-header),
+.container :global(.fc-col-header-cell) {
+    overflow: hidden !important;
+}
+
+.container :global(.fc-scrollgrid-section-header) {
+    margin-right: 0 !important;
+}
+
+@media (max-width: 768px) {
+    .container {
+        overflow-x: hidden !important;
+    }
+
+    .container :global(.fc-view-harness),
+    .container :global(.fc-scrollgrid),
+    .container :global(.fc-scroller) {
+        overflow-x: hidden !important;
+    }
+}
+
+
+@media (max-width: 1024px) {
+
+    .container :global(.fc-event-title),
+    .container :global(.fc-event-time),
+    .container :global(.fc-event-main-frame),
+    .container .eventContent,
+    .container .eventTitle,
+    .container .eventTime,
+    .container .eventLocation {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    .container :global(.fc-event) {
+        height: 12px !important;
+        min-height: 12px !important;
+        border-radius: 9999px !important;
+        overflow: hidden;
+        padding: 0 !important;
+        margin: 2px 0 !important;
+    }
+
+    .container :global(.fc-event:hover) {
+        transform: scale(1.1);
+        filter: brightness(1.2);
+    }
+}
+
+
+.calendarTitle::after {
+    content: "";
+    opacity: .8;
+    background: #c98cff;
+    border-radius: 2px;
+    width: 160px;
+    height: 4px;
+    margin: 16px auto 0;
+    display: block;
+}
+
+@media (max-width: 378px) {
+    /* Pas de bouton today pour très petits appareils mobiles */
+    .container :global(.fc-toolbar > .fc-toolbar-chunk:first-child) {
+        display: none;
+    }
+
+}
+
+
+.container :global(.fc-scroller) {
+    overflow-y: hidden !important;
+}
+
+/* Cache aussi la barre native si elle apparaît */
+.container {
+    scrollbar-width: none;        /* Firefox */
+}
+
+.container::-webkit-scrollbar {
+    display: none;                /* Chrome / Edge / Safari */
+}

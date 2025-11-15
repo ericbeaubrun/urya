@@ -1,1 +1,1 @@
-export const ANIMATION_ONCE = false;
+export const ANIMATION_ONCE = true ;

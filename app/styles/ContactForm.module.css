@@ -1,14 +1,16 @@
 .wrapper {
-    padding: 80px 40px;
-    background: #05060a;
+    padding: 360px 40px;
     text-align: center;
+
+    @media (max-width: 600px) {
+        padding: 80px 12px;
+    }
 }
 
 .title {
     color: #f5f3ff;
     font-size: 2.4rem;
-    text-shadow: 0 0 14px #9333ea;
-    margin-bottom: 6px;
+    /*margin-bottom: 6px;*/
 }
 
 .subtitle {
@@ -19,11 +21,15 @@
 }
 
 .form {
-    max-width: 520px;
+    max-width: 800px;
     margin: auto;
     display: flex;
     flex-direction: column;
     gap: 22px;
+
+    @media (max-width: 600px) {
+        max-width: 100%;
+    }
 }
 
 .field {
@@ -35,7 +41,8 @@
 .field label {
     margin-bottom: 6px;
     color: #e4d9ff;
-    font-size: 0.95rem;
+    color: #fff;
+    font-size: 1.1rem;
     opacity: 0.9;
 }
 
@@ -43,30 +50,29 @@
 .field textarea {
     padding: 12px 14px;
     background: #0b0f17;
-    border: 1px solid rgba(147, 51, 234, 0.4);
+    background: rgba(0, 0, 0, 0.50);
+    border-color: transparent;
     border-radius: 6px;
     color: white;
     outline: none;
-    transition: 0.25s;
 }
+
+
+.field textarea {
+    height: 300px;
+    max-width: 100%;
+    font-size: 1rem;
+}
+
 
 .field input:focus,
 .field textarea:focus {
     border-color: #ec4899;
-    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 5);
 }
 
-.button {
-    padding: 12px 18px;
-    background: linear-gradient(90deg, #9333ea, #ec4899);
-    border: none;
-    border-radius: 6px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s;
-    box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
-}
 
 .button:hover:not(:disabled) {
     filter: brightness(1.25);
@@ -83,4 +89,20 @@
     color: #f87171;
     margin-top: 10px;
     text-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+}
+
+.cta {
+    cursor: pointer;
+    color: #fff;
+    background-color: #c98cff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 48px;
+    font-size: 1.2rem;
+    transition: transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(201, 140, 255, 0.4);
 }

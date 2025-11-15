@@ -1,0 +1,137 @@
+.formContainer {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+}
+
+.formContainer h2 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Champs généraux */
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.formGroup label {
+    font-weight: 600;
+    color: #333;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+    border-color: #0070f3;
+    outline: none;
+}
+
+/* Ligne 2 colonnes (heures) */
+.row {
+    display: flex;
+    gap: 15px;
+}
+
+.row .formGroup {
+    flex: 1;
+}
+
+/* Bouton d'ajout */
+.submitBtn {
+    padding: 12px;
+    background: #0070f3;
+    color: white;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.submitBtn:hover {
+    background: #0057c2;
+}
+
+.submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ----- Gestion des clients ----- */
+
+.clientRow {
+    display: flex;
+    gap: 10px;
+}
+
+.clientRow select {
+    flex: 1;
+}
+
+.newClientBtn {
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.newClientBtn:hover {
+    background: #ddd;
+}
+
+/* Bloc formulaire nouveau client */
+.newClientForm {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f7f7f7;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.newClientForm input {
+    padding: 8px;
+}
+
+.newClientForm button {
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.newClientForm button:hover {
+    background: #1f8437;
+}

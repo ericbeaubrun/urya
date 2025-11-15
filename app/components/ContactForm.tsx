@@ -33,11 +33,10 @@ export default function ContactForm() {
     return (
         <section className={styles.wrapper}>
             <h2 className={styles.title}>Contact</h2>
-            <p className={styles.subtitle}>Une question ? Un devis ? Parlons-en 🎧</p>
 
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.field}>
-                    <label>Nom complet</label>
+                    <label>Nom ou Organisation</label>
                     <input
                         type="text"
                         name="nom"
@@ -69,11 +68,12 @@ export default function ContactForm() {
                     />
                 </div>
 
-                <button type="submit" disabled={status === "sending"} className={styles.button}>
+                <button type="submit" disabled={status === "sending"} className={styles.cta}>
                     {status === "sending" ? "Envoi en cours..." : "Envoyer"}
                 </button>
 
-                {status === "sent" && <p className={styles.success}>✅ Message envoyé ! Je reviens vers vous très vite.</p>}
+                {status === "sent" &&
+                    <p className={styles.success}>✅ Message envoyé ! Je reviens vers vous très vite.</p>}
                 {status === "error" && <p className={styles.error}>❌ Une erreur est survenue. Réessayez.</p>}
             </form>
         </section>

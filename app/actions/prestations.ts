@@ -85,6 +85,23 @@ export async function addClient(nom: string, mail: string, tel?: string) {
     }
 }
 
+function cleanPrestationData(data: any) {
+    const {
+        id,        // ❌ interdit
+        client,    // ❌ relation non supportée en update
+        ...rest
+    } = data;
+
+    // Convertit "" en null (SQL friendly)
+    const cleaned: any = {};
+    for (const key in rest) {
+        cleaned[key] = rest[key] === "" ? null : rest[key];
+    }
+
+    return cleaned;
+}
+
+
 /**
  * Ajouter une prestation (réservé aux admins)
  */
@@ -180,50 +197,33 @@ export async function deletePrestation(id: string) {
 /**
  * Modifier une prestation (réservé aux admins)
  */
-export async function updatePrestation(id: string, prestationData: {
-    id_client?: string | null;
-    statut?: string;
-    date_debut?: string;
-    date_fin?: string;
-    heure_debut?: string | null;
-    heure_fin?: string | null;
-    type?: string | null;
-    lieu?: string | null;
-    notes?: string | null;
-}) {
+export async function updatePrestation(id: string, prestationData: any) {
     try {
-        // Vérifier l'authentification
         const admin = await verifyAdmin();
 
-        console.log("✅ Admin vérifié:", admin.email);
+        const cleaned = cleanPrestationData(prestationData);
 
-        // Modifier la prestation avec le client admin qui bypass RLS
         const { data, error } = await supabaseAdmin()
             .from("prestations")
-            .update(prestationData)
+            .update(cleaned)
             .eq("id", id)
-            .select();
+            .select()
+            .single();
 
-        if (error) {
-            console.error("❌ Erreur Supabase:", error);
-            throw new Error(`Erreur lors de la modification: ${error.message}`);
-        }
+        if (error) throw new Error(`Erreur lors de la modification: ${error.message}`);
 
-        console.log("✅ Prestation modifiée:", data);
-
-        // Revalider les pages concernées
         revalidatePath("/");
         revalidatePath("/admin");
 
         return { success: true, data };
     } catch (error) {
-        console.error("❌ Erreur updatePrestation:", error);
-        return { 
-            success: false, 
-            error: error instanceof Error ? error.message : "Erreur inconnue" 
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Erreur inconnue"
         };
     }
 }
+
 
 /**
  * Récupérer toutes les prestations (public)

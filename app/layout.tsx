@@ -30,9 +30,9 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
             <div className={`${styles.light} ${styles.light4}`}></div>
             <div className={`${styles.light} ${styles.light5}`}></div>
         </div>
-        <Header/>
+        {/*<Header/>*/}
         {children}
-        <Footer/>
+        {/*<Footer/>*/}
         </body>
         </html>
     );

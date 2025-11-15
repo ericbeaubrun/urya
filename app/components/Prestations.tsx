@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import styles from "../styles/Prestations.module.css";
-import { motion } from "framer-motion";
-import { ANIMATION_ONCE } from "@/app/config/config";
+import {motion} from "framer-motion";
+import {ANIMATION_ONCE} from "@/app/config/config";
 
 interface Prestation {
     title: string;
@@ -21,21 +21,21 @@ const prestations: Prestation[] = [
         description:
             "Animation complète, ambiance personnalisée selon le thème et le public.",
         price: "À partir de 280 €",
-        image: images_path + "anniversaire.jpg",
+        image: images_path + "anniversaire2.jpg",
     },
     {
         title: "Soirées",
         description:
             "Ambiance festive garantie pour vos événements familiaux ou entre amis.",
         price: "À partir de 320 €",
-        image: images_path + "soiree_privee.jpg",
+        image: images_path + "soiree_privee3.png",
     },
     {
         title: "Événements",
         description:
             "Animation musicale professionnelle pour vos séminaires, repas ou soirées de fin d'année.",
         price: "À partir de 450 €",
-        image: images_path + "evenement.jpg",
+        image: images_path + "evenement3.png",
     },
     {
         title: "Mariages",
@@ -43,7 +43,7 @@ const prestations: Prestation[] = [
             "Prestation sur mesure : cocktail, dîner, ouverture de bal, soirée dansante. Matériel pro & coordination.",
         price: "À partir de 520 €",
         featured: true,
-        image: images_path + "mariage.jpg",
+        image: images_path + "mariage2.jpg",
     },
 ];
 
@@ -53,7 +53,7 @@ export default function Prestations() {
             <motion.h2
                 className={styles.sectionTitle}
                 variants={{
-                    hidden: { opacity: 0, y: 30 },
+                    hidden: {opacity: 0, y: 30},
                     visible: {
                         opacity: 1,
                         y: 0,
@@ -66,7 +66,7 @@ export default function Prestations() {
                 }}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                viewport={{once: ANIMATION_ONCE, amount: 0.3}}
             >
                 Principales Offres
             </motion.h2>
@@ -77,7 +77,7 @@ export default function Prestations() {
                         key={p.title}
                         className={`${styles.card} ${p.featured ? styles.featured : ""}`}
                         variants={{
-                            hidden: { opacity: 0, y: 30 },
+                            hidden: {opacity: 0, y: 30},
                             visible: {
                                 opacity: 1,
                                 y: 0,
@@ -90,10 +90,10 @@ export default function Prestations() {
                         }}
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                        viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                     >
 
-                    <div className={styles.imageWrapper}>
+                        <div className={styles.imageWrapper}>
                             <Image
                                 src={p.image}
                                 alt={p.title}

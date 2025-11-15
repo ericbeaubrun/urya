@@ -1,4 +1,4 @@
-import styles from  '../styles/MusicPlayingEffect.module.css';
+import styles from '../styles/MusicPlayingEffect.module.css';
 
 
 export default function MusicPlayingEffect() {

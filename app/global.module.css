@@ -1,13 +1,12 @@
 body {
     margin: 0;
-    background: #050010; /* noir profond légèrement violet */
+    background: #050010;
     color: white;
     font-family: Arial, sans-serif;
     position: relative;
-    min-height: 200vh; /* pour scroll de test */
+    /*min-height: 200vh;*/
 }
 
-/* Conteneur des lumières */
 .lights {
     position: fixed;
     inset: 0;
@@ -18,7 +17,6 @@ body {
     pointer-events: none;
 }
 
-/* Base commune des lumières */
 .light {
     position: absolute;
     width: 450px;
@@ -31,34 +29,20 @@ body {
     pulse 6s infinite ease-in-out alternate;
 }
 
-/* Variantes de couleurs */
 .light1 { background: #ff0099; top: 5%; left: 10%; animation-delay: 0s; }
 .light2 { background: #7900ff; top: 60%; left: 20%; animation-delay: 2s; }
 .light3 { background: #00eaff; top: 30%; right: 10%; animation-delay: 4s; }
 .light4 { background: #ff00ff; bottom: 10%; right: 30%; animation-delay: 1s; }
 .light5 { background: #00ffcc; bottom: 20%; left: 40%; animation-delay: 3s; }
 
-/* Flottement lent dans différentes directions */
 @keyframes float {
     0%   { transform: translate(0,0) rotate(0deg); }
     100% { transform: translate(200px, -200px) rotate(360deg); }
 }
 
-/* Pulsation douce (respiration lumineuse) */
 @keyframes pulse {
     0%   { opacity: 0.35; filter: blur(120px); }
     100% { opacity: 0.75; filter: blur(200px); }
 }
-
-/* hauteur header + évite recouvrement */
-/*:root {*/
-/*    --header-h: 64px;*/
-/*}*/
-/*main {*/
-/*    padding-top: var(--header-h);*/
-/*}*/
-/*section {*/
-/*    scroll-margin-top: calc(var(--header-h) + 12px);*/
-/*}*/
 
 

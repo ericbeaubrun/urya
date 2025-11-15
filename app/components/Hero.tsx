@@ -2,19 +2,19 @@
 
 import styles from "../styles/Hero.module.css";
 import MusicPlayingEffect from "@/app/components/MusicPlayingEffect";
-import { motion } from "framer-motion";
-import {ANIMATION_ONCE} from "@/app/config/config";
+import {motion} from "framer-motion";
+import {ANIMATION_ONCE} from "../config/config";
 
 export default function Hero() {
 
     const appear = (index) => ({
-        hidden: { opacity: 0, y: 30 },
+        hidden: {opacity: 0, y: 30},
         visible: {
             opacity: 1,
             y: 0,
             transition: {
                 duration: 0.6,
-                delay: index * 0.15, // <--- délai progressif
+                delay: index * 0.15,
                 ease: "easeOut",
             },
         },
@@ -29,9 +29,9 @@ export default function Hero() {
                     variants={appear(0)}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                    viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
-                    DJ <br /> <MusicPlayingEffect/> URYA
+                    DJ <br/> <MusicPlayingEffect/> URYA
                 </motion.h1>
 
                 <motion.p
@@ -39,7 +39,7 @@ export default function Hero() {
                     variants={appear(1)}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                    viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
                     Je suis votre DJ
                 </motion.p>
@@ -49,7 +49,7 @@ export default function Hero() {
                     variants={appear(2)}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                    viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
                     Bienvenue dans l’univers de DJ URYA passionnée de musique et créateur d’ambiances inoubliables.
                     Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre DJ pour faire
@@ -61,7 +61,7 @@ export default function Hero() {
                     variants={appear(3)}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+                    viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
                     <button className={styles.cta}>Contacter</button>
                 </motion.div>
@@ -72,7 +72,7 @@ export default function Hero() {
                 variants={appear(4)}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}>
+                viewport={{once: ANIMATION_ONCE, amount: 0.3}}>
                 <video autoPlay muted loop playsInline className={styles.video}>
                     <source src="/video.mp4" type="video/mp4"/>
                 </video>
@@ -81,60 +81,3 @@ export default function Hero() {
         </section>
     );
 }
-
-
-
-// import styles from "../styles/Hero.module.css";
-// import Link from "next/link";
-// import MusicPlayingEffect from "@/app/components/MusicPlayingEffect";
-//
-// export default function Hero() {
-//     return (
-//         <section className={styles.hero}>
-//             {/*<div className={styles.overlay}></div>*/}
-//
-//             <div className={styles.content}>
-//                 <h1 className={styles.title}>
-//                     DJ
-//                     <br/> <MusicPlayingEffect/>
-//                     URYA
-//                 </h1>
-//
-//                 <p className={styles.subTitle}>
-//                     Je suis votre DJ
-//
-//                 </p>
-//
-//
-//
-//                 <p className={styles.description}>
-//                     Bienvenue dans l’univers de DJ URYA passionnée de musique et créateur d’ambiances inoubliables.
-//                     Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre DJ pour faire
-//                     de chaque instant un moment unique.
-//                 </p>
-//
-//                 <div className={styles.actions}>
-//                     <button className={styles.cta}>
-//                         Contacter
-//                     </button>
-//                     {/*<div className={styles.socials}>*/}
-//                     {/*    <Link href="#">FB</Link>*/}
-//                     {/*    <span>—</span>*/}
-//                     {/*    <Link href="#">INST</Link>*/}
-//                     {/*    <span>—</span>*/}
-//                     {/*    <Link href="#">TW</Link>*/}
-//                     {/*</div>*/}
-//
-//                 </div>
-//             </div>
-//
-//             <div className={styles.media}>
-//                 <video autoPlay muted loop playsInline className={styles.video}>
-//                     <source src="/video.mp4" type="video/mp4"/>
-//                 </video>
-//             </div>
-//         </section>
-//     );
-// }
-//
-//

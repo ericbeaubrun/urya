@@ -1,41 +1,134 @@
 .container {
-    max-width: 700px;
-    margin: 40px auto;
+    width: 100%;
+    max-width: 900px;
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #e0e0e0;
 }
 
-.loadingBanner {
-    padding: 10px;
-    background-color: #fff3cd;
+.container h1 {
+    font-size: 1.8rem;
     margin-bottom: 20px;
-    border-radius: 4px;
+    text-align: center;
+    color: #222;
 }
 
-.form {
-    margin-bottom: 20px;
-}
-
-.inputDate,
-.inputText {
-    margin-right: 10px;
-}
-
+/* Liste des prestations */
 .list {
-    list-style: none;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 25px;
 }
 
-.listItem {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+/* Carte prestation */
+.card {
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+/* En-tête de la carte */
+.header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.deleteButton {
-    color: red;
+.header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+/* Statut */
+.en_attente {
+    background: #ffefc1;
+    color: #a67c00;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.confirmee {
+    background: #d7ffd9;
+    color: #146b1c;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.annulee {
+    background: #ffd4d4;
+    color: #a10000;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.terminee {
+    background: #d5e4ff;
+    color: #264a9b;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.card p {
+    margin: 6px 0;
+    color: #444;
+}
+
+/* Zone actions */
+.actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.actions button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #f1f1f1;
+    border: 1px solid #ccc;
     cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
-.deleteButton:disabled {
-    cursor: not-allowed;
+.actions button:hover {
+    background: #e3e3e3;
+}
+
+/* Supprimer */
+.delete {
+    background: #ffdfdf !important;
+    border-color: #d99 !important;
+    color: #8d0000;
+}
+
+.delete:hover {
+    background: #ffcccc !important;
+}
+
+/* Message vide */
+.list p {
+    text-align: center;
+    color: #666;
 }

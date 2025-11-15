@@ -13,21 +13,33 @@ export default function CalendarPage() {
     const [events, setEvents] = useState([]);
 
     const router = useRouter();
+
     function handleDateClick(dateStr: string) {
+        const clickedDate = new Date(dateStr);
+        const today = new Date();
+
+        clickedDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        if (clickedDate < today) {
+            console.log("Jour passé !");
+            return;
+        }
+
         router.push(`/prestation-form?date=${dateStr}`);
     }
 
 
-    function getColorByStatus(statut: string) {
-        switch (statut) {
-            case "confirmee":
-                return "#10b981"; // vert
-            case "terminee":
-                return "#6366f1"; // bleu
-            default:
-                return "#6b7280"; // gris
-        }
-    }
+    // function getColorByStatus(statut: string) {
+    //     switch (statut) {
+    //         case "confirmee":
+    //             return "#10b981"; // vert
+    //         case "terminee":
+    //             return "#6366f1"; // bleu
+    //         default:
+    //             return "#6b7280"; // gris
+    //     }
+    // }
 
     useEffect(() => {
         async function loadEvents() {
@@ -40,7 +52,7 @@ export default function CalendarPage() {
                 return;
             }
 
-            // ✅ On filtre ici les prestations à ignorer
+            //  On filtre ici les prestations à ignorer
             const filteredData = (data || []).filter(
                 (ev) => ev.statut !== "en_attente" && ev.statut !== "annulee"
             );
@@ -68,12 +80,12 @@ export default function CalendarPage() {
                 // 1) Si on a date_debut + date_fin → affichage multi-jours normal
                 if (ev.date_debut && ev.date_fin) {
                     eventData.start = `${ev.date_debut}T${ev.heure_debut ?? "00:00:00"}`;
-                    eventData.end   = `${ev.date_fin}T${ev.heure_fin ?? "23:59:59"}`;
+                    eventData.end = `${ev.date_fin}T${ev.heure_fin ?? "23:59:59"}`;
                 }
                 // 2) Si on a date_debut mais pas de date_fin → cas multi-jour potentiel via heures
                 else if (ev.date_debut && !ev.date_fin && ev.heure_debut && ev.heure_fin) {
                     const startDate = new Date(`${ev.date_debut}T${ev.heure_debut}`);
-                    const endDate   = new Date(`${ev.date_debut}T${ev.heure_fin}`);
+                    const endDate = new Date(`${ev.date_debut}T${ev.heure_fin}`);
 
                     // Si l'heure de fin est plus petite → cela veut dire que l'événement passe minuit
                     if (endDate <= startDate) {
@@ -81,16 +93,16 @@ export default function CalendarPage() {
                     }
 
                     eventData.start = startDate.toISOString();
-                    eventData.end   = endDate.toISOString();
+                    eventData.end = endDate.toISOString();
                 }
-                // 3) Si aucune heure → événement journée entière
-                // else if (ev.date_debut && !ev.heure_debut) {
-                //     eventData.start = ev.date_debut;
-                //     eventData.allDay = true;
+                    // 3) Si aucune heure → événement journée entière
+                    // else if (ev.date_debut && !ev.heure_debut) {
+                    //     eventData.start = ev.date_debut;
+                    //     eventData.allDay = true;
                 // }
                 else if (ev.date_debut && !ev.heure_debut) {
                     eventData.start = `${ev.date_debut}T00:00:00`;
-                    eventData.end   = `${ev.date_debut}T23:59:59`;
+                    eventData.end = `${ev.date_debut}T23:59:59`;
                 }
 
                 // --------------------------------------------------------------------
@@ -102,7 +114,6 @@ export default function CalendarPage() {
 
         loadEvents();
     }, []);
-
 
 
     function renderEventContent(eventInfo: any) {
@@ -125,64 +136,74 @@ export default function CalendarPage() {
     }
 
     return (
-        <div className={styles.container}>
-            <h1>Choisir une date de prestation</h1>
+        <div className={styles.wrapper}>
+            <h1 className={styles.calendarTitle}>Choisir une date de prestation</h1>
 
-            <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                // initialView="timeGridWeek"
-                headerToolbar={{
-                    // left: "prev,next today",
-                    center: "title",
-                    // right: "dayGridMonth,timeGridWeek,timeGridDay"
-                }}
+            <div className={styles.container}>
 
-                dateClick={(info) => {
-                    handleDateClick(info.dateStr)
-                }}
+                <FullCalendar
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    // initialView="timeGridWeek"
+                    headerToolbar={{
+                        left: "today",
+                        center: "title",
+                        right: "prev,next"
+                        // left: "today"
+                        // right: "dayGridMonth,timeGridWeek,timeGridDay"
+                    }}
 
-                events={events}
+                    dateClick={(info) => {
+                        handleDateClick(info.dateStr)
+                    }}
 
-                displayEventEnd={true}
-                eventTimeFormat={{
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false // Choisir false pour format 24h
-                }}
+                    events={events}
+                    displayEventEnd={true}
+                    eventTimeFormat={{
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false
+                    }}
+                    firstDay={1}
+                    // contentHeight="auto"
+                    // height="10%"
+                    contentHeight="100%"
+                    expandRows={true}
+                    locale="fr"
+                    // slotMinTime="06:00:00"
+                    // slotMaxTime="22:00:00"
+                    dayCellClassNames={(arg) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
 
+                        if (arg.date < today) {
+                            return `${styles.pastDay} ${styles.dayHover}`;
+                            // return `${styles.pastDay}`;
+                        }
+                        return `${styles.dayHover}`;
+                    }}
 
-                height="750px"
-                expandRows={true}
+                    dayCellDidMount={(info) => {
+                        if (info.date >= new Date().setHours(0, 0, 0, 0)) {
+                            info.el.setAttribute("title", "Cliquez pour demander une prestation");
+                        }
 
-                locale="fr"
-                // slotMinTime="06:00:00"
-                // slotMaxTime="22:00:00"
-                dayCellClassNames={(arg) => {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
+                    }}
 
-                    if (arg.date < today) {
-                        return `${styles.pastDay} ${styles.dayHover}`;
-                    }
-                    return `${styles.dayHover}`;
-                }}
+                    dayCellDidMount={(info) => {
 
-                dayCellDidMount={(info) => {
-                    if (info.date >= new Date().setHours(0,0,0,0)) {
-                        info.el.setAttribute("title", "Demander une prestation à cette date");
-                    }
-                }}
+                    }}
 
-                allDaySlot={false}
-                nowIndicator={true}
-                eventContent={renderEventContent}
-                buttonText={{
-                    today: "Aujourd'hui",
-                    month: "Mois",
-                    week: "Semaine",
-                    day: "Jour"
-                }}
-            />
+                    allDaySlot={false}
+                    nowIndicator={true}
+                    eventContent={renderEventContent}
+                    buttonText={{
+                        today: "aujourd'hui",
+                        month: "Mois",
+                        week: "Semaine",
+                        day: "Jour"
+                    }}
+                />
+            </div>
         </div>
     );
 }

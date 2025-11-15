@@ -23,7 +23,6 @@
     opacity: 0.9;
 }
 
-/* --- STATS GRID --- */
 .stats {
     display: flex;
     justify-content: center;
@@ -43,12 +42,7 @@
 .number {
     font-size: 2rem;
     font-weight: 700;
-    /*color: #9333ea;*/
     color: #c98cff;
-    /*background: linear-gradient(90deg, #c98cff,#ec4899);*/
-    /*-webkit-background-clip: text;*/
-    /*-webkit-text-fill-color: transparent;*/
-    /*text-shadow: 0 0 12px rgba(147, 51, 234, 0.8);*/
 }
 
 .label {
@@ -57,9 +51,64 @@
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+/* Large tablets / small desktops */
+@media (max-width: 1024px) {
+    .wrapper {
+        padding: 160px 32px;
+    }
+
+    .title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 120px 24px;
+    }
+
+    .container {
+        max-width: 640px;
+    }
+
+    .title {
+        font-size: 2.1rem;
+        margin-bottom: 14px;
+    }
+
+    .text {
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+    }
+
     .stats {
-        gap: 40px;
+        gap: 36px;
+    }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+    .wrapper {
+        padding: 90px 20px;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .text {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .stats {
+        gap: 28px;
+    }
+
+    .statItem {
+        min-width: 100px;
+        flex: 1 1 120px;
     }
 
     .number {
@@ -67,13 +116,17 @@
     }
 }
 
-/*.title::after {*/
-/*    content: "";*/
-/*    display: block;*/
-/*    width: 60px;*/
-/*    height: 3px;*/
-/*    background: linear-gradient(90deg, #ec4899, #a855f7);*/
-/*    margin: 16px auto 0 auto;*/
-/*    border-radius: 2px;*/
-/*    opacity: 0.9;*/
-/*}*/
+/* Small phones */
+@media (max-width: 380px) {
+    .wrapper {
+        padding: 72px 16px;
+    }
+
+    .stats {
+        gap: 22px;
+    }
+
+    .label {
+        font-size: 0.85rem;
+    }
+}

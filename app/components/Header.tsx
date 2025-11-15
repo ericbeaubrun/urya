@@ -1,13 +1,46 @@
 "use client";
 
-import { Link, animateScroll as scroll } from "react-scroll";
+import {useState} from "react";
+import {Link, animateScroll as scroll} from "react-scroll";
 import Image from "next/image";
 import styles from "../styles/Header.module.css";
+import {ExternalLink} from "lucide-react";
+import {usePathname} from "next/navigation";
 
 const OFFSET = -64;
 const DURATION = 500;
 
 export default function Header() {
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const isPrestationFormPage = usePathname() === "/prestation-form";
+
+    const handleToggle = () => {
+        if (isPrestationFormPage) {
+            // window.location.href = "/";
+            setMenuOpen(!menuOpen);
+
+        } else {
+            setMenuOpen(!menuOpen);
+        }
+    };
+
+    const handleClose = () => {
+        if (isPrestationFormPage) {
+            window.location.href = "/";
+        } else {
+            setMenuOpen(false);
+        }
+    };
+
+    // 🧩 Tableau des liens à générer
+    const navLinks = [
+        {to: "prestations", label: "Offres"},
+        {to: "calendrier", label: "Calendrier"},
+        // {to: "reseaux", label: "Réseaux Sociaux"},
+        {to: "contact", label: "Contact"},
+    ];
+
     return (
         <header className={styles.header} role="banner">
             <nav className={styles.nav} aria-label="Navigation principale">
@@ -16,30 +49,54 @@ export default function Header() {
                     className={styles.brand}
                     onClick={(e) => {
                         e.preventDefault();
-                        scroll.scrollToTop({ duration: DURATION, smooth: true });
+                        scroll.scrollToTop({duration: DURATION, smooth: true});
+                        handleClose();
                     }}
                 >
-                    <Image src="/logo.png" alt="Logo" width={72} height={72} priority />
+                    <Image src="/logo.png" alt="Logo" width={72} height={72} priority/>
                 </a>
-                <div className={styles.links}>
 
-                    <Link to="prestations" smooth={true} duration={DURATION} offset={OFFSET} spy={true} className={styles.link}>
-                        Offres
-                    </Link>
+                <button
+                    className={`${styles.burger} ${menuOpen ? styles.open : ""}`}
+                    aria-label="Menu"
+                    onClick={handleToggle}
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-                    <Link to="calendrier" smooth={true} duration={DURATION} offset={OFFSET} spy={true} className={styles.link}>
-                        Calendrier
-                    </Link>
-
-                    <Link to="reseaux" smooth={true} duration={DURATION} offset={OFFSET} spy={true} className={styles.link}>
-                        Réseaux Sociaux
-                    </Link>
-
-                    <Link to="contact" smooth={true} duration={DURATION} offset={OFFSET} spy={true} className={styles.link}>
-                        Contact
-                    </Link>
+                <div
+                    className={`${styles.links} ${menuOpen ? styles.showMenu : ""}`}
+                    onClick={handleClose}
+                >
+                    {navLinks.map(({to, label}) => (
+                        <Link
+                            key={to}
+                            to={to}
+                            smooth={true}
+                            duration={DURATION}
+                            offset={OFFSET}
+                            spy={true}
+                            className={styles.link}
+                            onClick={handleClose}
+                        >
+                            {label}
+                        </Link>
+                    ))}
+                    {/*{!isPrestationFormPage && (*/}
+                    <a
+                        href="/prestation-form"
+                        className={styles.redirectLink}
+                        onClick={handleClose}
+                    >
+                        Demande de Prestation&nbsp;
+                        <ExternalLink className={styles.icon}/>
+                    </a>
+                    {/*)}*/}
                 </div>
             </nav>
         </header>
     );
 }
+

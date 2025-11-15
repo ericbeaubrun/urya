@@ -4,9 +4,15 @@
     justify-content: center;
     background-color: #fff;
     border: 6px solid #9569f9;
-    border: 6px solid #fff;
+    border: 12px solid #fff;
     border-radius: 8px;
     border-radius: 16px;
-    min-height: 80%;
-
+    min-height: 100%;
+    opacity: 0.33;
+    transition: opacity 0.5s ease;
 }
+
+.wrapper:hover {
+    opacity: 0.8;
+}
+
