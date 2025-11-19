@@ -50,6 +50,20 @@ export default function PrestationForm() {
     const backBtnContent = `\u2b9c précédent`;
     const nextBtnContent = `suivant \u2b9e`;
 
+    // Libellés affichés dans le récapitulatif, avec * pour les champs obligatoires
+    const fieldLabels: Record<keyof PrestationFormData, string> = {
+        nom: "Nom *",
+        mail: "Email *",
+        tel: "Téléphone",
+        date_debut: "Date de début *",
+        date_fin: "Date de fin",
+        heure_debut: "Heure début",
+        heure_fin: "Heure fin",
+        type: "Type",
+        lieu: "Lieu",
+        notes: "Notes",
+    };
+
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -117,9 +131,11 @@ export default function PrestationForm() {
                 {step === 1 && (
                     <div className={styles.section}>
                         <h3>Détails de la prestation</h3>
-
+                        {message && <p className={styles.message}>{message}</p>}
                         <div className={styles.field}>
-                            <label>Date de début *</label>
+                            <label>
+                                Date de début <span className={styles.requiredStar}>*</span>
+                            </label>
                             <input type="date" name="date_debut" value={formData.date_debut} onChange={handleChange}
                                    required/>
                         </div>
@@ -146,7 +162,6 @@ export default function PrestationForm() {
                             <br></br>
                             <button className={styles.btnNext} onClick={nextStep}>{nextBtnContent}</button>
                         </div>
-                        {message && <p className={styles.message}>{message}</p>}
                     </div>
                 )}
 
@@ -154,7 +169,7 @@ export default function PrestationForm() {
                 {step === 2 && (
                     <div className={styles.section}>
                         <h3>Type & lieu</h3>
-
+                        {message && <p className={styles.message}>{message}</p>}
                         <div className={styles.field}>
                             <label>Type</label>
                             <select name="type" value={formData.type} onChange={handleChange}>
@@ -184,7 +199,6 @@ export default function PrestationForm() {
                             <button className={styles.btnBack} onClick={prevStep}>{backBtnContent}</button>
                             <button className={styles.btnNext} onClick={nextStep}>{nextBtnContent}</button>
                         </div>
-                        {message && <p className={styles.message}>{message}</p>}
                     </div>
                 )}
 
@@ -192,14 +206,18 @@ export default function PrestationForm() {
                 {step === 3 && (
                     <div className={styles.section}>
                         <h3>Informations client</h3>
-
+                        {message && <p className={styles.message}>{message}</p>}
                         <div className={styles.field}>
-                            <label>Nom *</label>
+                            <label>
+                                Nom <span className={styles.requiredStar}>*</span>
+                            </label>
                             <input name="nom" value={formData.nom} onChange={handleChange} required/>
                         </div>
 
                         <div className={styles.field}>
-                            <label>Email *</label>
+                            <label>
+                                Email <span className={styles.requiredStar}>*</span>
+                            </label>
                             <input type="email" name="mail" value={formData.mail} onChange={handleChange} required/>
                         </div>
 
@@ -212,7 +230,6 @@ export default function PrestationForm() {
                             <button className={styles.btnBack} onClick={prevStep}>{backBtnContent}</button>
                             <button className={styles.btnNext} onClick={nextStep}>{nextBtnContent}</button>
                         </div>
-                        {message && <p className={styles.message}>{message}</p>}
                     </div>
                 )}
 
@@ -220,20 +237,30 @@ export default function PrestationForm() {
                 {step === 4 && (
                     <div className={styles.section}>
                         <h3>Récapitulatif</h3>
+                        {message && <p className={styles.message}>{message}</p>}
 
                         <ul className={styles.recapList}>
-                            {Object.entries(formData).map(([k, v]) => (
-                                <li key={k}><strong>{k.replace("_", " ")} :</strong> {v || "—"}</li>
-                            ))}
+                            {Object.entries(formData).map(([k, v]) => {
+                                const key = k as keyof PrestationFormData;
+                                const label = fieldLabels[key] || k.replace(/_/g, " ");
+                                const hasStar = /\*$/.test(label);
+                                const baseLabel = label.replace(/\s*\*$/, "");
+                                return (
+                                    <li key={k}>
+                                        <strong>
+                                            {baseLabel} {hasStar && (<span className={styles.requiredStar}>*</span>)} :
+                                        </strong> {v || "__________"}
+                                    </li>
+                                );
+                            })}
                         </ul>
 
                         <div className={styles.nav}>
                             <button className={styles.btnBack} onClick={prevStep}>{backBtnContent}</button>
                             <button className={styles.btnConfirm} disabled={isSubmitting} onClick={handleSubmit}>
-                                {isSubmitting ? "Envoi..." : "Confirmer & Envoyer"}
+                                {isSubmitting ? "Envoi..." : "Envoyer"}
                             </button>
                         </div>
-                        {message && <p className={styles.message}>{message}</p>}
                     </div>
                 )}
             </div>

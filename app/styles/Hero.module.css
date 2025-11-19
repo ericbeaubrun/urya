@@ -54,6 +54,7 @@
     display: flex;
     align-items: center;
     gap: 2.5rem;
+    flex-wrap: wrap;
 }
 
 
@@ -93,6 +94,30 @@
     position: relative;
 }
 
+/* Contact info next to CTA */
+.contactInfo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-weight: bold;
+}
+
+.contactLink {
+    color: #d1d5db;
+    color: #c590fb;
+    text-decoration: none;
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: bold;
+
+}
+
+.contactLink:hover {
+    text-decoration: underline;
+    opacity: 1;
+}
+
 .video {
     width: 100%;
     max-height: 650px;
@@ -116,6 +141,13 @@
     .actions {
         gap: 1.25rem;
         justify-content: center;
+    }
+
+    .contactInfo {
+        justify-content: center;
+        width: 100%;
+        flex-basis: 100%;
+        margin-top: 0.25rem;
     }
 
     .video {
@@ -159,6 +191,10 @@
     .actions {
         gap: 1.25rem;
         justify-content: center;
+    }
+
+    .contactLink {
+        font-size: 0.95rem;
     }
 
     .media {

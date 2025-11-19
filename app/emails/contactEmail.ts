@@ -1,3 +1,4 @@
+//email reçu par l'admin d'une demande depuis le formulaire de contact'
 export function contactEmailTemplate(record: any) {
 
     return {

@@ -8,7 +8,6 @@ const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(req: NextRequest) {
 
-
     try {
         const body = await req.json();
 
@@ -25,7 +24,6 @@ export async function POST(req: NextRequest) {
             notes
         } = body;
 
-        // Validation des champs obligatoires
         if (!nom || !mail || !date_debut) {
             return NextResponse.json(
                 {error: 'Les champs nom, email et date de début sont obligatoires.'},
@@ -33,7 +31,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Validation de l'email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(mail)) {
             return NextResponse.json(
@@ -43,7 +40,6 @@ export async function POST(req: NextRequest) {
         }
 
 
-        // Vérifier si le client existe déjà
         let clientId: string;
         const {data: existingClient, error: clientCheckError} = await supabaseAdmin()
             .from('clients')
@@ -60,10 +56,8 @@ export async function POST(req: NextRequest) {
         }
 
         if (existingClient) {
-            // Client existe déjà, utiliser son ID
             clientId = existingClient.id;
 
-            // Mettre à jour les informations du client si nécessaire
             const {error: updateError} = await supabaseAdmin()
                 .from('clients')
                 .update({
@@ -80,7 +74,6 @@ export async function POST(req: NextRequest) {
                 );
             }
         } else {
-            // Créer un nouveau client
             const {data: newClient, error: clientError} = await supabaseAdmin()
                 .from('clients')
                 .insert({
@@ -102,7 +95,6 @@ export async function POST(req: NextRequest) {
             clientId = newClient.id;
         }
 
-        // Préparer les données de la prestation
         const prestationData: any = {
             id_client: clientId,
             statut: 'en_attente',
@@ -115,7 +107,6 @@ export async function POST(req: NextRequest) {
             notes: notes || null
         };
 
-        // Créer la prestation
         const {data: prestation, error: prestationError} = await supabaseAdmin()
             .from('prestations')
             .insert(prestationData)
@@ -137,14 +128,14 @@ export async function POST(req: NextRequest) {
         console.log(adminHtml);
 
 
-        const userEmail = await resend.emails.send({
+        await resend.emails.send({
             from: "onboarding@resend.dev",
             to: mail,
             subject: userHtml.subject,
             html: userHtml.html,
         })
 
-        const adminEmail = await resend.emails.send({
+        await resend.emails.send({
             from: "onboarding@resend.dev",
             to: process.env.admin_email!,
             subject: adminHtml.subject,
@@ -153,8 +144,8 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({message: "OK"}, {status: 201})
 
-    } catch (error) {
-        console.error(error)
+    } catch (err) {
+        console.error(err)
         return NextResponse.json(
             {error: 'Erreur interne du serveur.'},
             {status: 500}

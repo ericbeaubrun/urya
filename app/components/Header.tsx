@@ -7,8 +7,7 @@ import styles from "../styles/Header.module.css";
 import {ExternalLink} from "lucide-react";
 import {usePathname} from "next/navigation";
 
-const OFFSET = -64;
-const DURATION = 500;
+const DURATION = 600;
 
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -35,10 +34,10 @@ export default function Header() {
 
     // 🧩 Tableau des liens à générer
     const navLinks = [
-        {to: "prestations", label: "Offres"},
-        {to: "calendrier", label: "Calendrier"},
+        {to: "prestations", label: "Offres", offset: 40},
+        {to: "calendrier", label: "Calendrier", offset: -110},
         // {to: "reseaux", label: "Réseaux Sociaux"},
-        {to: "contact", label: "Contact"},
+        {to: "contact", label: "Contact", offset: 270},
     ];
 
     return (
@@ -70,13 +69,13 @@ export default function Header() {
                     className={`${styles.links} ${menuOpen ? styles.showMenu : ""}`}
                     onClick={handleClose}
                 >
-                    {navLinks.map(({to, label}) => (
+                    {navLinks.map(({to, label, offset}) => (
                         <Link
                             key={to}
                             to={to}
                             smooth={true}
                             duration={DURATION}
-                            offset={OFFSET}
+                            offset={offset}
                             spy={true}
                             className={styles.link}
                             onClick={handleClose}

@@ -1,3 +1,4 @@
+// email reçu par l'admin lors d'une demande de prestation
 export function adminEmailTemplate(record: any) {
 
     return {

@@ -8,11 +8,18 @@ import interactionPlugin from "@fullcalendar/interaction";
 import {supabase_client} from "@/lib/supabase_client";
 import styles from "../styles/CalendarPage.module.css";
 import {useRouter} from "next/navigation";
+import {FILTER_PRESTATION_CALENDAR} from "@/app/config/config";
 
 export default function CalendarPage() {
     const [events, setEvents] = useState([]);
 
     const router = useRouter();
+
+    // Tronque les titres d'événements au-delà de 7 caractères et ajoute '...'
+    function truncateTitle(title: string, max: number = 7) {
+        if (!title) return "";
+        return title.length > max ? `${title.slice(0, max)}...` : title;
+    }
 
     function handleDateClick(dateStr: string) {
         const clickedDate = new Date(dateStr);
@@ -28,8 +35,6 @@ export default function CalendarPage() {
 
         router.push(`/prestation-form?date=${dateStr}`);
     }
-
-
     // function getColorByStatus(statut: string) {
     //     switch (statut) {
     //         case "confirmee":
@@ -43,19 +48,22 @@ export default function CalendarPage() {
 
     useEffect(() => {
         async function loadEvents() {
-            const {data, error} = await supabase_client
+            let {data, error} = await supabase_client
                 .from("public_prestations_calendar")
                 .select("*");
+
 
             if (error) {
                 console.error("Erreur lors du chargement des événements:", error);
                 return;
             }
 
-            //  On filtre ici les prestations à ignorer
-            const filteredData = (data || []).filter(
-                (ev) => ev.statut !== "en_attente" && ev.statut !== "annulee"
-            );
+            if (FILTER_PRESTATION_CALENDAR) {
+                data = (data || []).filter(
+                    (ev) => ev.statut !== "en_attente" && ev.statut !== "annulee"
+                );
+            }
+
 
             const formattedEvents = (data || []).map((ev: any) => {
                 const title = ev.type ? ev.type : "Prestation";
@@ -124,7 +132,7 @@ export default function CalendarPage() {
                     <strong>{eventInfo.timeText}</strong>
                 </div>
                 <div className={styles.eventTitle}>
-                    {eventInfo.event.title}
+                    {truncateTitle(eventInfo.event.title, 15)}
                 </div>
                 {extendedProps.lieu && (
                     <div className={styles.eventLocation}>
@@ -167,7 +175,8 @@ export default function CalendarPage() {
                     // contentHeight="auto"
                     // height="10%"
                     contentHeight="100%"
-                    expandRows={true}
+                    // contentHe
+                    // ight={"550px"}
                     locale="fr"
                     // slotMinTime="06:00:00"
                     // slotMaxTime="22:00:00"
@@ -184,13 +193,8 @@ export default function CalendarPage() {
 
                     dayCellDidMount={(info) => {
                         if (info.date >= new Date().setHours(0, 0, 0, 0)) {
-                            info.el.setAttribute("title", "Cliquez pour demander une prestation");
+                            info.el.setAttribute("title", "Demander une prestation");
                         }
-
-                    }}
-
-                    dayCellDidMount={(info) => {
-
                     }}
 
                     allDaySlot={false}

@@ -19,7 +19,6 @@ export default function SocialMediaShowcase() {
             </h2>
 
             <div className={styles.grid}>
-
                 <div className={styles.card}>
                     <div className={styles.header}>
                         <Image

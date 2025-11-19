@@ -1,3 +1,4 @@
+//email reçu par l'utilisateur après avoir fait une demande de prestation
 export function clientEmailTemplate(record: any) {
 
     return {

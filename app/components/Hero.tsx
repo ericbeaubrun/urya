@@ -4,6 +4,7 @@ import styles from "../styles/Hero.module.css";
 import MusicPlayingEffect from "@/app/components/MusicPlayingEffect";
 import {motion} from "framer-motion";
 import {ANIMATION_ONCE} from "../config/config";
+import {Link} from "react-scroll";
 
 export default function Hero() {
 
@@ -63,7 +64,35 @@ export default function Hero() {
                     whileInView="visible"
                     viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
-                    <button className={styles.cta}>Contacter</button>
+
+                    <Link
+                        key={'hero'}
+                        to={'contact'}
+                        smooth={true}
+                        duration={750}
+                        offset={270}
+                        spy={true}
+                        className={styles.link}
+                    >
+                        <button className={styles.cta}>Contacter</button>
+                    </Link>
+
+                    <div className={styles.contactInfo}>
+                        <a
+                            className={styles.contactLink}
+                            href="tel:0743356517"
+                            aria-label="Téléphone"
+                        >
+                            07 43 35 65 17
+                        </a>
+                        <a
+                            className={styles.contactLink}
+                            href="mailto:2souchik@gmail.com"
+                            aria-label="Email"
+                        >
+                            2souchik@gmail.com
+                        </a>
+                    </div>
                 </motion.div>
             </div>
 

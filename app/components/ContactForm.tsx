@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import styles from "../styles/ContactForm.module.css";
 
 export default function ContactForm() {
-    const [form, setForm] = useState({ nom: "", email: "", message: "" });
+    const [form, setForm] = useState({nom: "", email: "", message: ""});
     const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        setForm({...form, [e.target.name]: e.target.value});
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -18,12 +18,12 @@ export default function ContactForm() {
         try {
             const res = await fetch("/api/contact", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(form),
             });
 
             setStatus(res.ok ? "sent" : "error");
-            if (res.ok) setForm({ nom: "", email: "", message: "" });
+            if (res.ok) setForm({nom: "", email: "", message: ""});
 
         } catch {
             setStatus("error");
@@ -33,6 +33,7 @@ export default function ContactForm() {
     return (
         <section className={styles.wrapper}>
             <h2 className={styles.title}>Contact</h2>
+            <p className={styles.subtitle}>Pour toute demande ou collaboration, envoyez‑moi un message.</p>
 
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.field}>
@@ -73,8 +74,10 @@ export default function ContactForm() {
                 </button>
 
                 {status === "sent" &&
-                    <p className={styles.success}>✅ Message envoyé ! Je reviens vers vous très vite.</p>}
-                {status === "error" && <p className={styles.error}>❌ Une erreur est survenue. Réessayez.</p>}
+                    <p className={styles.success}>Message envoyé ! Je reviens vers vous très vite.</p>}
+                {status === "error" &&
+                    <p className={styles.error}>Une erreur est survenue. Réessayez.</p>
+                }
             </form>
         </section>
     );

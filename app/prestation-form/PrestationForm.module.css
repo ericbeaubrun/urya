@@ -15,7 +15,7 @@
     justify-content: space-between;
     background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(16px);
-    padding: 36px 28px 80px;
+    padding: 36px 28px 36px;
     border-radius: 16px;
     color: #f9f8ff;
 }
@@ -24,7 +24,7 @@
     display: flex;
     justify-content: center;
     gap: 16px;
-    margin-bottom: 28px;
+    /*margin-bottom: 28px;*/
 }
 
 .stepIndicator span {
@@ -38,10 +38,11 @@
     color: #a855f7;
     font-weight: 600;
     transition: all 0.3s ease;
+    font-size: 1.1rem;
 }
 
 .active {
-    background: #9333ea;
+    background: #a855f7;
     color: white !important;
     border-color: transparent;
 }
@@ -61,12 +62,12 @@
 .fieldRow {
     display: flex;
     gap: 16px;
+    margin-bottom: 100px;
 }
 
 .field input,
 .field select,
 .field textarea {
-    /*width: 100%;*/
     padding: 12px 14px;
     background: rgba(17, 24, 39, 0.7);
     border: 1px solid rgba(147, 51, 234, 0.35);
@@ -92,7 +93,6 @@
     box-shadow: 0 0 10px rgba(255, 255, 255, 5);
 }
 
-/* BUTTONS */
 .btnBack,
 .btnNext,
 .btnConfirm {
@@ -138,30 +138,41 @@
 }
 
 
-
-
-
-
-
-
-
 .btnBack { background-color: #c98cff; }
 .btnNext { background-color: #c98cff; }
 .btnConfirm { background-color: #3b9f2c; }
 
 .btnBack:hover { background-color: #bb84ee; }
 
+/*.nav {*/
+/*    position: absolute;*/
+/*    bottom: 26px;*/
+/*    left: 28px;*/
+/*    right: 28px;*/
+
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    flex-wrap: nowrap;*/
+/*    gap: 16px;*/
+/*}*/
+
+
 .nav {
+    /* SUPPRIMER ceci :
     position: absolute;
     bottom: 26px;
-    left: 28px;
-    right: 28px;
+    */
 
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 16px;
+    margin-top: 20px; /* optionnel */
 }
+
+
 
 .recapList {
     margin-top: 18px;
@@ -179,6 +190,10 @@
     color: #f87171;
 }
 
+.requiredStar {
+    color: #f87171;
+}
+
 .recap {
     width: 64px;
     height: 64px;
@@ -188,17 +203,31 @@
 
 @media (max-width: 600px) {
     .card {
-        padding: 28px 20px 90px;
+        padding: 28px 20px 28px;
     }
 
     .fieldRow {
         flex-direction: column;
+            margin-bottom: 0;
+
     }
 
     .nav {
         bottom: 22px;
         flex-direction: row;
         justify-content: space-between;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .btnBack,
+    .btnNext,
+    .btnConfirm {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        text-align: center;
     }
 }
 
@@ -215,6 +244,27 @@
 
 .field input[type="date"]::after {
     content: "📅";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 18px;
+    color: red;
+}
+
+.field input[type="time"] {
+    position: relative;
+    color-scheme: light;
+}
+
+.field input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+}
+
+.field input[type="time"]::after {
+    content: "⏱️";
     position: absolute;
     right: 10px;
     top: 50%;
