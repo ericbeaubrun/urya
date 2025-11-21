@@ -72,13 +72,35 @@ export default function ContactForm() {
                 <button type="submit" disabled={status === "sending"} className={styles.cta}>
                     {status === "sending" ? "Envoi en cours..." : "Envoyer"}
                 </button>
-
-                {status === "sent" &&
-                    <p className={styles.success}>Message envoyé ! Je reviens vers vous très vite.</p>}
-                {status === "error" &&
-                    <p className={styles.error}>Une erreur est survenue. Réessayez.</p>
-                }
             </form>
+
+            {(status === "sent" || status === "error") && (
+                <div
+                    className={styles.modalOverlay}
+                    role="dialog"
+                    aria-modal="true"
+                    onClick={() => setStatus("idle")}
+                >
+                    <div
+                        className={`${styles.modal} ${status === "sent" ? styles.modalSuccess : styles.modalError}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className={styles.modalContent}>
+                            <h3 className={styles.modalTitle}>
+                                {status === "sent" ? "Message envoyé" : "Erreur"}
+                            </h3>
+                            <p className={styles.modalText}>
+                                {status === "sent"
+                                    ? "Message envoyé ! Je reviens vers vous très vite."
+                                    : "Une erreur est survenue. Réessayez."}
+                            </p>
+                        </div>
+                        <div className={styles.modalActions}>
+                            <button className={styles.modalButton} onClick={() => setStatus("idle")}>OK</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

@@ -112,29 +112,38 @@
 }
 
 .backPageBtn {
-    z-index: 100;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgb(231, 14, 14);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.25s ease;
+    /* Toujours visible, positionné de manière intuitive (coin haut gauche) */
+    position: fixed;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    left: calc(16px + env(safe-area-inset-left, 0px));
+    z-index: 1000;
 
-    cursor: pointer;
+    /* Style simple mais visible */
+    background: rgba(17, 24, 39, 0.85); /* gris foncé semi-opaque */
     color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
-    font-size: 2rem;
-    transition: transform 0.2s ease, box-shadow 0.25s ease;
-    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 
+    /* Forme et dimensions accessibles */
+    border-radius: 9999px;
+    padding: 10px 14px;
+    font-size: 1.25rem;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+
+    /* Animations subtiles */
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, filter 0.2s ease;
 }
 
 .backPageBtn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(-2px);
+    filter: brightness(1.1);
+    transform: translateX(-1px);
+}
+
+.backPageBtn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
 }
 
 
@@ -183,6 +192,14 @@
     line-height: 1.6;
 }
 
+.recapList {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+
+
+
 .message {
     margin-top: 14px;
     text-align: center;
@@ -202,6 +219,13 @@
 
 
 @media (max-width: 600px) {
+    .backPageBtn {
+        /* Zone de toucher plus grande sur mobile */
+        padding: 12px 16px;
+        font-size: 1.35rem;
+        top: calc(12px + env(safe-area-inset-top, 0px));
+        left: calc(12px + env(safe-area-inset-left, 0px));
+    }
     .card {
         padding: 28px 20px 28px;
     }

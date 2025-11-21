@@ -9,8 +9,8 @@
 
 .title {
     color: #f5f3ff;
-    font-size: 2.4rem;
-    /*margin-bottom: 6px;*/
+    font-size: 3rem;
+    margin-bottom: 8px;
 }
 
 .subtitle {
@@ -105,4 +105,77 @@
 .cta:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(201, 140, 255, 0.4);
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    background: #0b0f17;
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+}
+
+.modalSuccess {
+    /*border-color: rgba(74, 222, 128, 0.4);*/
+    /*box-shadow: 0 16px 40px rgba(74, 222, 128, 0.2);*/
+    box-shadow: 0 0 10px rgba(255, 255, 255, 5);
+
+}
+
+.modalError {
+    /*border-color: rgba(248, 113, 113, 0.4);*/
+    /*box-shadow: 0 16px 40px rgba(248, 113, 113, 0.2);*/
+    box-shadow: 0 0 10px rgba(255, 255, 255, 5);
+}
+
+.modalContent {
+    padding: 24px 24px 8px 24px;
+    text-align: left;
+}
+
+.modalTitle {
+    margin: 0 0 8px 0;
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.modalText {
+    margin: 0;
+    color: #e5e7eb;
+    font-size: 1rem;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 8px 16px 16px 16px;
+}
+
+.modalButton {
+    cursor: pointer;
+    color: #0b0f17;
+    background-color: #c98cff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-size: 1rem;
+}
+
+.modalButton:hover {
+    filter: brightness(1.05);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import {useState, useEffect} from "react";
-import {useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import styles from "./PrestationForm.module.css";
 
 interface PrestationFormData {
@@ -18,6 +18,7 @@ interface PrestationFormData {
 }
 
 export default function PrestationForm() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const dateFromCalendar = searchParams.get("date");
 
@@ -72,17 +73,133 @@ export default function PrestationForm() {
         setFormData((prev) => ({...prev, [name]: value}));
     };
 
-    const nextStep = () => {
-        if (step === 1) {
-            const today = new Date();
-            const chosenDate = new Date(formData.date_debut);
+    // ---------- Nettoyage & Validation côté client ----------
+    const ALLOWED_TYPES = [
+        "mariage",
+        "anniversaire",
+        "soiree_privee",
+        "evenement_corporate",
+        "festival",
+        "club",
+        "autre",
+        ""
+    ];
 
-            // on compare uniquement les jours (pas l'heure)
+    const trim = (v: string) => (v ?? "").trim();
+    const stripTags = (v: string) => trim(v).replace(/<[^>]*>/g, "");
+    const normalizeEmail = (v: string) => stripTags(v).toLowerCase();
+    const isValidEmail = (v: string) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    const normalizePhone = (v: string) => {
+        const cleaned = stripTags(v).replace(/[^+\d]/g, "");
+        // garde un seul + au début si présent
+        return cleaned.replace(/(?!^)[+]/g, "");
+    };
+    const normalizeType = (v: string) => (ALLOWED_TYPES.includes(v) ? v : "autre");
+
+    const toISODate = (v: string) => {
+        // attend déjà AAAA-MM-JJ via input type=date
+        if (!v) return "";
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return "";
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
+    const toTime = (v: string) => {
+        // attend HH:MM via input type=time
+        if (!v) return "";
+        const m = v.match(/^(\d{1,2}):(\d{2})/);
+        if (!m) return "";
+        const h = String(Math.min(23, Number(m[1]))).padStart(2, "0");
+        const min = String(Math.min(59, Number(m[2]))).padStart(2, "0");
+        return `${h}:${min}`;
+    };
+
+    function buildCleanPayload(fd: PrestationFormData) {
+        const errors: string[] = [];
+
+        const date_debut_clean = toISODate(fd.date_debut);
+        const date_fin_clean = toISODate(fd.date_fin);
+        const heure_debut_clean = toTime(fd.heure_debut);
+        const heure_fin_clean = toTime(fd.heure_fin);
+
+        // Vérifs de base
+        if (!date_debut_clean) errors.push("La date de début est requise et doit être valide.");
+
+        const nom_clean = stripTags(fd.nom);
+        const mail_clean = normalizeEmail(fd.mail);
+        const tel_clean = normalizePhone(fd.tel);
+        const type_clean = normalizeType(stripTags(fd.type));
+        const lieu_clean = stripTags(fd.lieu);
+        const notes_clean = stripTags(fd.notes);
+
+        if (!nom_clean) errors.push("Le nom est requis.");
+        if (!mail_clean) errors.push("L'email est requis.");
+        else if (!isValidEmail(mail_clean)) errors.push("Le format de l'email est invalide.");
+
+        // Cohérence temporelle: si les deux heures sont fournies
+        let final_date_fin = date_fin_clean;
+        if (date_debut_clean && heure_debut_clean && heure_fin_clean) {
+            const start = new Date(`${date_debut_clean}T${heure_debut_clean}:00`);
+            const endBase = new Date(`${date_debut_clean}T${heure_fin_clean}:00`);
+            const end = endBase <= start ? new Date(endBase.getTime() + 24 * 60 * 60 * 1000) : endBase;
+            const yyyy = end.getFullYear();
+            const mm = String(end.getMonth() + 1).padStart(2, "0");
+            const dd = String(end.getDate()).padStart(2, "0");
+            final_date_fin = `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Vérif date passée (uniquement à l'étape 1 mais on sécurise ici aussi)
+        if (date_debut_clean) {
+            const today = new Date();
+            const chosenDate = new Date(date_debut_clean);
             today.setHours(0, 0, 0, 0);
             chosenDate.setHours(0, 0, 0, 0);
-
             if (chosenDate < today) {
-                setMessage("⚠️ La date choisie est déjà passée.");
+                errors.push("La date choisie est déjà passée.");
+            }
+        }
+
+        return {
+            clean: {
+                nom: nom_clean,
+                mail: mail_clean,
+                tel: tel_clean,
+                date_debut: date_debut_clean,
+                date_fin: final_date_fin,
+                heure_debut: heure_debut_clean,
+                heure_fin: heure_fin_clean,
+                type: type_clean,
+                lieu: lieu_clean,
+                notes: notes_clean,
+            } as PrestationFormData,
+            errors,
+        };
+    }
+
+    const nextStep = () => {
+        setMessage("");
+        if (step === 1) {
+            const {errors} = buildCleanPayload(formData);
+            // ne retenir ici que les erreurs liées à la date passée / absence de date
+            const dateErrors = errors.filter((e) =>
+                /date/.test(e.toLowerCase())
+            );
+            if (dateErrors.length) {
+                setMessage(`⚠️ ${dateErrors.join(" \n")}`);
+                return;
+            }
+        }
+        if (step === 3) {
+            const {errors} = buildCleanPayload(formData);
+            const requiredErrors = errors.filter((e) =>
+                /(nom|email)/i.test(e)
+            );
+            if (requiredErrors.length) {
+                setMessage(`⚠️ ${requiredErrors.join(" \n")}`);
                 return;
             }
         }
@@ -95,20 +212,39 @@ export default function PrestationForm() {
         setMessage("");
 
         try {
+            const {clean, errors} = buildCleanPayload(formData);
+            if (errors.length) {
+                setMessage(`Veuillez corriger les erreurs avant l'envoi:\n- ${errors.join("\n- ")}`);
+                return;
+            }
+
             const res = await fetch("/api/prestations", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(formData),
+                body: JSON.stringify(clean),
             });
 
             const data = await res.json();
-            setMessage(res.ok ? "✅ Demande envoyée !" : `Erreur: ${data.error}`);
+            if (res.ok) {
+                // Redirige vers la page de remerciement après envoi réussi
+                router.push("/merci");
+                return;
+            } else {
+                setMessage(`Erreur: ${data.error}`);
+            }
         } catch {
             setMessage("Erreur serveur.");
         } finally {
             setIsSubmitting(false);
         }
     };
+
+    // Utilitaire d'affichage: tronquer un texte trop long (pour le récap uniquement)
+    function truncate(text: string, max: number = 200) {
+        if (!text) return "";
+        const clean = String(text);
+        return clean.length > max ? `${clean.slice(0, max)}…` : clean;
+    }
 
     return (
         <section className={styles.wrapper}>
@@ -245,11 +381,14 @@ export default function PrestationForm() {
                                 const label = fieldLabels[key] || k.replace(/_/g, " ");
                                 const hasStar = /\*$/.test(label);
                                 const baseLabel = label.replace(/\s*\*$/, "");
+                                const rawValue = v || "__________";
+                                const displayValue = key === "notes" ? truncate(String(rawValue)) : rawValue;
+                                const titleAttr = key === "notes" && v ? String(v) : undefined;
                                 return (
-                                    <li key={k}>
+                                    <li key={k} title={titleAttr}>
                                         <strong>
                                             {baseLabel} {hasStar && (<span className={styles.requiredStar}>*</span>)} :
-                                        </strong> {v || "__________"}
+                                        </strong> {displayValue}
                                     </li>
                                 );
                             })}

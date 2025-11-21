@@ -18,13 +18,22 @@ function formatDate(dateStr: string) {
     return d.toLocaleDateString("fr-FR");
 }
 
-function PrestationsAdminPage() {
+type SectionType = "futures" | "passees";
+
+function PrestationsAdminPage({
+    showComposer = true,
+    sections = ["futures", "passees"] as SectionType[],
+}: {
+    showComposer?: boolean;
+    sections?: SectionType[];
+}) {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editData, setEditData] = useState<Partial<Prestation & { client: Client }>>({});
     const [prestations, setPrestations] = useState<Prestation[]>([]);
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(false);
     const [editClient, setEditClient] = useState<Partial<Client>>({});
+    // Affichage unique: compact
 
     async function loadAll() {
         const p = await getPrestations();
@@ -75,80 +84,20 @@ function PrestationsAdminPage() {
             <div className={styles.block}>
                 <h2 className={styles.blockTitle}>{title}</h2>
 
-                {items.map((p) => (
-                    <div key={p.id} className={styles.card}>
+                {items.map((p) => {
+                    const isPast = new Date(p.date_debut) < today;
+                    const cardStatusClass = isPast
+                        ? styles.cardPassee
+                        : p.statut === "confirmee"
+                            ? styles.cardConfirmee
+                            : p.statut === "annulee"
+                                ? styles.cardAnnulee
+                                : "";
+
+                    return (
+                    <div key={p.id} className={`${styles.card} ${cardStatusClass}`}>
                         {editingId === p.id ? (
                             <>
-                                {/* ----------- CLIENT ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Client :</label>
-                                    <select
-                                        value={editData.id_client || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, id_client: e.target.value })
-                                        }
-                                    >
-                                        <option value="">Aucun client</option>
-                                        {clients.map((c) => (
-                                            <option key={c.id} value={c.id}>
-                                                {c.nom} ({c.mail})
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {editData.id_client && (
-                                    <>
-                                        <div className={styles.formRow}>
-                                            <label>Nom client :</label>
-                                            <input
-                                                type="text"
-                                                value={editClient.nom || ""}
-                                                onChange={(e) =>
-                                                    setEditClient({ ...editClient, nom: e.target.value })
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className={styles.formRow}>
-                                            <label>Email client :</label>
-                                            <input
-                                                type="email"
-                                                value={editClient.mail || ""}
-                                                onChange={(e) =>
-                                                    setEditClient({ ...editClient, mail: e.target.value })
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className={styles.formRow}>
-                                            <label>Téléphone client :</label>
-                                            <input
-                                                type="tel"
-                                                value={editClient.tel || ""}
-                                                onChange={(e) =>
-                                                    setEditClient({ ...editClient, tel: e.target.value })
-                                                }
-                                            />
-                                        </div>
-                                    </>
-                                )}
-
-                                {/* ----------- STATUT ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Statut :</label>
-                                    <select
-                                        value={editData.statut || "en_attente"}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, statut: e.target.value })
-                                        }
-                                    >
-                                        <option value="en_attente">En attente</option>
-                                        <option value="confirmee">Confirmée</option>
-                                        <option value="annulee">Annulée</option>
-                                        <option value="terminee">Terminée</option>
-                                    </select>
-                                </div>
-
                                 {/* ----------- DATES ----------- */}
                                 <div className={styles.formRow}>
                                     <label>Date début :</label>
@@ -219,6 +168,76 @@ function PrestationsAdminPage() {
                                     />
                                 </div>
 
+                                {/* ----------- CLIENT ----------- */}
+                                <div className={styles.formRow}>
+                                    <label>Client :</label>
+                                    <select
+                                        value={editData.id_client || ""}
+                                        onChange={(e) =>
+                                            setEditData({ ...editData, id_client: e.target.value })
+                                        }
+                                    >
+                                        <option value="">Aucun client</option>
+                                        {clients.map((c) => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.nom} ({c.mail})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {editData.id_client && (
+                                    <>
+                                        <div className={styles.formRow}>
+                                            <label>Nom client :</label>
+                                            <input
+                                                type="text"
+                                                value={editClient.nom || ""}
+                                                onChange={(e) =>
+                                                    setEditClient({ ...editClient, nom: e.target.value })
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className={styles.formRow}>
+                                            <label>Email client :</label>
+                                            <input
+                                                type="email"
+                                                value={editClient.mail || ""}
+                                                onChange={(e) =>
+                                                    setEditClient({ ...editClient, mail: e.target.value })
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className={styles.formRow}>
+                                            <label>Téléphone client :</label>
+                                            <input
+                                                type="tel"
+                                                value={editClient.tel || ""}
+                                                onChange={(e) =>
+                                                    setEditClient({ ...editClient, tel: e.target.value })
+                                                }
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* ----------- STATUT ----------- */}
+                                <div className={styles.formRow}>
+                                    <label>Statut :</label>
+                                    <select
+                                        value={editData.statut || "en_attente"}
+                                        onChange={(e) =>
+                                            setEditData({ ...editData, statut: e.target.value })
+                                        }
+                                    >
+                                        <option value="en_attente">En attente</option>
+                                        <option value="confirmee">Confirmée</option>
+                                        <option value="annulee">Annulée</option>
+                                        <option value="terminee">Terminée</option>
+                                    </select>
+                                </div>
+
                                 {/* ----------- NOTES ----------- */}
                                 <div className={styles.formRow}>
                                     <label>Notes :</label>
@@ -264,32 +283,113 @@ function PrestationsAdminPage() {
                             </>
                         ) : (
                             <>
-                                <p>📅 {formatDate(p.date_debut)}</p>
+                                {/* Bloc Client (en haut, seul) */}
+                                <div className={styles.cardSection}>
+                                    {p.client ? (
+                                        <>
+                                            {/* Nom sur la première ligne */}
+                                            {p.client.nom ? (
+                                                <p>👤 {p.client.nom}</p>
+                                            ) : (
+                                                <p className={styles.emptyValue}>👤 Non renseigné</p>
+                                            )}
 
-                                {p.client && (
-                                    <p>
-                                        👤 {p.client.nom} — {p.client.mail}
-                                        {p.client.tel && <span> ({p.client.tel})</span>}
-                                    </p>
-                                )}
+                                            {/* Email sur la deuxième ligne */}
+                                            {p.client.mail ? (
+                                                <p>✉️ {p.client.mail}</p>
+                                            ) : (
+                                                <p className={styles.emptyValue}>✉️ Non renseigné</p>
+                                            )}
 
-                                {p.date_fin && <p>📅 Fin : {formatDate(p.date_fin)}</p>}
-                                {p.heure_debut && <p>🕒 {p.heure_debut} → {p.heure_fin}</p>}
-                                {p.type && <p>🎵 {p.type}</p>}
-                                {p.lieu && <p>📍 {p.lieu}</p>}
-                                {p.notes && <p>📝 {p.notes}</p>}
+                                            {/* Téléphone sur la troisième ligne */}
+                                            {p.client.tel ? (
+                                                <p>📞 {p.client.tel}</p>
+                                            ) : (
+                                                <p className={styles.emptyValue}>📞 Non renseigné</p>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p className={styles.emptyValue}>👤 Non renseigné</p>
+                                            <p className={styles.emptyValue}>✉️ Non renseigné</p>
+                                            <p className={styles.emptyValue}>📞 Non renseigné</p>
+                                        </>
+                                    )}
+                                </div>
+
+                                {/* Bloc Dates + Heures */}
+                                <div className={styles.cardSection}>
+                                    <p>📅 {formatDate(p.date_debut)}</p>
+
+                                    {p.heure_debut ? (
+                                        <p>🕒 {p.heure_debut} → {p.heure_fin || "--:--"}</p>
+                                    ) : (
+                                        <p className={styles.emptyValue}>🕒 Non renseigné</p>
+                                    )}
+
+                                    {p.date_fin ? (
+                                        <p>📅 Fin : {formatDate(p.date_fin)}</p>
+                                    ) : (
+                                        <p className={styles.emptyValue}>📅 Fin : Non renseignée</p>
+                                    )}
+                                </div>
+
+                                {/* Bloc Lieu + Type + Notes */}
+                                <div className={styles.cardSection}>
+                                    {p.lieu ? (
+                                        <p>📍 {p.lieu}</p>
+                                    ) : (
+                                        <p className={styles.emptyValue}>📍 Non renseigné</p>
+                                    )}
+
+                                    {p.type ? (
+                                        <p>🎵 {p.type}</p>
+                                    ) : (
+                                        <p className={styles.emptyValue}>🎵 Non renseigné</p>
+                                    )}
+
+                                    {p.notes ? (
+                                        <p>📝 {p.notes}</p>
+                                    ) : (
+                                        <p className={styles.emptyValue}>📝 Non renseigné</p>
+                                    )}
+                                </div>
 
                                 <div className={styles.actions}>
+                                    {p.statut === "en_attente" && (
+                                        <button
+                                            className={styles.validBtn}
+                                            disabled={loading || isPast}
+                                            title={isPast ? "Validation désactivée pour une prestation passée" : undefined}
+                                            onClick={async () => {
+                                                if (isPast) return; // sécurité supplémentaire
+                                                setLoading(true);
+                                                try {
+                                                    await updatePrestation(p.id, { statut: "confirmee" });
+                                                } finally {
+                                                    setLoading(false);
+                                                    await loadAll();
+                                                }
+                                            }}
+                                        >
+                                            ✔ Valider
+                                        </button>
+                                    )}
+
+
                                     <button
+                                        className={styles.editBtn}
+
                                         onClick={() => {
                                             setEditingId(p.id);
                                             setEditData({ ...p });
-                                            setEditClient({ ...p.client }); // ← chargement des infos client
+                                            setEditClient({ ...p.client });
                                         }}
 
                                     >
                                         ✏ Modifier
                                     </button>
+
 
                                     <button
                                         className={styles.delete}
@@ -302,27 +402,42 @@ function PrestationsAdminPage() {
                             </>
                         )}
                     </div>
-                ))}
+                );})}
             </div>
         );
     }
 
     // ---------- RENDER ----------
+    const showFutures = sections.includes("futures");
+    const showPassees = sections.includes("passees");
+
     return (
-        <div className={styles.container}>
-            <h1>Gestion des prestations DJ</h1>
+        <div className={`${styles.container} ${styles["mode-compact"]}`}>
+            {/*<h1>Ajout de prestations</h1>*/}
 
-            <PrestationForm clients={clients} onCreated={loadAll} />
+            {showComposer && (
+                <PrestationForm clients={clients} onCreated={loadAll} />
+            )}
 
-            <div className={styles.list}>
-                <h1 className={styles.sectionTitle}>📅 Prestations futures</h1>
-                <Block title="⏳ En attente" items={futurePending} />
-                <Block title="✅ Confirmées / ❌ Annulées" items={futureOthers} />
+            {(showFutures || showPassees) && (
+                <div className={styles.list}>
+                    {showFutures && (
+                        <>
+                            <h1 className={styles.sectionTitle}>📅 Prestations à venir</h1>
+                            <Block title="⏳ En attente" items={futurePending} />
+                            <Block title="✅ Confirmées ou ❌ Annulées" items={futureOthers} />
+                        </>
+                    )}
 
-                <h1 className={styles.sectionTitle}>📅 Prestations passées</h1>
-                <Block title="⏳ En attente" items={pastPending} />
-                <Block title="✔ Validées / ❌ Annulées" items={pastOthers} />
-            </div>
+                    {showPassees && (
+                        <>
+                            <h1 className={styles.sectionTitle}>📅 Prestations passées</h1>
+                            <Block title="⏳ En attente" items={pastPending} />
+                            <Block title="✔ Validées ou ❌ Annulées" items={pastOthers} />
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

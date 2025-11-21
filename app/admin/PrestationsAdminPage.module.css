@@ -1,134 +1,225 @@
 .container {
-    width: 100%;
-    max-width: 900px;
-    max-width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    background: #e0e0e0;
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 16px;
 }
 
-.container h1 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #222;
+.sectionTitle {
+    font-size: 1.4rem;
+    margin: 28px 0 12px;
 }
 
-/* Liste des prestations */
+.block {
+}
+
+.blockTitle {
+    font-size: 1.05rem;
+    color: #6b7280;
+    color: #fff;
+    margin: 12px 0 8px;
+}
+
 .list {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin-top: 25px;
 }
 
-/* Carte prestation */
-.card {
-    background: #ffffff;
-    padding: 18px;
-    border-radius: 10px;
-    border: 1px solid #eee;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-}
-
-/* En-tête de la carte */
-.header {
+.viewSwitcher {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
+    margin: 8px 0 16px;
+}
+
+.viewSwitcher button {
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 0;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.viewSwitcher button[aria-pressed="true"] {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+}
+
+
+.card {
+    background-color: #5f5f62 !important;
+    border: 1px solid #e5e7eb;
     margin-bottom: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.header h3 {
-    margin: 0;
-    font-size: 1.3rem;
-    color: #333;
+.cardConfirmee {
+    background-color: #199600 !important;
+    border-color: #fff !important;
+    color: #ffffff !important;
 }
 
-/* Statut */
-.en_attente {
-    background: #ffefc1;
-    color: #a67c00;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+.cardAnnulee {
+    background-color: #ef4444 !important;
+    border-color: #fff !important;
+    color: #ffffff !important;
 }
 
-.confirmee {
-    background: #d7ffd9;
-    color: #146b1c;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+.cardPassee {
+    background-color: #000 !important;
+    border-color: #fff !important;
+    color: #ffffff !important;
 }
 
-.annulee {
-    background: #ffd4d4;
-    color: #a10000;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+.validBtn {
+    background-color: #bfeab9 !important;
+}.editBtn {
+    background-color: #d1edff !important;
 }
 
-.terminee {
-    background: #d5e4ff;
-    color: #264a9b;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
 
 .card p {
-    margin: 6px 0;
-    color: #444;
+    word-wrap: break-word;
 }
 
-/* Zone actions */
-.actions {
-    margin-top: 15px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.cardSection {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    padding: 4px;
+    margin: 2px 0;
 }
+
+.cardSection + .cardSection {
+    margin-top: 2px;
+}
+
+.cardPassee .cardSection,
+.cardConfirmee .cardSection,
+.cardAnnulee .cardSection {
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.emptyValue {
+    opacity: 0.85;
+    font-style: italic;
+    color: #f3f4f6;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+
+
 
 .actions button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: #f1f1f1;
-    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 0;
+    background: #f9fafb;
     cursor: pointer;
-    transition: background 0.2s;
-    font-size: 0.9rem;
-    font-weight: 500;
 }
 
 .actions button:hover {
-    background: #e3e3e3;
+    background: #eef2ff;
 }
 
-/* Supprimer */
+.actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(10%);
+}
+
 .delete {
-    background: #ffdfdf !important;
-    border-color: #d99 !important;
-    color: #8d0000;
+    background: #fee2e2 !important;
+    border-color: #fecaca !important;
 }
 
-.delete:hover {
-    background: #ffcccc !important;
+.formRow {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
 }
 
-/* Message vide */
-.list p {
-    text-align: center;
-    color: #666;
+.formRow label {
+    font-weight: 600;
+}
+
+.formRow input,
+.formRow select,
+.formRow textarea {
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 0;
+}
+
+
+.mode-professionnel .card {
+    padding: 16px 18px;
+}
+
+.mode-professionnel .card p {
+    margin: 0;
+    line-height: 1.45;
+    font-size: 0.98rem;
+}
+
+.mode-professionnel .actions button {
+    padding: 8px 12px;
+}
+
+.mode-simple .card {
+    border-radius: 0;
+    padding: 12px 14px;
+    border-color: #ededed;
+}
+
+.mode-simple .card p {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 1rem;
+    word-wrap: break-word;
+
+}
+
+.mode-simple .actions button {
+    background: #fff;
+}
+
+.mode-compact .card {
+    padding: 8px 10px;
+    gap: 4px;
+}
+
+.mode-compact .card p {
+    margin: 0;
+    line-height: 1.25;
+    font-size: 0.88rem;
+    word-wrap: break-word;
+}
+
+.mode-compact .actions {
+    margin-top: 4px;
+    gap: 6px;
+}
+
+.mode-compact .actions button {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+}
+
+
+
+@media (max-width: 640px) {
+    .formRow {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
 }

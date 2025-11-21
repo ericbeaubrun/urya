@@ -1,14 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import styles from "./PrestationEdit.module.css";
-import { Client, PrestationFormData } from "./DataTypes";
-import { addPrestation, addClient } from "../actions/prestations";
+import {Client, PrestationFormData} from "./DataTypes";
+import {addPrestation, addClient} from "../actions/prestations";
 
-export default function PrestationComposer({
-                                               clients,
-                                               onCreated,
-                                           }: {
+export default function PrestationComposer({clients, onCreated,}: {
     clients: Client[];
     onCreated: () => void;
 }) {
@@ -19,7 +16,7 @@ export default function PrestationComposer({
         id_client: "",
         statut: "en_attente",
         date_debut: "",
-        date_fin: "",       // AJOUT
+        date_fin: "",
         heure_debut: "",
         heure_fin: "",
         type: "",
@@ -98,10 +95,10 @@ export default function PrestationComposer({
         const added = result.data?.[0];
 
         if (added) {
-            setFormData({ ...formData, id_client: added.id });
+            setFormData({...formData, id_client: added.id});
         }
 
-        setNewClient({ nom: "", mail: "", tel: "" });
+        setNewClient({nom: "", mail: "", tel: ""});
         setShowNewClient(false);
         onCreated();
     }
@@ -112,9 +109,102 @@ export default function PrestationComposer({
 
     return (
         <div className={styles.formContainer}>
-            <h2>➕ Nouvelle prestation</h2>
+            <h2>Ajouter une nouvelle prestation</h2>
 
             <form onSubmit={handleSubmit} className={styles.form}>
+                {/* DATES -------------------------------------------------------------- */}
+                <div className={styles.formGroup}>
+                    <label>Date de début *</label>
+                    <input
+                        type="date"
+                        value={formData.date_debut}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                date_debut: e.target.value,
+                            })
+                        }
+                        required
+                    />
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label>Date de fin</label>
+                    <input
+                        type="date"
+                        value={formData.date_fin || ""}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                date_fin: e.target.value,
+                            })
+                        }
+                    />
+                </div>
+
+                {/* HEURES -------------------------------------------------------------- */}
+                <div className={styles.row}>
+                    <div className={styles.formGroup}>
+                        <label>Heure début</label>
+                        <input
+                            type="time"
+                            value={formData.heure_debut}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    heure_debut: e.target.value,
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <label>Heure fin</label>
+                        <input
+                            type="time"
+                            value={formData.heure_fin}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    heure_fin: e.target.value,
+                                })
+                            }
+                        />
+                    </div>
+                </div>
+
+                {/* TYPE -------------------------------------------------------------- */}
+                <div className={styles.formGroup}>
+                    <label>Type de prestation</label>
+                    <input
+                        type="text"
+                        value={formData.type}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                type: e.target.value,
+                            })
+                        }
+                        placeholder="Ex: Mariage, Anniversaire..."
+                    />
+                </div>
+
+                {/* LIEU -------------------------------------------------------------- */}
+                <div className={styles.formGroup}>
+                    <label>Lieu</label>
+                    <input
+                        type="text"
+                        placeholder="Ex: Salle des fêtes, Paris..."
+                        value={formData.lieu}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                lieu: e.target.value,
+                            })
+                        }
+                    />
+                </div>
+
                 {/* CLIENT -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Client</label>
@@ -187,22 +277,6 @@ export default function PrestationComposer({
                     )}
                 </div>
 
-                {/* TYPE -------------------------------------------------------------- */}
-                <div className={styles.formGroup}>
-                    <label>Type de prestation</label>
-                    <input
-                        type="text"
-                        value={formData.type}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                type: e.target.value,
-                            })
-                        }
-                        placeholder="Ex: Mariage, Anniversaire..."
-                    />
-                </div>
-
                 {/* STATUT -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Statut</label>
@@ -220,83 +294,6 @@ export default function PrestationComposer({
                         <option value="annulee">Annulée</option>
                         <option value="terminee">Terminée</option>
                     </select>
-                </div>
-
-                {/* DATES -------------------------------------------------------------- */}
-                <div className={styles.formGroup}>
-                    <label>Date de début *</label>
-                    <input
-                        type="date"
-                        value={formData.date_debut}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                date_debut: e.target.value,
-                            })
-                        }
-                        required
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label>Date de fin (optionnel)</label>
-                    <input
-                        type="date"
-                        value={formData.date_fin || ""}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                date_fin: e.target.value,
-                            })
-                        }
-                    />
-                </div>
-
-                {/* HEURES -------------------------------------------------------------- */}
-                <div className={styles.row}>
-                    <div className={styles.formGroup}>
-                        <label>Heure début</label>
-                        <input
-                            type="time"
-                            value={formData.heure_debut}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    heure_debut: e.target.value,
-                                })
-                            }
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label>Heure fin</label>
-                        <input
-                            type="time"
-                            value={formData.heure_fin}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    heure_fin: e.target.value,
-                                })
-                            }
-                        />
-                    </div>
-                </div>
-
-                {/* LIEU -------------------------------------------------------------- */}
-                <div className={styles.formGroup}>
-                    <label>Lieu</label>
-                    <input
-                        type="text"
-                        placeholder="Ex: Salle des fêtes, Paris..."
-                        value={formData.lieu}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                lieu: e.target.value,
-                            })
-                        }
-                    />
                 </div>
 
                 {/* NOTES -------------------------------------------------------------- */}

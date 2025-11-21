@@ -35,6 +35,7 @@ export default function CalendarPage() {
 
         router.push(`/prestation-form?date=${dateStr}`);
     }
+
     // function getColorByStatus(statut: string) {
     //     switch (statut) {
     //         case "confirmee":
@@ -83,8 +84,6 @@ export default function CalendarPage() {
                     }
                 };
 
-                // ---------------- LOGIQUE DE DÉTERMINATION DES DATES ----------------
-
                 // 1) Si on a date_debut + date_fin → affichage multi-jours normal
                 if (ev.date_debut && ev.date_fin) {
                     eventData.start = `${ev.date_debut}T${ev.heure_debut ?? "00:00:00"}`;
@@ -125,7 +124,7 @@ export default function CalendarPage() {
 
 
     function renderEventContent(eventInfo: any) {
-        const {extendedProps} = eventInfo.event;
+        // const {extendedProps} = eventInfo.event;
         return (
             <div className={styles.eventContent}>
                 <div className={styles.eventTime}>
@@ -134,11 +133,11 @@ export default function CalendarPage() {
                 <div className={styles.eventTitle}>
                     {truncateTitle(eventInfo.event.title, 15)}
                 </div>
-                {extendedProps.lieu && (
-                    <div className={styles.eventLocation}>
-                        📍 {extendedProps.lieu}
-                    </div>
-                )}
+                {/*{extendedProps.lieu && (*/}
+                {/*    <div className={styles.eventLocation}>*/}
+                {/*        📍 {extendedProps.lieu}*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
         );
     }
@@ -165,6 +164,20 @@ export default function CalendarPage() {
                     }}
 
                     events={events}
+                    eventClassNames={(arg) => {
+                        // Marquer les événements passés en rouge
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        // Utiliser la fin de l'événement s'il existe, sinon le début
+                        const end = arg.event.end ?? arg.event.start;
+                        const eventEnd = end ? new Date(end) : null;
+
+                        if (eventEnd && eventEnd < today) {
+                            return ["past-event"]; // classe globale via CSS module
+                        }
+                        return [];
+                    }}
                     displayEventEnd={true}
                     eventTimeFormat={{
                         hour: "2-digit",
@@ -174,7 +187,10 @@ export default function CalendarPage() {
                     firstDay={1}
                     // contentHeight="auto"
                     // height="10%"
-                    contentHeight="100%"
+                    height="auto"
+                    contentHeight="auto"
+                    dayMaxEventRows={false}
+                    dayMaxEvents={false}
                     // contentHe
                     // ight={"550px"}
                     locale="fr"
