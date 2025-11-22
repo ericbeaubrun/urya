@@ -1,12 +1,9 @@
 "use server";
 
-import { auth } from "@/auth";
+import {auth} from "@/auth";
 import {supabase_client, supabaseAdmin} from "@/lib/supabase_client";
-import { revalidatePath } from "next/cache";
+import {revalidatePath} from "next/cache";
 
-/**
- * Vérifie si l'utilisateur est un admin connecté
- */
 async function verifyAdmin() {
     const session = await auth();
 
@@ -14,8 +11,7 @@ async function verifyAdmin() {
         throw new Error("Non authentifié. Veuillez vous connecter.");
     }
 
-    // Vérifier que l'email existe dans la table admins avec le service role key
-    const { data, error } = await supabaseAdmin()
+    const {data, error} = await supabaseAdmin()
         .from("admins")
         .select("id, email")
         .eq("email", session.user.email)
@@ -28,23 +24,19 @@ async function verifyAdmin() {
     return data;
 }
 
-/**
- * Récupérer tous les clients
- */
 export async function getClients() {
     try {
-        const { data, error } = await supabaseAdmin()
+        const {data, error} = await supabaseAdmin()
             .from("clients")
             .select("*")
-            .order("nom", { ascending: true });
+            .order("nom", {ascending: true});
 
         if (error) {
             throw new Error(`Erreur lors du chargement des clients: ${error.message}`);
         }
 
-        return { success: true, data };
+        return {success: true, data};
     } catch (error) {
-        console.error("❌ Erreur getClients:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Erreur inconnue",
@@ -53,31 +45,24 @@ export async function getClients() {
     }
 }
 
-/**
- * Ajouter un client (réservé aux admins)
- */
-export async function addClient(nom: string, mail: string, tel?: string) {
+export async function addClient(nom: string, mail: string, p0: string | null, tel?: string) {
     try {
         const admin = await verifyAdmin();
-        console.log("✅ Admin vérifié:", admin.email);
 
-        const { data, error } = await supabaseAdmin()
+        const {data, error} = await supabaseAdmin()
             .from("clients")
-            .insert([{ nom, mail, tel }])
+            .insert([{nom, mail, tel}])
             .select();
 
         if (error) {
-            console.error("❌ Erreur Supabase:", error);
             throw new Error(`Erreur lors de l'ajout du client: ${error.message}`);
         }
 
-        console.log("✅ Client ajouté:", data);
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return { success: true, data };
+        return {success: true, data};
     } catch (error) {
-        console.error("❌ Erreur addClient:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Erreur inconnue"
@@ -87,12 +72,11 @@ export async function addClient(nom: string, mail: string, tel?: string) {
 
 function cleanPrestationData(data: any) {
     const {
-        id,        // ❌ interdit
-        client,    // ❌ relation non supportée en update
+        id,
+        client,
         ...rest
     } = data;
 
-    // Convertit "" en null (SQL friendly)
     const cleaned: any = {};
     for (const key in rest) {
         cleaned[key] = rest[key] === "" ? null : rest[key];
@@ -116,13 +100,10 @@ export async function addPrestation(prestationData: {
     notes?: string;
 }) {
     try {
-        // Vérifier l'authentification
         const admin = await verifyAdmin();
 
-        console.log("✅ Admin vérifié:", admin.email);
 
-        // Ajouter la prestation avec le client admin qui bypass RLS
-        const { data, error } = await supabaseAdmin()
+        const {data, error} = await supabaseAdmin()
             .from("prestations")
             .insert([{
                 id_client: prestationData.id_client || null,
@@ -137,19 +118,15 @@ export async function addPrestation(prestationData: {
             .select();
 
         if (error) {
-            console.error("❌ Erreur Supabase:", error);
             throw new Error(`Erreur lors de l'ajout: ${error.message}`);
         }
 
-        console.log("✅ Prestation ajoutée:", data);
 
-        // Revalider les pages concernées
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return { success: true, data };
+        return {success: true, data};
     } catch (error) {
-        console.error("❌ Erreur addPrestation:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Erreur inconnue"
@@ -157,36 +134,26 @@ export async function addPrestation(prestationData: {
     }
 }
 
-/**
- * Supprimer une prestation (réservé aux admins)
- */
 export async function deletePrestation(id: string) {
     try {
-        // Vérifier l'authentification
         const admin = await verifyAdmin();
 
-        console.log("✅ Admin vérifié:", admin.email);
 
-        // Supprimer la prestation avec le client admin qui bypass RLS
-        const { error } = await supabaseAdmin()
+        const {error} = await supabaseAdmin()
             .from("prestations")
             .delete()
             .eq("id", id);
 
         if (error) {
-            console.error("❌ Erreur Supabase:", error);
             throw new Error(`Erreur lors de la suppression: ${error.message}`);
         }
 
-        console.log("✅ Prestation supprimée:", id);
 
-        // Revalider les pages concernées
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return { success: true };
+        return {success: true};
     } catch (error) {
-        console.error("❌ Erreur deletePrestation:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Erreur inconnue"
@@ -194,16 +161,13 @@ export async function deletePrestation(id: string) {
     }
 }
 
-/**
- * Modifier une prestation (réservé aux admins)
- */
 export async function updatePrestation(id: string, prestationData: any) {
     try {
         const admin = await verifyAdmin();
 
         const cleaned = cleanPrestationData(prestationData);
 
-        const { data, error } = await supabaseAdmin()
+        const {data, error} = await supabaseAdmin()
             .from("prestations")
             .update(cleaned)
             .eq("id", id)
@@ -215,7 +179,7 @@ export async function updatePrestation(id: string, prestationData: any) {
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return { success: true, data };
+        return {success: true, data};
     } catch (error) {
         return {
             success: false,
@@ -225,28 +189,24 @@ export async function updatePrestation(id: string, prestationData: any) {
 }
 
 
-/**
- * Récupérer toutes les prestations (public)
- */
 export async function getPrestations() {
     try {
-        const { data, error } = await supabaseAdmin()
+        const {data, error} = await supabaseAdmin()
             .from("prestations")
             .select(`
                 *,
                 client:clients(id, nom, mail, tel)
             `)
-            .order("date_debut", { ascending: true });
+            .order("date_debut", {ascending: true});
 
         if (error) {
             throw new Error(`Erreur lors du chargement: ${error.message}`);
         }
 
-        return { success: true, data };
+        return {success: true, data};
     } catch (error) {
-        console.error("❌ Erreur getPrestations:", error);
-        return { 
-            success: false, 
+        return {
+            success: false,
             error: error instanceof Error ? error.message : "Erreur inconnue",
             data: []
         };

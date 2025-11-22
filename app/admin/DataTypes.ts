@@ -1,4 +1,3 @@
-
 export interface Client {
     id: string;
     nom: string;
@@ -11,6 +10,7 @@ export interface Prestation {
     id_client?: string;
     statut: string;
     date_debut: string;
+    date_fin: string;
     heure_debut?: string;
     heure_fin?: string;
     type?: string;
@@ -23,6 +23,7 @@ export interface PrestationFormData {
     id_client: string;
     statut: string;
     date_debut: string;
+    date_fin: string;
     heure_debut: string;
     heure_fin: string;
     type: string;

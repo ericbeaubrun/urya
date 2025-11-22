@@ -45,7 +45,7 @@ export default function PrestationComposer({clients, onCreated,}: {
         setLoading(true);
         const result = await addPrestation({
             ...formData,
-            date_fin: formData.date_fin || null, // si vide → NULL
+            date_fin: formData.date_fin || null,
         });
         setLoading(false);
 

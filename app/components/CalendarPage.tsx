@@ -5,6 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import {EventContentArg} from "@fullcalendar/core";
 import {supabase_client} from "@/lib/supabase_client";
 import styles from "../styles/CalendarPage.module.css";
 import {useRouter} from "next/navigation";
@@ -15,7 +16,6 @@ export default function CalendarPage() {
 
     const router = useRouter();
 
-    // Tronque les titres d'événements au-delà de 7 caractères et ajoute '...'
     function truncateTitle(title: string, max: number = 7) {
         if (!title) return "";
         return title.length > max ? `${title.slice(0, max)}...` : title;
@@ -35,17 +35,6 @@ export default function CalendarPage() {
 
         router.push(`/prestation-form?date=${dateStr}`);
     }
-
-    // function getColorByStatus(statut: string) {
-    //     switch (statut) {
-    //         case "confirmee":
-    //             return "#10b981"; // vert
-    //         case "terminee":
-    //             return "#6366f1"; // bleu
-    //         default:
-    //             return "#6b7280"; // gris
-    //     }
-    // }
 
     useEffect(() => {
         async function loadEvents() {
@@ -123,7 +112,7 @@ export default function CalendarPage() {
     }, []);
 
 
-    function renderEventContent(eventInfo: any) {
+    function renderEventContent(eventInfo: EventContentArg) {
         // const {extendedProps} = eventInfo.event;
         return (
             <div className={styles.eventContent}>
@@ -131,7 +120,7 @@ export default function CalendarPage() {
                     <strong>{eventInfo.timeText}</strong>
                 </div>
                 <div className={styles.eventTitle}>
-                    {truncateTitle(eventInfo.event.title, 15)}
+                    {truncateTitle(eventInfo.event.title ?? "", 15)}
                 </div>
                 {/*{extendedProps.lieu && (*/}
                 {/*    <div className={styles.eventLocation}>*/}

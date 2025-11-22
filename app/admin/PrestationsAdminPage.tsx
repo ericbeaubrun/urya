@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./PrestationsAdminPage.module.css";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
     getPrestations,
     getClients,
@@ -10,7 +10,7 @@ import {
     addClient
 } from "../actions/prestations";
 
-import { Prestation, Client } from "./DataTypes";
+import {Prestation, Client} from "./DataTypes";
 import PrestationForm from "./PrestationComposer";
 
 function formatDate(dateStr: string) {
@@ -21,9 +21,9 @@ function formatDate(dateStr: string) {
 type SectionType = "futures" | "passees";
 
 function PrestationsAdminPage({
-    showComposer = true,
-    sections = ["futures", "passees"] as SectionType[],
-}: {
+                                  showComposer = true,
+                                  sections = ["futures", "passees"] as SectionType[],
+                              }: {
     showComposer?: boolean;
     sections?: SectionType[];
 }) {
@@ -33,7 +33,7 @@ function PrestationsAdminPage({
     const [clients, setClients] = useState<Client[]>([]);
     const [loading, setLoading] = useState(false);
     const [editClient, setEditClient] = useState<Partial<Client>>({});
-    // Affichage unique: compact
+
 
     async function loadAll() {
         const p = await getPrestations();
@@ -55,7 +55,6 @@ function PrestationsAdminPage({
         loadAll();
     }
 
-    // ---------- LOGIQUE DES GROUPES ----------
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -76,8 +75,7 @@ function PrestationsAdminPage({
         p => p.statut === "confirmee" || p.statut === "annulee"
     );
 
-    // ---------- COMPOSANT D'AFFICHAGE D'UN BLOC ----------
-    function Block({ title, items }: { title: string; items: Prestation[] }) {
+    function Block({title, items}: { title: string; items: Prestation[] }) {
         if (items.length === 0) return null;
 
         return (
@@ -95,314 +93,300 @@ function PrestationsAdminPage({
                                 : "";
 
                     return (
-                    <div key={p.id} className={`${styles.card} ${cardStatusClass}`}>
-                        {editingId === p.id ? (
-                            <>
-                                {/* ----------- DATES ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Date début :</label>
-                                    <input
-                                        type="date"
-                                        value={editData.date_debut || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, date_debut: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                <div className={styles.formRow}>
-                                    <label>Date fin :</label>
-                                    <input
-                                        type="date"
-                                        value={editData.date_fin || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, date_fin: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                {/* ----------- HEURES ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Heure début :</label>
-                                    <input
-                                        type="time"
-                                        value={editData.heure_debut || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, heure_debut: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                <div className={styles.formRow}>
-                                    <label>Heure fin :</label>
-                                    <input
-                                        type="time"
-                                        value={editData.heure_fin || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, heure_fin: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                {/* ----------- TYPE ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Type :</label>
-                                    <input
-                                        type="text"
-                                        value={editData.type || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, type: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                {/* ----------- LIEU ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Lieu :</label>
-                                    <input
-                                        type="text"
-                                        value={editData.lieu || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, lieu: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                {/* ----------- CLIENT ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Client :</label>
-                                    <select
-                                        value={editData.id_client || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, id_client: e.target.value })
-                                        }
-                                    >
-                                        <option value="">Aucun client</option>
-                                        {clients.map((c) => (
-                                            <option key={c.id} value={c.id}>
-                                                {c.nom} ({c.mail})
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {editData.id_client && (
-                                    <>
-                                        <div className={styles.formRow}>
-                                            <label>Nom client :</label>
-                                            <input
-                                                type="text"
-                                                value={editClient.nom || ""}
-                                                onChange={(e) =>
-                                                    setEditClient({ ...editClient, nom: e.target.value })
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className={styles.formRow}>
-                                            <label>Email client :</label>
-                                            <input
-                                                type="email"
-                                                value={editClient.mail || ""}
-                                                onChange={(e) =>
-                                                    setEditClient({ ...editClient, mail: e.target.value })
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className={styles.formRow}>
-                                            <label>Téléphone client :</label>
-                                            <input
-                                                type="tel"
-                                                value={editClient.tel || ""}
-                                                onChange={(e) =>
-                                                    setEditClient({ ...editClient, tel: e.target.value })
-                                                }
-                                            />
-                                        </div>
-                                    </>
-                                )}
-
-                                {/* ----------- STATUT ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Statut :</label>
-                                    <select
-                                        value={editData.statut || "en_attente"}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, statut: e.target.value })
-                                        }
-                                    >
-                                        <option value="en_attente">En attente</option>
-                                        <option value="confirmee">Confirmée</option>
-                                        <option value="annulee">Annulée</option>
-                                        <option value="terminee">Terminée</option>
-                                    </select>
-                                </div>
-
-                                {/* ----------- NOTES ----------- */}
-                                <div className={styles.formRow}>
-                                    <label>Notes :</label>
-                                    <textarea
-                                        value={editData.notes || ""}
-                                        onChange={(e) =>
-                                            setEditData({ ...editData, notes: e.target.value })
-                                        }
-                                    />
-                                </div>
-
-                                {/* ----------- ACTIONS ----------- */}
-                                <div className={styles.actions}>
-                                    <button
-                                        onClick={async () => {
-                                            setLoading(true);
-
-                                            // 1) Mise à jour de la prestation
-                                            await updatePrestation(p.id, editData);
-
-                                            // 2) Mise à jour du client (seulement si un client existe)
-                                            if (editData.id_client && editClient) {
-                                                await addClient(  // ⚠️ remplace addClient() par la vraie fonction updateClient()
-                                                    editClient.nom!,
-                                                    editClient.mail!,
-                                                    editClient.tel || null,
-                                                    editData.id_client
-                                                );
+                        <div key={p.id} className={`${styles.card} ${cardStatusClass}`}>
+                            {editingId === p.id ? (
+                                <>
+                                    <div className={styles.formRow}>
+                                        <label>Date début :</label>
+                                        <input
+                                            type="date"
+                                            value={editData.date_debut || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, date_debut: e.target.value})
                                             }
+                                        />
+                                    </div>
 
-                                            setLoading(false);
+                                    <div className={styles.formRow}>
+                                        <label>Date fin :</label>
+                                        <input
+                                            type="date"
+                                            value={editData.date_fin || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, date_fin: e.target.value})
+                                            }
+                                        />
+                                    </div>
 
-                                            setEditingId(null);
-                                            loadAll();
-                                        }}
+                                    <div className={styles.formRow}>
+                                        <label>Heure début :</label>
+                                        <input
+                                            type="time"
+                                            value={editData.heure_debut || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, heure_debut: e.target.value})
+                                            }
+                                        />
+                                    </div>
 
-                                    >
-                                        💾 Enregistrer
-                                    </button>
+                                    <div className={styles.formRow}>
+                                        <label>Heure fin :</label>
+                                        <input
+                                            type="time"
+                                            value={editData.heure_fin || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, heure_fin: e.target.value})
+                                            }
+                                        />
+                                    </div>
 
-                                    <button onClick={() => setEditingId(null)}>❌ Annuler</button>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                {/* Bloc Client (en haut, seul) */}
-                                <div className={styles.cardSection}>
-                                    {p.client ? (
-                                        <>
-                                            {/* Nom sur la première ligne */}
-                                            {p.client.nom ? (
-                                                <p>👤 {p.client.nom}</p>
-                                            ) : (
-                                                <p className={styles.emptyValue}>👤 Non renseigné</p>
-                                            )}
+                                    <div className={styles.formRow}>
+                                        <label>Type :</label>
+                                        <input
+                                            type="text"
+                                            value={editData.type || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, type: e.target.value})
+                                            }
+                                        />
+                                    </div>
 
-                                            {/* Email sur la deuxième ligne */}
-                                            {p.client.mail ? (
-                                                <p>✉️ {p.client.mail}</p>
-                                            ) : (
-                                                <p className={styles.emptyValue}>✉️ Non renseigné</p>
-                                            )}
+                                    <div className={styles.formRow}>
+                                        <label>Lieu :</label>
+                                        <input
+                                            type="text"
+                                            value={editData.lieu || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, lieu: e.target.value})
+                                            }
+                                        />
+                                    </div>
 
-                                            {/* Téléphone sur la troisième ligne */}
-                                            {p.client.tel ? (
-                                                <p>📞 {p.client.tel}</p>
-                                            ) : (
-                                                <p className={styles.emptyValue}>📞 Non renseigné</p>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <p className={styles.emptyValue}>👤 Non renseigné</p>
-                                            <p className={styles.emptyValue}>✉️ Non renseigné</p>
-                                            <p className={styles.emptyValue}>📞 Non renseigné</p>
-                                        </>
-                                    )}
-                                </div>
-
-                                {/* Bloc Dates + Heures */}
-                                <div className={styles.cardSection}>
-                                    <p>📅 {formatDate(p.date_debut)}</p>
-
-                                    {p.heure_debut ? (
-                                        <p>🕒 {p.heure_debut} → {p.heure_fin || "--:--"}</p>
-                                    ) : (
-                                        <p className={styles.emptyValue}>🕒 Non renseigné</p>
-                                    )}
-
-                                    {p.date_fin ? (
-                                        <p>📅 Fin : {formatDate(p.date_fin)}</p>
-                                    ) : (
-                                        <p className={styles.emptyValue}>📅 Fin : Non renseignée</p>
-                                    )}
-                                </div>
-
-                                {/* Bloc Lieu + Type + Notes */}
-                                <div className={styles.cardSection}>
-                                    {p.lieu ? (
-                                        <p>📍 {p.lieu}</p>
-                                    ) : (
-                                        <p className={styles.emptyValue}>📍 Non renseigné</p>
-                                    )}
-
-                                    {p.type ? (
-                                        <p>🎵 {p.type}</p>
-                                    ) : (
-                                        <p className={styles.emptyValue}>🎵 Non renseigné</p>
-                                    )}
-
-                                    {p.notes ? (
-                                        <p>📝 {p.notes}</p>
-                                    ) : (
-                                        <p className={styles.emptyValue}>📝 Non renseigné</p>
-                                    )}
-                                </div>
-
-                                <div className={styles.actions}>
-                                    {p.statut === "en_attente" && (
-                                        <button
-                                            className={styles.validBtn}
-                                            disabled={loading || isPast}
-                                            title={isPast ? "Validation désactivée pour une prestation passée" : undefined}
-                                            onClick={async () => {
-                                                if (isPast) return; // sécurité supplémentaire
-                                                setLoading(true);
-                                                try {
-                                                    await updatePrestation(p.id, { statut: "confirmee" });
-                                                } finally {
-                                                    setLoading(false);
-                                                    await loadAll();
-                                                }
-                                            }}
+                                    <div className={styles.formRow}>
+                                        <label>Client :</label>
+                                        <select
+                                            value={editData.id_client || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, id_client: e.target.value})
+                                            }
                                         >
-                                            ✔ Valider
-                                        </button>
+                                            <option value="">Aucun client</option>
+                                            {clients.map((c) => (
+                                                <option key={c.id} value={c.id}>
+                                                    {c.nom} ({c.mail})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    {editData.id_client && (
+                                        <>
+                                            <div className={styles.formRow}>
+                                                <label>Nom client :</label>
+                                                <input
+                                                    type="text"
+                                                    value={editClient.nom || ""}
+                                                    onChange={(e) =>
+                                                        setEditClient({...editClient, nom: e.target.value})
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div className={styles.formRow}>
+                                                <label>Email client :</label>
+                                                <input
+                                                    type="email"
+                                                    value={editClient.mail || ""}
+                                                    onChange={(e) =>
+                                                        setEditClient({...editClient, mail: e.target.value})
+                                                    }
+                                                />
+                                            </div>
+
+                                            <div className={styles.formRow}>
+                                                <label>Téléphone client :</label>
+                                                <input
+                                                    type="tel"
+                                                    value={editClient.tel || ""}
+                                                    onChange={(e) =>
+                                                        setEditClient({...editClient, tel: e.target.value})
+                                                    }
+                                                />
+                                            </div>
+                                        </>
                                     )}
 
+                                    <div className={styles.formRow}>
+                                        <label>Statut :</label>
+                                        <select
+                                            value={editData.statut || "en_attente"}
+                                            onChange={(e) =>
+                                                setEditData({...editData, statut: e.target.value})
+                                            }
+                                        >
+                                            <option value="en_attente">En attente</option>
+                                            <option value="confirmee">Confirmée</option>
+                                            <option value="annulee">Annulée</option>
+                                            <option value="terminee">Terminée</option>
+                                        </select>
+                                    </div>
 
-                                    <button
-                                        className={styles.editBtn}
+                                    <div className={styles.formRow}>
+                                        <label>Notes :</label>
+                                        <textarea
+                                            value={editData.notes || ""}
+                                            onChange={(e) =>
+                                                setEditData({...editData, notes: e.target.value})
+                                            }
+                                        />
+                                    </div>
 
-                                        onClick={() => {
-                                            setEditingId(p.id);
-                                            setEditData({ ...p });
-                                            setEditClient({ ...p.client });
-                                        }}
+                                    <div className={styles.actions}>
+                                        <button
+                                            onClick={async () => {
+                                                setLoading(true);
 
-                                    >
-                                        ✏ Modifier
-                                    </button>
+                                                await updatePrestation(p.id, editData);
+
+                                                if (editData.id_client && editClient) {
+                                                    await addClient(
+                                                        editClient.nom!,
+                                                        editClient.mail!,
+                                                        editClient.tel || null,
+                                                        editData.id_client
+                                                    );
+                                                }
+
+                                                setLoading(false);
+
+                                                setEditingId(null);
+                                                loadAll();
+                                            }}
+
+                                        >
+                                            💾 Enregistrer
+                                        </button>
+
+                                        <button onClick={() => setEditingId(null)}>❌ Annuler</button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className={styles.cardSection}>
+                                        {p.client ? (
+                                            <>
+                                                {p.client.nom ? (
+                                                    <p>👤 {p.client.nom}</p>
+                                                ) : (
+                                                    <p className={styles.emptyValue}>👤 Non renseigné</p>
+                                                )}
+
+                                                {p.client.mail ? (
+                                                    <p>✉️ {p.client.mail}</p>
+                                                ) : (
+                                                    <p className={styles.emptyValue}>✉️ Non renseigné</p>
+                                                )}
+
+                                                {p.client.tel ? (
+                                                    <p>📞 {p.client.tel}</p>
+                                                ) : (
+                                                    <p className={styles.emptyValue}>📞 Non renseigné</p>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className={styles.emptyValue}>👤 Non renseigné</p>
+                                                <p className={styles.emptyValue}>✉️ Non renseigné</p>
+                                                <p className={styles.emptyValue}>📞 Non renseigné</p>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    <div className={styles.cardSection}>
+                                        <p>📅 {formatDate(p.date_debut)}</p>
+
+                                        {p.heure_debut ? (
+                                            <p>🕒 {p.heure_debut} → {p.heure_fin || "--:--"}</p>
+                                        ) : (
+                                            <p className={styles.emptyValue}>🕒 Non renseigné</p>
+                                        )}
+
+                                        {p.date_fin ? (
+                                            <p>📅 Fin : {formatDate(p.date_fin)}</p>
+                                        ) : (
+                                            <p className={styles.emptyValue}>📅 Fin : Non renseignée</p>
+                                        )}
+                                    </div>
+
+                                    {/* Bloc Lieu + Type + Notes */}
+                                    <div className={styles.cardSection}>
+                                        {p.lieu ? (
+                                            <p>📍 {p.lieu}</p>
+                                        ) : (
+                                            <p className={styles.emptyValue}>📍 Non renseigné</p>
+                                        )}
+
+                                        {p.type ? (
+                                            <p>🎵 {p.type}</p>
+                                        ) : (
+                                            <p className={styles.emptyValue}>🎵 Non renseigné</p>
+                                        )}
+
+                                        {p.notes ? (
+                                            <p>📝 {p.notes}</p>
+                                        ) : (
+                                            <p className={styles.emptyValue}>📝 Non renseigné</p>
+                                        )}
+                                    </div>
+
+                                    <div className={styles.actions}>
+                                        {p.statut === "en_attente" && (
+                                            <button
+                                                className={styles.validBtn}
+                                                disabled={loading || isPast}
+                                                title={isPast ? "Validation désactivée pour une prestation passée" : undefined}
+                                                onClick={async () => {
+                                                    if (isPast) return; // sécurité supplémentaire
+                                                    setLoading(true);
+                                                    try {
+                                                        await updatePrestation(p.id, {statut: "confirmee"});
+                                                    } finally {
+                                                        setLoading(false);
+                                                        await loadAll();
+                                                    }
+                                                }}
+                                            >
+                                                ✔ Valider
+                                            </button>
+                                        )}
 
 
-                                    <button
-                                        className={styles.delete}
-                                        disabled={loading}
-                                        onClick={() => handleDelete(p.id)}
-                                    >
-                                        🗑 Supprimer
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                );})}
+                                        <button
+                                            className={styles.editBtn}
+
+                                            onClick={() => {
+                                                setEditingId(p.id);
+                                                setEditData({...p});
+                                                setEditClient({...p.client});
+                                            }}
+
+                                        >
+                                            ✏ Modifier
+                                        </button>
+
+
+                                        <button
+                                            className={styles.delete}
+                                            disabled={loading}
+                                            onClick={() => handleDelete(p.id)}
+                                        >
+                                            🗑 Supprimer
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         );
     }
@@ -413,10 +397,9 @@ function PrestationsAdminPage({
 
     return (
         <div className={`${styles.container} ${styles["mode-compact"]}`}>
-            {/*<h1>Ajout de prestations</h1>*/}
 
             {showComposer && (
-                <PrestationForm clients={clients} onCreated={loadAll} />
+                <PrestationForm clients={clients} onCreated={loadAll}/>
             )}
 
             {(showFutures || showPassees) && (
@@ -424,16 +407,16 @@ function PrestationsAdminPage({
                     {showFutures && (
                         <>
                             <h1 className={styles.sectionTitle}>📅 Prestations à venir</h1>
-                            <Block title="⏳ En attente" items={futurePending} />
-                            <Block title="✅ Confirmées ou ❌ Annulées" items={futureOthers} />
+                            <Block title="⏳ En attente" items={futurePending}/>
+                            <Block title="✅ Confirmées ou ❌ Annulées" items={futureOthers}/>
                         </>
                     )}
 
                     {showPassees && (
                         <>
                             <h1 className={styles.sectionTitle}>📅 Prestations passées</h1>
-                            <Block title="⏳ En attente" items={pastPending} />
-                            <Block title="✔ Validées ou ❌ Annulées" items={pastOthers} />
+                            <Block title="⏳ En attente" items={pastPending}/>
+                            <Block title="✔ Validées ou ❌ Annulées" items={pastOthers}/>
                         </>
                     )}
                 </div>
