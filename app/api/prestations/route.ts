@@ -3,6 +3,7 @@ import {supabaseAdmin} from '@/lib/supabase_client';
 import {Resend} from "resend"
 import {clientEmailTemplate} from "@/app/emails/userEmail";
 import {adminEmailTemplate} from "@/app/emails/adminEmail";
+import {RESEND_MAIL} from "@/app/config/config";
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
@@ -129,14 +130,16 @@ export async function POST(req: NextRequest) {
 
 
         await resend.emails.send({
-            from: "onboarding@resend.dev",
+            // from: "onboarding@resend.dev",
+            from: RESEND_MAIL,
             to: mail,
             subject: userHtml.subject,
             html: userHtml.html,
         })
 
         await resend.emails.send({
-            from: "onboarding@resend.dev",
+            // from: "onboarding@resend.dev",
+            from: RESEND_MAIL,
             to: process.env.admin_email!,
             subject: adminHtml.subject,
             html: adminHtml.html,

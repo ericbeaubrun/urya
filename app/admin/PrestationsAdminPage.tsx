@@ -399,7 +399,7 @@ function PrestationsAdminPage({
         <div className={`${styles.container} ${styles["mode-compact"]}`}>
 
             {showComposer && (
-                <PrestationForm clients={clients} onCreated={loadAll}/>
+                <PrestationForm clients={clients} onCreatedAction={loadAll}/>
             )}
 
             {(showFutures || showPassees) && (

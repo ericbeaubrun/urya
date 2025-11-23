@@ -5,9 +5,9 @@ import styles from "./PrestationEdit.module.css";
 import {Client, PrestationFormData} from "./DataTypes";
 import {addPrestation, addClient} from "../actions/prestations";
 
-export default function PrestationComposer({clients, onCreated,}: {
+export default function PrestationComposer({clients, onCreatedAction,}: {
     clients: Client[];
-    onCreated: () => void;
+    onCreatedAction: () => void;
 }) {
     const [loading, setLoading] = useState(false);
     const [showNewClient, setShowNewClient] = useState(false);
@@ -29,10 +29,6 @@ export default function PrestationComposer({clients, onCreated,}: {
         mail: "",
         tel: "",
     });
-
-    // ---------------------
-    // Ajouter une prestation
-    // ---------------------
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -67,7 +63,7 @@ export default function PrestationComposer({clients, onCreated,}: {
             notes: "",
         });
 
-        onCreated();
+        onCreatedAction();
     }
 
     // ---------------------
@@ -100,7 +96,7 @@ export default function PrestationComposer({clients, onCreated,}: {
 
         setNewClient({nom: "", mail: "", tel: ""});
         setShowNewClient(false);
-        onCreated();
+        onCreatedAction();
     }
 
     // ---------------------

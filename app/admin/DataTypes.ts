@@ -23,7 +23,7 @@ export interface PrestationFormData {
     id_client: string;
     statut: string;
     date_debut: string;
-    date_fin: string;
+    date_fin?: string | null;
     heure_debut: string;
     heure_fin: string;
     type: string;

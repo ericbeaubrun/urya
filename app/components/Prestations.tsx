@@ -21,21 +21,21 @@ const prestations: Prestation[] = [
         description:
             "Animation complète, ambiance personnalisée selon le thème et le public.",
         price: "À partir de 280 €",
-        image: images_path + "anniversaire2.jpg",
+        image: images_path + "anniversaire.jpg",
     },
     {
         title: "Soirées",
         description:
             "Ambiance festive garantie pour vos événements familiaux ou entre amis.",
         price: "À partir de 320 €",
-        image: images_path + "soiree_privee3.png",
+        image: images_path + "soiree_privee.png",
     },
     {
         title: "Événements",
         description:
             "Animation musicale professionnelle pour vos séminaires, repas ou soirées de fin d'année.",
         price: "À partir de 450 €",
-        image: images_path + "evenement3.png",
+        image: images_path + "evenement.png",
     },
     {
         title: "Mariages",
@@ -43,7 +43,7 @@ const prestations: Prestation[] = [
             "Prestation sur mesure : cocktail, dîner, ouverture de bal, soirée dansante. Matériel pro & coordination.",
         price: "À partir de 520 €",
         featured: true,
-        image: images_path + "mariage2.jpg",
+        image: images_path + "mariage.jpg",
     },
 ];
 

@@ -8,7 +8,7 @@ import {Link} from "react-scroll";
 
 export default function Hero() {
 
-    const appear = (index) => ({
+    const appear = (index: number) => ({
         hidden: {opacity: 0, y: 30},
         visible: {
             opacity: 1,

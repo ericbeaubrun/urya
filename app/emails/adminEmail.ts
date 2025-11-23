@@ -5,13 +5,16 @@ export function adminEmailTemplate(record: any) {
         subject: "Nouvelle demande de prestation",
         html: `
       <p><strong>Nouvelle demande reçue</strong></p>
+      <hr />
       <p>Nom : ${record.nom}</p>
       <p>Email : ${record.mail}</p>
       <p>Téléphone : ${record.tel}</p>
+      <hr />
       <p>Date début : ${record.date_debut}</p>
       <p>Date fin : ${record.date_fin}</p>
       <p>Heure début : ${record.heure_debut}</p>
       <p>Heure fin : ${record.heure_fin}</p>
+      <hr />
       <p>Type : ${record.type}</p>
       <p>Lieu : ${record.lieu}</p>
       <p>Notes : ${record.notes}</p>

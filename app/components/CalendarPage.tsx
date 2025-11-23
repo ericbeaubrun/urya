@@ -5,14 +5,15 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {EventContentArg} from "@fullcalendar/core";
+import {EventContentArg, EventInput} from "@fullcalendar/core";
 import {supabase_client} from "@/lib/supabase_client";
 import styles from "../styles/CalendarPage.module.css";
 import {useRouter} from "next/navigation";
 import {FILTER_PRESTATION_CALENDAR} from "@/app/config/config";
 
 export default function CalendarPage() {
-    const [events, setEvents] = useState([]);
+
+    const [events, setEvents] = useState<EventInput[]>([]);
 
     const router = useRouter();
 
@@ -55,10 +56,10 @@ export default function CalendarPage() {
             }
 
 
-            const formattedEvents = (data || []).map((ev: any) => {
+            const formattedEvents: EventInput[] = (data || []).map((ev: any) => {
                 const title = ev.type ? ev.type : "Prestation";
 
-                const eventData: any = {
+                const eventData: EventInput = {
                     id: ev.id,
                     title: title,
                     // backgroundColor: getColorByStatus(ev.statut),
@@ -197,10 +198,14 @@ export default function CalendarPage() {
                     }}
 
                     dayCellDidMount={(info) => {
-                        if (info.date >= new Date().setHours(0, 0, 0, 0)) {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        if (info.date >= today) {
                             info.el.setAttribute("title", "Demander une prestation");
                         }
                     }}
+
 
                     allDaySlot={false}
                     nowIndicator={true}

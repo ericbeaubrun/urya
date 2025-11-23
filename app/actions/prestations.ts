@@ -93,6 +93,7 @@ export async function addPrestation(prestationData: {
     id_client?: string;
     statut?: string;
     date_debut: string;
+    date_fin?: string | null;
     heure_debut?: string;
     heure_fin?: string;
     type?: string;

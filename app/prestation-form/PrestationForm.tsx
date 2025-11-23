@@ -74,16 +74,21 @@ export default function PrestationForm() {
     };
 
     // ---------- Nettoyage & Validation côté client ----------
-    const ALLOWED_TYPES = [
-        "mariage",
-        "anniversaire",
-        "soiree_privee",
-        "evenement_corporate",
-        "festival",
-        "club",
-        "autre",
-        ""
-    ];
+    // Dictionnaire: libellé affiché -> valeur envoyée au backend
+    const TYPE_LABEL_TO_VALUE: Record<string, string> = {
+        "Mariage": "mariage",
+        "Anniversaire": "anniversaire",
+        "Soirée privée": "soiree_privee",
+        "Évènement": "evenement_corporate",
+        "Club": "club",
+        "Festival": "festival",
+        "Concert": "concert",
+        "Séminaire": "seminaire",
+        "Autre": "autre",
+    };
+
+    // Liste des valeurs autorisées (pour normalisation/validation)
+    const ALLOWED_TYPES = [...Object.values(TYPE_LABEL_TO_VALUE), ""]; 
 
     const trim = (v: string) => (v ?? "").trim();
     const stripTags = (v: string) => trim(v).replace(/<[^>]*>/g, "");
@@ -92,13 +97,17 @@ export default function PrestationForm() {
         /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
     const normalizePhone = (v: string) => {
         const cleaned = stripTags(v).replace(/[^+\d]/g, "");
-        // garde un seul + au début si présent
         return cleaned.replace(/(?!^)[+]/g, "");
     };
     const normalizeType = (v: string) => (ALLOWED_TYPES.includes(v) ? v : "autre");
 
+    // Helper pour récupérer le libellé lisible depuis une valeur backend
+    const getTypeLabelFromValue = (value: string) => {
+        const entry = Object.entries(TYPE_LABEL_TO_VALUE).find(([, v]) => v === value);
+        return entry ? entry[0] : value;
+    };
+
     const toISODate = (v: string) => {
-        // attend déjà AAAA-MM-JJ via input type=date
         if (!v) return "";
         const d = new Date(v);
         if (isNaN(d.getTime())) return "";
@@ -152,7 +161,6 @@ export default function PrestationForm() {
             final_date_fin = `${yyyy}-${mm}-${dd}`;
         }
 
-        // Vérif date passée (uniquement à l'étape 1 mais on sécurise ici aussi)
         if (date_debut_clean) {
             const today = new Date();
             const chosenDate = new Date(date_debut_clean);
@@ -184,7 +192,6 @@ export default function PrestationForm() {
         setMessage("");
         if (step === 1) {
             const {errors} = buildCleanPayload(formData);
-            // ne retenir ici que les erreurs liées à la date passée / absence de date
             const dateErrors = errors.filter((e) =>
                 /date/.test(e.toLowerCase())
             );
@@ -226,7 +233,6 @@ export default function PrestationForm() {
 
             const data = await res.json();
             if (res.ok) {
-                // Redirige vers la page de remerciement après envoi réussi
                 router.push("/merci");
                 return;
             } else {
@@ -239,7 +245,6 @@ export default function PrestationForm() {
         }
     };
 
-    // Utilitaire d'affichage: tronquer un texte trop long (pour le récap uniquement)
     function truncate(text: string, max: number = 200) {
         if (!text) return "";
         const clean = String(text);
@@ -307,26 +312,22 @@ export default function PrestationForm() {
                         <h3>Type & lieu</h3>
                         {message && <p className={styles.message}>{message}</p>}
                         <div className={styles.field}>
-                            <label>Type</label>
+                            <label>Quelle type de prestation souhaitez-vous ?</label>
                             <select name="type" value={formData.type} onChange={handleChange}>
                                 <option value="">Sélectionnez</option>
-                                <option>mariage</option>
-                                <option>anniversaire</option>
-                                <option>soiree_privee</option>
-                                <option>evenement_corporate</option>
-                                <option>festival</option>
-                                <option>club</option>
-                                <option>autre</option>
+                                {Object.entries(TYPE_LABEL_TO_VALUE).map(([label, value]) => (
+                                    <option key={value} value={value}>{label}</option>
+                                ))}
                             </select>
                         </div>
 
                         <div className={styles.field}>
-                            <label>Lieu</label>
+                            <label>Où se déroulera-t-elle ?</label>
                             <input name="lieu" value={formData.lieu} onChange={handleChange}/>
                         </div>
 
                         <div className={styles.field}>
-                            <label>Notes</label>
+                            <label>Avez-vous des précisions à ajouter ?</label>
                             <textarea name="notes" value={formData.notes} onChange={handleChange}/>
                         </div>
 
@@ -382,7 +383,11 @@ export default function PrestationForm() {
                                 const hasStar = /\*$/.test(label);
                                 const baseLabel = label.replace(/\s*\*$/, "");
                                 const rawValue = v || "__________";
-                                const displayValue = key === "notes" ? truncate(String(rawValue)) : rawValue;
+                                const displayValue = key === "notes"
+                                    ? truncate(String(rawValue))
+                                    : key === "type"
+                                        ? getTypeLabelFromValue(String(rawValue))
+                                        : rawValue;
                                 const titleAttr = key === "notes" && v ? String(v) : undefined;
                                 return (
                                     <li key={k} title={titleAttr}>
