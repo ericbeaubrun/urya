@@ -1,5 +1,6 @@
 import PrestationForm from "@/app/prestation-form/PrestationForm";
+import {Suspense} from "react";
 
 export default function Page() {
-    return <PrestationForm />;
+    return <Suspense><PrestationForm/></Suspense>;
 }
