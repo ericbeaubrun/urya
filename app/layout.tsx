@@ -1,8 +1,6 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import styles from './global.module.css';
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -30,9 +28,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
             <div className={`${styles.light} ${styles.light4}`}></div>
             <div className={`${styles.light} ${styles.light5}`}></div>
         </div>
-        {/*<Header/>*/}
         {children}
-        {/*<Footer/>*/}
         </body>
         </html>
     );

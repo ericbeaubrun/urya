@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
         const result = await resend.emails.send({
             // from: "onboarding@resend.dev",
             // from: process.env.RESEND_MAIL_ADDRESS,
-            from: process.env.ressend_mail_address!,
-            to: process.env.admin_email!,
+            from: process.env.RESEND_MAIL_ADDRESS!,
+            to: process.env.ADMIN_EMAIL!,
             subject: emailTemplate.subject,
             html: emailTemplate.html,
         });

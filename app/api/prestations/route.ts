@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
 
         await resend.emails.send({
             // from: "onboarding@resend.dev",
-            from: process.env.resend_mail_address!,
+            from: process.env.RESEND_MAIL_ADDRESS!,
             to: mail,
             subject: userHtml.subject,
             html: userHtml.html,
@@ -151,8 +151,8 @@ export async function POST(req: NextRequest) {
 
         await resend.emails.send({
             // from: "onboarding@resend.dev",
-            from: process.env.resend_mail_address!,
-            to: process.env.admin_email!,
+            from: process.env.RESEND_MAIL_ADDRESS!,
+            to: process.env.ADMIN_EMAIL!,
             subject: adminHtml.subject,
             html: adminHtml.html,
         })

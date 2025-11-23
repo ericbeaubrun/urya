@@ -1,6 +1,12 @@
 import PrestationForm from "@/app/prestation-form/PrestationForm";
-import {Suspense} from "react";
 
-export default function Page() {
-    return <Suspense><PrestationForm/></Suspense>;
+export default async function Page({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    const sp = await searchParams;
+    const rawDate = sp?.date;
+    const initialDate = Array.isArray(rawDate) ? rawDate[0] : rawDate;
+    return <PrestationForm initialDate={initialDate} />;
 }

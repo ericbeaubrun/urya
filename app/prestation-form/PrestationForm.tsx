@@ -1,7 +1,7 @@
 "use client";
 
 import {useState, useEffect} from "react";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 import styles from "./PrestationForm.module.css";
 
 interface PrestationFormData {
@@ -17,10 +17,8 @@ interface PrestationFormData {
     notes: string;
 }
 
-export default function PrestationForm() {
+export default function PrestationForm({ initialDate }: { initialDate?: string }) {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const dateFromCalendar = searchParams.get("date");
 
     const [formData, setFormData] = useState<PrestationFormData>({
         nom: "",
@@ -36,14 +34,14 @@ export default function PrestationForm() {
     });
 
     useEffect(() => {
-        if (dateFromCalendar) {
+        if (initialDate) {
             setFormData((prev) => ({
                 ...prev,
-                date_debut: dateFromCalendar,
-                date_fin: dateFromCalendar,
+                date_debut: initialDate,
+                date_fin: initialDate,
             }));
         }
-    }, [dateFromCalendar]);
+    }, [initialDate]);
 
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,7 +86,7 @@ export default function PrestationForm() {
     };
 
     // Liste des valeurs autorisées (pour normalisation/validation)
-    const ALLOWED_TYPES = [...Object.values(TYPE_LABEL_TO_VALUE), ""]; 
+    const ALLOWED_TYPES = [...Object.values(TYPE_LABEL_TO_VALUE), ""];
 
     const trim = (v: string) => (v ?? "").trim();
     const stripTags = (v: string) => trim(v).replace(/<[^>]*>/g, "");
