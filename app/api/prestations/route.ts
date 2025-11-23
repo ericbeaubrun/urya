@@ -3,7 +3,7 @@ import {supabaseAdmin} from '@/lib/supabase_client';
 import {Resend} from "resend"
 import {clientEmailTemplate} from "@/app/emails/userEmail";
 import {adminEmailTemplate} from "@/app/emails/adminEmail";
-import {RESEND_MAIL} from "@/app/config/config";
+import {RESEND_MAIL_ADDRESS} from "@/app/config/config";
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
@@ -96,7 +96,20 @@ export async function POST(req: NextRequest) {
             clientId = newClient.id;
         }
 
-        const prestationData: any = {
+        // Définition d'un type explicite pour les données d'insertion de prestation
+        interface PrestationInsert {
+            id_client: string;
+            statut: string;
+            date_debut: string;
+            date_fin: string | null;
+            heure_debut: string | null;
+            heure_fin: string | null;
+            type: string | null;
+            lieu: string | null;
+            notes: string | null;
+        }
+
+        const prestationData: PrestationInsert = {
             id_client: clientId,
             statut: 'en_attente',
             date_debut,
@@ -131,7 +144,7 @@ export async function POST(req: NextRequest) {
 
         await resend.emails.send({
             // from: "onboarding@resend.dev",
-            from: RESEND_MAIL,
+            from: RESEND_MAIL_ADDRESS,
             to: mail,
             subject: userHtml.subject,
             html: userHtml.html,
@@ -139,7 +152,7 @@ export async function POST(req: NextRequest) {
 
         await resend.emails.send({
             // from: "onboarding@resend.dev",
-            from: RESEND_MAIL,
+            from: RESEND_MAIL_ADDRESS,
             to: process.env.admin_email!,
             subject: adminHtml.subject,
             html: adminHtml.html,

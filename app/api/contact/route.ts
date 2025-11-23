@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {Resend} from "resend";
 import {contactEmailTemplate} from "@/app/emails/contactEmail";
+import {RESEND_MAIL_ADDRESS} from "@/app/config/config";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
@@ -17,7 +18,8 @@ export async function POST(req: NextRequest) {
         const emailTemplate: { subject: string, html: string } = contactEmailTemplate(data);
 
         const result = await resend.emails.send({
-            from: "onboarding@resend.dev",
+            // from: "onboarding@resend.dev",
+            from: RESEND_MAIL_ADDRESS,
             to: process.env.admin_email!,
             subject: emailTemplate.subject,
             html: emailTemplate.html,
