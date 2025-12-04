@@ -9,7 +9,8 @@ import {EventContentArg, EventInput} from "@fullcalendar/core";
 import {supabase_client} from "@/lib/supabase_client";
 import styles from "../styles/CalendarPage.module.css";
 import {useRouter} from "next/navigation";
-import {FILTER_PRESTATION_CALENDAR} from "@/app/config/config";
+import {FILTER_PRESTATION_CALENDAR, ANIMATION_ONCE} from "@/app/config/config";
+import {motion} from "framer-motion";
 
 export default function CalendarPage() {
 
@@ -30,7 +31,6 @@ export default function CalendarPage() {
         today.setHours(0, 0, 0, 0);
 
         if (clickedDate < today) {
-            console.log("Jour passé !");
             return;
         }
 
@@ -134,9 +134,53 @@ export default function CalendarPage() {
 
     return (
         <div className={styles.wrapper}>
-            <h1 className={styles.calendarTitle}>Choisir une date de prestation</h1>
+            <motion.h1
+                className={styles.calendarTitle}
+                variants={{
+                    hidden: {opacity: 0, y: 30},
+                    visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: {duration: 0.6, delay: 0.15, ease: "easeOut"},
+                    },
+                }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{once: ANIMATION_ONCE, amount: 0.3}}
+            >
+Demande de Prestation            </motion.h1>
 
-            <div className={styles.container}>
+            <motion.p
+                className={styles.calendarIntro}
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+                    },
+                }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+            >
+                Cliquez sur un jour disponible pour demander une prestation.
+            </motion.p>
+
+            <motion.div
+                className={styles.container}
+                variants={{
+                    hidden: {opacity: 0, y: 30},
+                    visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: {duration: 0.6, delay: 0.25, ease: "easeOut"},
+                    },
+                }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{once: ANIMATION_ONCE, amount: 0.2}}
+            >
 
                 <FullCalendar
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -217,7 +261,7 @@ export default function CalendarPage() {
                         day: "Jour"
                     }}
                 />
-            </div>
+            </motion.div>
         </div>
     );
 }

@@ -40,7 +40,6 @@
 
 import Image from "next/image";
 import styles from "../styles/Footer.module.css";
-import {ExternalLink} from "lucide-react";
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -60,7 +59,7 @@ export default function Footer() {
         },
         {
             name: "TikTok",
-            icon: "/tt.png",
+            icon: "/tiktok.png",
             user: "@djxuryax77",
             link: "https://www.tiktok.com/@dj.urya"
         }
@@ -93,7 +92,7 @@ export default function Footer() {
             <div className={styles.container}>
                 <div className={styles.contact}>
                     <div className={styles.contactItem}>
-                        <h4>Tel</h4>
+                        <h4>Téléphone</h4>
                         <p>{contactInfo.telephone}</p>
                     </div>
                     <div className={styles.contactItem}>

@@ -78,20 +78,12 @@ export default function Hero() {
                     </Link>
 
                     <div className={styles.contactInfo}>
-                        <a
-                            className={styles.contactLink}
-                            href="tel:0743356517"
-                            aria-label="Téléphone"
-                        >
+                        <span className={styles.contactText} aria-label="Téléphone">
                             07 43 35 65 17
-                        </a>
-                        <a
-                            className={styles.contactLink}
-                            href="mailto:2souchik@gmail.com"
-                            aria-label="Email"
-                        >
+                        </span>
+                        <span className={styles.contactText} aria-label="Email">
                             2souchik@gmail.com
-                        </a>
+                        </span>
                     </div>
                 </motion.div>
             </div>

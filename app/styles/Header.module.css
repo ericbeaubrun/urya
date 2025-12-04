@@ -11,6 +11,9 @@
 }
 
 .nav {
+    font-family: 'Roboto', sans-serif;
+    /*font-family: 'Oswald', sans-serif;*/
+
     max-width: 1200px;
     margin: 0 auto;
     height: 100%;
@@ -101,19 +104,13 @@
 .redirectLink {
     display: inline-flex;
     align-items: center;
-    /*gap: 6px;*/
-
-    color: #4da3ff;
     color: #9568f9;
+    color: #a486ea;
     text-decoration: none;
-
     padding: 8px 10px;
-
     border-radius: 8px;
-
     font-size: 1.1rem;
     cursor: pointer;
-
     transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 

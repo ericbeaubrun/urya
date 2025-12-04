@@ -1,16 +1,15 @@
-/*.wrapper {*/
-/*    padding: 180px 140px;*/
-/*    padding-right: 12vw;*/
-/*    padding-left: 12vw;*/
-/*    text-align: center;*/
-/*}*/
-
 .wrapper {
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Oswald', sans-serif;
+
     padding: 120px 8vw;
     text-align: center;
+
 }
 
 .sectionTitle {
+    letter-spacing: 1px;
+
     font-size: 3rem;
     margin-bottom: 50px;
     color: #f5f3ff;
@@ -62,6 +61,7 @@
 }
 
 .title {
+    letter-spacing: 1px;
     margin: 0 0 1.2rem 0;
     font-size: 1.5rem;
     color: #f5f3ff;
@@ -76,11 +76,16 @@
 }
 
 .price {
+    font-family: 'Oswald', sans-serif;
+
+
     margin: 1rem 0 0 0;
     font-size: 1rem;
     color: #ec4899;
     color: #c084fc;
     font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
 }
 
 .image {

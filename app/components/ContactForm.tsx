@@ -1,11 +1,26 @@
 "use client";
 
 import {useState} from "react";
+import { motion } from "framer-motion";
 import styles from "../styles/ContactForm.module.css";
+import { ANIMATION_ONCE } from "../config/config";
 
 export default function ContactForm() {
     const [form, setForm] = useState({nom: "", email: "", message: ""});
     const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+    const appear = (index: number) => ({
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                delay: index * 0.15,
+                ease: "easeOut",
+            },
+        },
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({...form, [e.target.name]: e.target.value});
@@ -32,11 +47,34 @@ export default function ContactForm() {
 
     return (
         <section className={styles.wrapper}>
-            <h2 className={styles.title}>Contact</h2>
-            <p className={styles.subtitle}>Pour toute demande ou collaboration, envoyez‑moi un message.</p>
+            <motion.h2
+                className={styles.title}
+                variants={appear(0)}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+            >
+                Contact
+            </motion.h2>
+            <motion.p
+                className={styles.subtitle}
+                variants={appear(1)}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+            >
+                Pour toute demande ou collaboration, envoyez‑moi un message.
+            </motion.p>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.field}>
+            <motion.form
+                onSubmit={handleSubmit}
+                className={styles.form}
+                variants={appear(2)}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: ANIMATION_ONCE, amount: 0.3 }}
+            >
+                <motion.div className={styles.field} variants={appear(3)}>
                     <label>Nom ou Organisation</label>
                     <input
                         type="text"
@@ -45,9 +83,9 @@ export default function ContactForm() {
                         onChange={handleChange}
                         required
                     />
-                </div>
+                </motion.div>
 
-                <div className={styles.field}>
+                <motion.div className={styles.field} variants={appear(4)}>
                     <label>Email</label>
                     <input
                         type="email"
@@ -56,9 +94,9 @@ export default function ContactForm() {
                         onChange={handleChange}
                         required
                     />
-                </div>
+                </motion.div>
 
-                <div className={styles.field}>
+                <motion.div className={styles.field} variants={appear(5)}>
                     <label>Message</label>
                     <textarea
                         name="message"
@@ -67,23 +105,33 @@ export default function ContactForm() {
                         onChange={handleChange}
                         required
                     />
-                </div>
+                </motion.div>
 
-                <button type="submit" disabled={status === "sending"} className={styles.cta}>
+                <motion.button
+                    type="submit"
+                    disabled={status === "sending"}
+                    className={styles.cta}
+                    variants={appear(6)}
+                >
                     {status === "sending" ? "Envoi en cours..." : "Envoyer"}
-                </button>
-            </form>
+                </motion.button>
+            </motion.form>
 
             {(status === "sent" || status === "error") && (
-                <div
+                <motion.div
                     className={styles.modalOverlay}
                     role="dialog"
                     aria-modal="true"
                     onClick={() => setStatus("idle")}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                 >
-                    <div
+                    <motion.div
                         className={`${styles.modal} ${status === "sent" ? styles.modalSuccess : styles.modalError}`}
                         onClick={(e) => e.stopPropagation()}
+                        initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 24 }}
                     >
                         <div className={styles.modalContent}>
                             <h3 className={styles.modalTitle}>
@@ -98,8 +146,8 @@ export default function ContactForm() {
                         <div className={styles.modalActions}>
                             <button className={styles.modalButton} onClick={() => setStatus("idle")}>OK</button>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             )}
         </section>
     );

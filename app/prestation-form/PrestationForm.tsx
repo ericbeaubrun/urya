@@ -269,7 +269,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                 {/* STEP 1 */}
                 {step === 1 && (
                     <div className={styles.section}>
-                        <h3>Détails de la prestation</h3>
+                        <h3>Date & heure</h3>
                         {message && <p className={styles.message}>{message}</p>}
                         <div className={styles.field}>
                             <label>
@@ -320,7 +320,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                         </div>
 
                         <div className={styles.field}>
-                            <label>Où se déroulera-t-elle ?</label>
+                            <label>Adresse complète</label>
                             <input name="lieu" value={formData.lieu} onChange={handleChange}/>
                         </div>
 
@@ -340,7 +340,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                 {/* STEP 3 */}
                 {step === 3 && (
                     <div className={styles.section}>
-                        <h3>Informations client</h3>
+                        <h3>Coordonnées</h3>
                         {message && <p className={styles.message}>{message}</p>}
                         <div className={styles.field}>
                             <label>

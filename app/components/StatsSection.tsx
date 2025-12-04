@@ -5,14 +5,14 @@ import { motion } from "framer-motion";
 import {ANIMATION_ONCE} from "@/app/config/config";
 
 const content = {
-    title: "About Last Night",
+    title: "Ambiance sur mesure",
     description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Commodo adipiscing faucibus nunc amet convallis " +
-        "posuere diam nulla. Pellentesque vulputate dui posuere orci tellus dolor, semper convallis sed.",
+        "Avec une sélection musicale variée, des classiques intemporels aux derniers hits, j’adapte chaque mix à votre public, à vos goûts et à l’énergie du moment.\n" +
+        "Mon objectif : créer une atmosphère festive et élégante, où chaque invité profite pleinement de la fête.",
     stats: [
-        { number: "20+", label: "Music Artists" },
-        { number: "150+", label: "Songs" },
-        { number: "10+", label: "Places" },
+        { number: "120+", label: "Événements animés" },
+        { number: "10+", label: "Années d’expérience" },
+        { number: "50+", label: "Styles musicaux maîtrisés" },
     ],
 } as const;
 

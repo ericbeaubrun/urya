@@ -9,7 +9,7 @@ export default function MerciPage() {
             <div className={styles.card}>
                 <h1 className={styles.title}>Merci pour votre demande !</h1>
                 <p className={styles.subtitle}>
-                    Nous reviendrons vers vous pour vous communiquer le tarif et confirmer le devis.
+                    Nous prendrons contact avec vous pour vous fournir le tarif et confirmer votre devis.
                 </p>
 
                 <Link href="/" className={styles.homeBtn}>

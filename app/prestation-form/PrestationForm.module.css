@@ -1,4 +1,5 @@
 .wrapper {
+    font-family: 'Oswald', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,6 +29,7 @@
 }
 
 .stepIndicator span {
+    font-family: 'Roboto', sans-serif;
     width: 34px;
     height: 34px;
     border-radius: 50%;
@@ -38,7 +40,7 @@
     color: #a855f7;
     font-weight: 600;
     transition: all 0.3s ease;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .active {
@@ -48,6 +50,7 @@
 }
 
 .section h3 {
+    letter-spacing: 1px;
     font-size: 1.5rem;
     text-align: center;
 }
@@ -93,38 +96,43 @@
     box-shadow: 0 0 10px rgba(255, 255, 255, 5);
 }
 
+/*.btnConfirm {*/
+/*    text-transform: uppercase;*/
+/*}*/
+
+
 .btnBack,
 .btnNext,
 .btnConfirm {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+
     cursor: pointer;
     color: #fff;
     border: none;
     border-radius: 8px;
     padding: 10px 24px;
-    font-size: 1rem;
+    font-size: 0.85rem;
     transition: transform 0.2s ease, box-shadow 0.25s ease;
     white-space: nowrap;
 }
 
-.btnBack div,.btnNext div {
+.btnBack div, .btnNext div {
     display: none;
 
 }
 
 .backPageBtn {
-    /* Toujours visible, positionné de manière intuitive (coin haut gauche) */
     position: fixed;
     top: calc(16px + env(safe-area-inset-top, 0px));
     left: calc(16px + env(safe-area-inset-left, 0px));
     z-index: 1000;
 
-    /* Style simple mais visible */
-    background: rgba(17, 24, 39, 0.85); /* gris foncé semi-opaque */
+    background: rgba(17, 24, 39, 0.85);
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.25);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 
-    /* Forme et dimensions accessibles */
     border-radius: 9999px;
     padding: 10px 14px;
     font-size: 1.25rem;
@@ -132,7 +140,6 @@
     white-space: nowrap;
     cursor: pointer;
 
-    /* Animations subtiles */
     transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, filter 0.2s ease;
 }
 
@@ -147,11 +154,21 @@
 }
 
 
-.btnBack { background-color: #c98cff; }
-.btnNext { background-color: #c98cff; }
-.btnConfirm { background-color: #3b9f2c; }
+.btnBack {
+    background-color: #c98cff;
+}
 
-.btnBack:hover { background-color: #bb84ee; }
+.btnNext {
+    background-color: #c98cff;
+}
+
+.btnConfirm {
+    background-color: #3b9f2c;
+}
+
+.btnBack:hover {
+    background-color: #bb84ee;
+}
 
 /*.nav {*/
 /*    position: absolute;*/
@@ -168,19 +185,13 @@
 
 
 .nav {
-    /* SUPPRIMER ceci :
-    position: absolute;
-    bottom: 26px;
-    */
-
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
     gap: 16px;
-    margin-top: 20px; /* optionnel */
+    margin-top: 20px;
 }
-
 
 
 .recapList {
@@ -190,14 +201,20 @@
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+
 }
+
+.recapList strong {
+    font-weight: 500;
+    color: #fff;
+}
+
 
 .recapList {
     white-space: normal;
     word-wrap: break-word;
 }
-
-
 
 
 .message {
@@ -217,22 +234,21 @@
 }
 
 
-
 @media (max-width: 600px) {
     .backPageBtn {
-        /* Zone de toucher plus grande sur mobile */
         padding: 12px 16px;
         font-size: 1.35rem;
         top: calc(12px + env(safe-area-inset-top, 0px));
         left: calc(12px + env(safe-area-inset-left, 0px));
     }
+
     .card {
         padding: 28px 20px 28px;
     }
 
     .fieldRow {
         flex-direction: column;
-            margin-bottom: 0;
+        margin-bottom: 0;
 
     }
 
