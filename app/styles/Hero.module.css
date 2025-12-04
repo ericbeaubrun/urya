@@ -183,6 +183,18 @@
     .video {
         display: none;
     }
+
+    .cta {
+        padding: 16px 28px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .cta {
+        padding: 12px 20px;
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 450px) {

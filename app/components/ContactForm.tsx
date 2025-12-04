@@ -139,7 +139,7 @@ export default function ContactForm() {
                             </h3>
                             <p className={styles.modalText}>
                                 {status === "sent"
-                                    ? "Message envoyé ! Je reviens vers vous très vite."
+                                    ? "Je reviens vers vous très vite."
                                     : "Une erreur est survenue. Réessayez."}
                             </p>
                         </div>

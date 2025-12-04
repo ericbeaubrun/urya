@@ -1,10 +1,17 @@
 .wrapper {
     font-family: 'Oswald', sans-serif;
     padding: 360px 40px;
+    padding-top: 100px;
+    padding-right: 40px;
+    padding-left: 40px;
+    padding-bottom: 360px;
     text-align: center;
 
     @media (max-width: 600px) {
-        padding: 80px 12px;
+        padding-top: 80px;
+        padding-right: 12px;
+        padding-left: 12px;
+        padding-bottom: 220px;
     }
 }
 
@@ -13,6 +20,14 @@
     color: #f5f3ff;
     font-size: 3rem;
     margin-bottom: 8px;
+
+    @media (max-width: 900px) {
+        font-size: 2.1rem;
+    }
+
+    @media (max-width: 600px) {
+        font-size: 1.8rem;
+    }
 }
 
 .subtitle {
@@ -21,6 +36,10 @@
     font-size: 1rem;
     margin-bottom: 40px;
     opacity: 0.9;
+    @media (max-width: 900px) {
+        margin-bottom: 30px;
+        font-size: 0.9rem;
+    }
 }
 
 .form {
@@ -30,9 +49,14 @@
     flex-direction: column;
     gap: 22px;
 
+    @media (max-width: 900px) {
+        gap: 12px;
+    }
+
     @media (max-width: 600px) {
         max-width: 100%;
     }
+
 }
 
 .field {
@@ -46,28 +70,32 @@
     color: #fff;
     font-size: 1.1rem;
     opacity: 0.9;
+    @media (max-width: 900px) {
+        font-size: 0.9rem;
+    }
 }
 
 .field input,
 .field textarea {
     padding: 12px 14px;
+
+    @media (max-width: 900px) {
+        padding: 8px 10px;
+    }
+
     background: #0b0f17;
     background: rgba(0, 0, 0, 0.50);
     border-color: transparent;
     border-radius: 6px;
     color: white;
     outline: none;
-
     resize: vertical;
 }
 
 
 .field textarea {
-
     height: 300px;
     max-width: 100%;
-    /*max-width: 96%;*/
-
     font-size: 1rem;
 }
 
@@ -114,6 +142,17 @@
     font-family: 'Roboto', sans-serif;
     font-family: 'Oswald', sans-serif;
     letter-spacing: 1px;
+    @media (max-width: 900px) {
+        padding: 8px 48px;
+            font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+        padding: 6px 48px;
+            font-size: 0.85rem;
+    }
+
+
 }
 
 .cta:hover {

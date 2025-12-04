@@ -17,7 +17,7 @@ interface PrestationFormData {
     notes: string;
 }
 
-export default function PrestationForm({ initialDate }: { initialDate?: string }) {
+export default function PrestationForm({initialDate}: { initialDate?: string }) {
     const router = useRouter();
 
     const [formData, setFormData] = useState<PrestationFormData>({
@@ -46,8 +46,34 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
-    const backBtnContent = `\u2b9c précédent`;
-    const nextBtnContent = `suivant \u2b9e`;
+    const backBtnContent = (
+        <>
+            <img
+                src="/arrow-left.svg"
+                alt=""
+                aria-hidden="true"
+                width={22}
+                height={22}
+                style={{marginRight: 0, verticalAlign: "top"}}
+            />
+            <span>précédent</span>
+        </>
+    );
+    const nextBtnContent = (
+        <>
+            <span>suivant</span>
+            <img
+                src="/arrow-right.svg"
+                alt=""
+                aria-hidden="true"
+                width={22}
+                height={22}
+                style={{marginLeft: 0, verticalAlign: "top"}}
+            />
+        </>
+    );
+    // const backBtnContent = `précédent`;
+    // const nextBtnContent = `suivant`;
 
     // Libellés affichés dans le récapitulatif, avec * pour les champs obligatoires
     const fieldLabels: Record<keyof PrestationFormData, string> = {
@@ -252,10 +278,21 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     return (
         <section className={styles.wrapper}>
             <button
-                className={styles.backPageBtn}
+                className={styles.
+                    backPageBtn}
                 onClick={() => window.history.back()}
             >
-                {"\u21a9"}
+                {/*{"\u21a9"}*/}
+                <img
+                    src="/cross.svg"
+                    alt=""
+                    aria-hidden="true"
+                    width={38}
+                    height={38}
+                    style={{verticalAlign: "top"}}
+                />
+                Annuler
+
             </button>
 
             <div className={styles.card}>

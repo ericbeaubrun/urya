@@ -14,7 +14,6 @@
     font-family: 'Oswald', sans-serif;
     letter-spacing: 1px;
 
-
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 18px;
@@ -69,20 +68,17 @@
     opacity: 0.8;
 }
 
-/* Responsive */
-/* Large tablets / small desktops */
-@media (max-width: 1024px) {
-    .wrapper {
-        padding: 160px 32px;
-    }
+/*@media (max-width: 1024px) {*/
+/*    .wrapper {*/
+/*        padding: 160px 32px;*/
+/*    }*/
 
-    .title {
-        font-size: 2.5rem;
-    }
-}
+/*    .title {*/
+/*        font-size: 2.5rem;*/
+/*    }*/
+/*}*/
 
-/* Tablets */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .wrapper {
         padding: 120px 24px;
     }
@@ -106,7 +102,6 @@
     }
 }
 
-/* Phones */
 @media (max-width: 600px) {
     .wrapper {
         padding: 90px 20px;
@@ -135,8 +130,7 @@
     }
 }
 
-/* Small phones */
-@media (max-width: 380px) {
+@media (max-width: 400px) {
     .wrapper {
         padding: 72px 16px;
     }

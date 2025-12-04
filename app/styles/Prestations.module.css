@@ -109,6 +109,11 @@
 }
 
 @media (max-width: 900px) {
+
+    .sectionTitle {
+        font-size: 2.1rem;
+    }
+
     .wrapper {
         padding: 100px 6vw;
     }
@@ -138,7 +143,7 @@
     }
 
     .sectionTitle {
-        font-size: 2rem;
+        font-size: 1.8rem;
         margin-bottom: 30px;
     }
 
@@ -174,10 +179,6 @@
 }
 
 @media (max-width: 400px) {
-    .sectionTitle {
-        font-size: 1.7rem;
-    }
-
     .grid {
         gap: 12px;
     }

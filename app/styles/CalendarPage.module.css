@@ -31,6 +31,10 @@
     line-height: 1.55;
     font-weight: 400;
     font-size: 1.02rem;
+
+    @media (max-width: 600px) {
+        font-size: 0.95rem;
+    }
 }
 
 .eventContent {
@@ -153,7 +157,7 @@
     color: #efeaff;
     font-weight: bold;
     padding: 8px 10px;
-    border-radius :3px;
+    border-radius: 3px;
     font-size: 0.8rem;
     line-height: 1.2;
     text-align: center;
@@ -437,4 +441,14 @@
     pointer-events: none !important;
 }
 
+@media (max-width: 900px) {
+    .calendarTitle {
+        font-size: 2.1rem;
+    }
+}
 
+@media (max-width: 600px) {
+    .calendarTitle {
+        font-size: 1.8rem;
+    }
+}
