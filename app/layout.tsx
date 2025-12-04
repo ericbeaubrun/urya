@@ -13,10 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Dj URYA",
-    description: "Bienvenue dans l’univers de DJ URYA passionnée de musique et créateur d’ambiances inoubliables." +
-        "Mariages, anniversaires, soirées privées ou événements professionnels : " +
-        "je suis votre DJ pour faire de chaque instant un moment unique.",
+    title: "DJ URYA – DJ Mariage & Soirées Privées en Seine-et-Marne (77)",
+    description: "DJ Professionnel pour Anniversaires et Entreprises – Île-de-France ",
 };
 
 

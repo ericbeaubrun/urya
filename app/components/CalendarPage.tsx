@@ -149,7 +149,7 @@ export default function CalendarPage() {
 
     return (
         <div className={styles.wrapper}>
-            <motion.h1
+            <motion.h2
                 className={styles.calendarTitle}
                 variants={{
                     hidden: {opacity: 0, y: 30},
@@ -163,7 +163,7 @@ export default function CalendarPage() {
                 whileInView="visible"
                 viewport={{once: ANIMATION_ONCE, amount: 0.3}}
             >
-Demande de Prestation            </motion.h1>
+Demande de Prestation            </motion.h2>
 
             <motion.p
                 className={styles.calendarIntro}

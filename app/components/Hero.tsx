@@ -32,7 +32,7 @@ export default function Hero() {
                     whileInView="visible"
                     viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
-                    DJ <br/> <MusicPlayingEffect/> URYA
+                    <strong>DJ <br/> <MusicPlayingEffect/> URYA</strong>
                 </motion.h1>
 
                 <motion.p
@@ -52,7 +52,7 @@ export default function Hero() {
                     whileInView="visible"
                     viewport={{once: ANIMATION_ONCE, amount: 0.3}}
                 >
-                    Bienvenue dans l’univers de DJ URYA passionnée de musique et créateur d’ambiances inoubliables.
+                    Bienvenue dans l’univers de <strong>DJ URYA</strong> passionnée de musique et créateur d’ambiances inoubliables.
                     Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre DJ pour faire
                     de chaque instant un moment unique.
                 </motion.p>
