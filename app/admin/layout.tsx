@@ -6,6 +6,8 @@ import React from "react";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
     const session = await auth();
 
+
+
     // Redirigé par middleware / pages protégées, mais on sécurise ici aussi
     if (!session) {
         // Laisser Next middleware/routeur gérer; sinon on pourrait utiliser redirect("/login")

@@ -14,6 +14,19 @@ import {motion} from "framer-motion";
 
 export default function CalendarPage() {
 
+    const TYPE_LABEL_TO_VALUE: Record<string, string> = {
+        mariage: "Mariage",
+        anniversaire: "Anniversaire",
+        soiree_privee: "Soirée privée",
+        evenement_corporate: "Évènement",
+        club: "Club",
+        festival: "Festival",
+        concert: "Concert",
+        seminaire: "Séminaire",
+        autre: "Évènement spécial",
+    };
+
+
     const [events, setEvents] = useState<EventInput[]>([]);
 
     const router = useRouter();
@@ -57,7 +70,9 @@ export default function CalendarPage() {
 
 
             const formattedEvents: EventInput[] = (data || []).map((ev: any) => {
-                const title = ev.type ? ev.type : "Prestation";
+                // Utiliser le libellé lisible via TYPE_LABEL_TO_VALUE pour l'affichage
+                const mappedLabel = ev?.type ? (TYPE_LABEL_TO_VALUE[ev.type] ?? ev.type) : undefined;
+                const title = mappedLabel ?? "Prestation";
 
                 const eventData: EventInput = {
                     id: ev.id,

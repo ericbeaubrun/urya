@@ -362,7 +362,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                         </div>
 
                         <div className={styles.field}>
-                            <label>Avez-vous des précisions à ajouter ?</label>
+                            <label>Précisions ou options supplémentaires à ajouter (lumières, fumée, lasers ou autres effets spéciaux)</label>
                             <textarea name="notes" value={formData.notes} onChange={handleChange}/>
                         </div>
 

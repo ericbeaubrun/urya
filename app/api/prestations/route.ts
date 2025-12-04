@@ -140,7 +140,6 @@ export async function POST(req: NextRequest) {
         console.log(userHtml);
         console.log(adminHtml);
 
-
         await resend.emails.send({
             // from: "onboarding@resend.dev",
             from: process.env.RESEND_MAIL_ADDRESS!,
