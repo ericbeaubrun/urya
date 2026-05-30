@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {supabase_client} from "@/lib/supabase_client";
-import styles from "@/app/styles/CalendarPage.module.css";
+import styles from "@/app/components/CalendarPage.module.css";
 
 type FC = any;
 

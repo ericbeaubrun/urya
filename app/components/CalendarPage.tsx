@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {EventContentArg, EventInput} from "@fullcalendar/core";
 import {supabase_client} from "@/lib/supabase_client";
-import styles from "../styles/CalendarPage.module.css";
+import styles from "./CalendarPage.module.css";
 import {useRouter} from "next/navigation";
 import {FILTER_PRESTATION_CALENDAR, ANIMATION_ONCE} from "@/app/config/config";
 import {motion} from "framer-motion";

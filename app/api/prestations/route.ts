@@ -137,8 +137,8 @@ export async function POST(req: NextRequest) {
 
         const userHtml = clientEmailTemplate(body)
         const adminHtml = adminEmailTemplate(body)
-        console.log(userHtml);
-        console.log(adminHtml);
+        // console.log(userHtml);
+        // console.log(adminHtml);
 
         await resend.emails.send({
             // from: "onboarding@resend.dev",

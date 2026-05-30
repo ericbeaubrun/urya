@@ -2,7 +2,7 @@
 
 import {useState} from "react";
 import { motion } from "framer-motion";
-import styles from "../styles/ContactForm.module.css";
+import styles from "./ContactForm.module.css";
 import { ANIMATION_ONCE } from "../config/config";
 
 export default function ContactForm() {

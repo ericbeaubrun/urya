@@ -3,7 +3,7 @@
 import {useState} from "react";
 import {Link, animateScroll as scroll} from "react-scroll";
 import Image from "next/image";
-import styles from "../styles/Header.module.css";
+import styles from "./Header.module.css";
 import {ExternalLink} from "lucide-react";
 import {usePathname} from "next/navigation";
 

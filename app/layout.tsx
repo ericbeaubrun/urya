@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
-        <html lang="en">
+        <html lang="fr">
         <head>
             <link
                 href="https://fonts.googleapis.com/css2?family=Oswald&family=Roboto:wght@400;700&family=Bebas+Neue&display=swap"
@@ -28,13 +28,6 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
             />
         </head>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div className={styles.lights}>
-            <div className={`${styles.light} ${styles.light1}`}></div>
-            <div className={`${styles.light} ${styles.light2}`}></div>
-            <div className={`${styles.light} ${styles.light3}`}></div>
-            <div className={`${styles.light} ${styles.light4}`}></div>
-            <div className={`${styles.light} ${styles.light5}`}></div>
-        </div>
 
         {children}
         </body>
