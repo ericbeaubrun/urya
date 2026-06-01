@@ -3,70 +3,91 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: var(--color-bg-deep);
+    padding: var(--space-6);
 }
 
 .formContainer {
-    background-color: white;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-bg-card);
+    padding: var(--space-10);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-xl);
     width: 100%;
     max-width: 400px;
 }
 
 .title {
-    margin-bottom: 30px;
+    margin-bottom: var(--space-8);
     text-align: center;
+    font-family: var(--font-display);
+    font-size: var(--fs-3xl);
+    color: var(--color-text-main);
 }
 
 .formGroup {
-    margin-bottom: 20px;
+    margin-bottom: var(--space-5);
 }
 
 .label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: var(--space-2);
     font-weight: 500;
+    font-size: var(--fs-sm);
+    color: var(--color-text-dim);
 }
 
 .input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+    padding: var(--space-3) var(--space-4);
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-base);
+    color: var(--color-text-main);
+    transition: var(--transition-fast);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-border-primary);
 }
 
 .errorMessage {
-    padding: 10px;
-    background-color: #fee;
-    color: #c33;
-    border-radius: 4px;
-    margin-bottom: 20px;
+    padding: var(--space-3);
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-5);
     text-align: center;
+    font-size: var(--fs-sm);
 }
 
 .submitButton {
     width: 100%;
-    padding: 12px;
-    background-color: #0070f3;
-    color: white;
+    padding: var(--space-4);
+    background-color: var(--color-primary);
+    color: var(--color-text-main);
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: var(--radius-md);
+    font-size: var(--fs-base);
     font-weight: 600;
     cursor: pointer;
+    transition: var(--transition-base);
 }
 
 .submitButton:hover {
-    background-color: #0051cc;
+    background-color: var(--color-primary-light);
 }
 
 .infoBox {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    font-size: 14px;
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background-color: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-xs);
+    color: var(--color-text-dim);
+    line-height: 1.5;
 }

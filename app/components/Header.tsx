@@ -1,101 +1,148 @@
-"use client";
+'use client';
 
-import {useState} from "react";
-import {Link, animateScroll as scroll} from "react-scroll";
-import Image from "next/image";
-import styles from "./Header.module.css";
-import {ExternalLink} from "lucide-react";
-import {usePathname} from "next/navigation";
+import { useState, useEffect } from 'react';
+import { Link as ScrollLink } from 'react-scroll';
+import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
+import styles from './Header.module.css';
 
-const DURATION = 600;
+const navItems = [
+    { label: 'Accueil', to: 'hero' },
+    { label: 'À propos', to: 'about' },
+    { label: 'Services', to: 'services' },
+    // { label: 'Devis', to: 'devis' },
+    { label: 'Questions', to: 'faq' },
+    // { label: 'Contact', to: 'contact' },
+];
 
-export default function Header() {
+interface NavigationProps {
+    onContactClick?: () => void;
+}
+
+export default function Navigation({ onContactClick }: NavigationProps) {
+    const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const isPrestationFormPage = usePathname() === "/prestation-form";
+    useEffect(() => {
+        const onScroll = () => {
+            setScrolled(window.scrollY > 40);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
-    const handleToggle = () => {
-        if (isPrestationFormPage) {
-            // window.location.href = "/";
-            setMenuOpen(!menuOpen);
-
-        } else {
-            setMenuOpen(!menuOpen);
-        }
+    const handleNav = () => {
+        setMenuOpen(false);
     };
-
-    const handleClose = () => {
-        if (isPrestationFormPage) {
-            window.location.href = "/";
-        } else {
-            setMenuOpen(false);
-        }
-    };
-
-    // 🧩 Tableau des liens à générer
-    const navLinks = [
-        {to: "prestations", label: "Offres", offset: 40},
-        {to: "calendrier", label: "Calendrier", offset: -110},
-        // {to: "reseaux", label: "Réseaux Sociaux"},
-        {to: "contact", label: "Contact", offset: 270},
-    ];
 
     return (
-        <header className={styles.header} role="banner">
-            <nav className={styles.nav} aria-label="Navigation principale">
-                <a
-                    href="#top"
-                    className={styles.brand}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        scroll.scrollToTop({duration: DURATION, smooth: true});
-                        handleClose();
-                    }}
-                >
-                    <Image src="/logo.png" alt="Logo" width={72} height={72} priority/>
-                </a>
-
-                <button
-                    className={`${styles.burger} ${menuOpen ? styles.open : ""}`}
-                    aria-label="Menu"
-                    onClick={handleToggle}
-                >
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-
-                <div
-                    className={`${styles.links} ${menuOpen ? styles.showMenu : ""}`}
-                    onClick={handleClose}
-                >
-                    {navLinks.map(({to, label, offset}) => (
-                        <Link
-                            key={to}
-                            to={to}
-                            smooth={true}
-                            duration={DURATION}
-                            offset={offset}
-                            spy={true}
-                            className={styles.link}
-                            onClick={handleClose}
-                        >
-                            {label}
-                        </Link>
-                    ))}
-                    {/*{!isPrestationFormPage && (*/}
-                    <a
-                        href="/prestation-form"
-                        className={styles.redirectLink}
-                        onClick={handleClose}
+        <>
+            <nav className={`${styles.navContainer} ${scrolled ? styles.scrolled : ''}`}>
+                <div className={styles.navContent}>
+                    {/* Logo */}
+                    <ScrollLink
+                        to="hero"
+                        smooth={true}
+                        duration={800}
+                        onClick={handleNav}
+                        className={styles.logo}
+                        style={{ cursor: 'pointer' }}
                     >
-                        Demande de Prestation&nbsp;
-                        <ExternalLink className={styles.icon}/>
-                    </a>
-                    {/*)}*/}
+                        <span className={styles.logoWhite}>DJ</span>
+                        <span className={styles.logoGradient}>URYA</span>
+                    </ScrollLink>
+
+                    {/* Desktop Navigation */}
+                    <ul className={styles.desktopMenu}>
+                        {navItems.map((item) => (
+                            <li key={item.to}>
+                                <ScrollLink
+                                    to={item.to}
+                                    spy={true}
+                                    smooth={true}
+                                    offset={-80}
+                                    duration={800}
+                                    onClick={() => {
+                                        handleNav();
+                                        if (item.to === 'faq' && onContactClick) onContactClick();
+                                    }}
+                                    className={styles.navLink}
+                                    activeClass={styles.activeLink}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {item.label}
+                                </ScrollLink>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {/* Desktop CTA */}
+                    <ScrollLink
+                        to="devis"
+                        spy={true}
+                        smooth={true}
+                        offset={-80}
+                        duration={800}
+                        className={styles.ctaButton}
+                        activeClass={styles.activeCta}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        Réserver
+                    </ScrollLink>
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        className={styles.mobileMenuBtn}
+                        aria-label="Menu"
+                    >
+                        {menuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
                 </div>
             </nav>
-        </header>
+
+            {/* Mobile Drawer */}
+            <div className={`${styles.mobileDrawer} ${menuOpen ? styles.drawerOpen : ''}`}>
+                <div className={styles.drawerOverlay} onClick={() => setMenuOpen(false)} />
+                <div className={styles.drawerContent}>
+                    <ul className={styles.mobileMenuList}>
+                        {navItems.map((item) => (
+                            <li key={item.to}>
+                                <ScrollLink
+                                    to={item.to}
+                                    spy={true}
+                                    smooth={true}
+                                    offset={-80}
+                                    duration={800}
+                                    onClick={() => {
+                                        handleNav();
+                                        if (item.to === 'faq' && onContactClick) onContactClick();
+                                    }}
+                                    className={styles.mobileNavLink}
+                                    activeClass={styles.activeLink}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {item.label}
+                                </ScrollLink>
+                            </li>
+                        ))}
+                    </ul>
+                    <ScrollLink
+                        to="devis"
+                        spy={true}
+                        smooth={true}
+                        offset={-80}
+                        duration={800}
+                        onClick={handleNav}
+                        className={styles.mobileCtaButton}
+                        activeClass={styles.activeCtaMobile}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        Réserver
+                    </ScrollLink>
+                </div>
+            </div>
+        </>
     );
 }
 

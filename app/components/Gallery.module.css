@@ -1,0 +1,121 @@
+.section {
+    position: relative;
+    padding: var(--section-padding-y) var(--section-padding-x);
+    overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+    .section {
+        padding: var(--section-padding-y-lg) var(--section-padding-x-lg);
+    }
+}
+
+
+.container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: var(--space-20);
+}
+
+.sectionTitle {
+}
+
+
+@media (min-width: 768px) {
+    .sectionTitle {
+        font-size: var(--fs-5xl);
+    }
+}
+
+.textGradient {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sectionSubtitle {
+    font-size: var(--fs-lg);
+    color: var(--color-text-muted);
+    max-width: 36rem;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.label {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-5);
+    font-family: var(--font-secondary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    auto-rows: 180px;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.bigCard {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.imageCard {
+    position: relative;
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-card);
+    cursor: pointer;
+    /*overflow: hidden;*/
+}
+
+.image {
+    border-radius: var(--radius-md);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.imageCard:hover .image {
+    transform: scale(1.025);
+}
+
+.hoverOverlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(139, 92, 246, 0);
+    transition: var(--transition-base);
+    pointer-events: none;
+}
+
+.imageCard:hover .hoverOverlay {
+    background-color: rgba(139, 92, 246, 0.08);
+}
+
+.neonBorder {
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    transition: var(--transition-base);
+    pointer-events: none;
+}
+
+.imageCard:hover .neonBorder {
+    border-color: rgba(167, 139, 250, 0.4);
+    box-shadow: inset 0 0 15px rgba(139, 92, 246, 0.15);
+}
