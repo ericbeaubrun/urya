@@ -26,10 +26,9 @@ export default function Footer() {
                     <nav className={styles.nav}>
                         {[
                             { label: 'À propos', id: 'about' },
-                            { label: 'Prestations', id: 'services' },
-                            { label: 'Médias', id: 'media' },
-                            { label: 'Avis', id: 'testimonials' },
-                            { label: 'Contact', id: 'contact' },
+                            { label: 'Actualités', id: 'gallery' },
+                            { label: 'Services', id: 'services' },
+                            { label: 'Questions', id: 'faq' },
                         ].map((item) => (
                             <ScrollLink
                                 key={item.id}

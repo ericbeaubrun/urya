@@ -7,12 +7,10 @@ import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
 const navItems = [
-    { label: 'Accueil', to: 'hero' },
     { label: 'À propos', to: 'about' },
+    { label: 'Actualités', to: 'gallery' },
     { label: 'Services', to: 'services' },
-    // { label: 'Devis', to: 'devis' },
     { label: 'Questions', to: 'faq' },
-    // { label: 'Contact', to: 'contact' },
 ];
 
 interface NavigationProps {
@@ -22,11 +20,18 @@ interface NavigationProps {
 export default function Navigation({ onContactClick }: NavigationProps) {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isHeroActive, setIsHeroActive] = useState(true);
 
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > 40);
+            // On force l'activation du logo si on est tout en haut
+            if (window.scrollY < 10) {
+                setIsHeroActive(true);
+            }
         };
+        // Vérification initiale
+        onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
@@ -42,10 +47,15 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                     {/* Logo */}
                     <ScrollLink
                         to="hero"
+                        spy={true}
                         smooth={true}
+                        offset={-80}
                         duration={800}
                         onClick={handleNav}
-                        className={styles.logo}
+                        className={`${styles.logo} ${isHeroActive ? styles.activeLink : ''}`}
+                        activeClass={styles.activeLink}
+                        onSetActive={() => setIsHeroActive(true)}
+                        onSetInactive={() => setIsHeroActive(false)}
                         style={{ cursor: 'pointer' }}
                     >
                         <span className={styles.logoWhite}>DJ</span>

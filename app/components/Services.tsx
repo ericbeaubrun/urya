@@ -38,7 +38,7 @@ const servicesData = [
     },
     {
         icon: Sparkles,
-        title: 'Soirées Privées',
+        title: 'Événements & Soirées',
         subtitle: 'Transformez votre villa ou lieu loué en véritable club éphémère',
         image: '/soiree_privee.png',
         price: 'À partir de 900€',
@@ -50,20 +50,20 @@ const servicesData = [
             // 'Prolongations possibles sur demande',
         ],
     },
-    {
-        icon: CalendarDays,
-        title: 'Événements',
-        subtitle: 'Lancements, galas ou soirées d\'entreprise haut de gamme',
-        image: '/evenement.png',
-        price: 'Sur devis',
-        inclusions: [
-            'Analyse du brief événementiel et de l\'ADN de marque',
-            'Musique d\'ambiance Lounge / Deep pour le cocktail',
-            'Montée en puissance pour la partie dansante',
-            // 'Coordination avec vos prestataires et équipes techniques',
-            // 'Création de jingles ou identité sonore dédiée',
-        ],
-    },
+    // {
+    //     icon: CalendarDays,
+    //     title: 'Événements',
+    //     subtitle: 'Lancements, galas ou soirées d\'entreprise haut de gamme',
+    //     image: '/evenement.png',
+    //     price: 'Sur devis',
+    //     inclusions: [
+    //         'Analyse du brief événementiel et de l\'ADN de marque',
+    //         'Musique d\'ambiance Lounge / Deep pour le cocktail',
+    //         'Montée en puissance pour la partie dansante',
+    //         // 'Coordination avec vos prestataires et équipes techniques',
+    //         // 'Création de jingles ou identité sonore dédiée',
+    //     ],
+    // },
 ];
 
 const containerVariants = {

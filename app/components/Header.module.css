@@ -31,6 +31,22 @@
     font-size: var(--fs-xl);
     text-decoration: none;
     letter-spacing: 0.05em;
+    position: relative;
+    padding: var(--space-1) 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.logo::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--color-primary-light), var(--color-primary));
+    border-radius: var(--radius-full);
+    transition: width var(--transition-base);
 }
 
 .logoWhite {
@@ -67,6 +83,19 @@
     transition: var(--transition-fast);
     position: relative;
     padding: var(--space-1) 0;
+
+}
+
+.navLink::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--color-primary-light), var(--color-primary));
+    border-radius: var(--radius-full);
+    transition: width var(--transition-base);
 }
 
 .navLink:hover {
@@ -78,17 +107,9 @@
 }
 
 .activeLink::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(to right, var(--color-primary-light), var(--color-primary));
-    border-radius: var(--radius-full);
 }
 
-/* CTA BUTTON */
 .ctaButton {
     display: none;
     background-color: var(--color-primary);

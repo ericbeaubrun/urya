@@ -672,19 +672,12 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             </div>
                             <div className={styles.modalBody}>
                                 <TimePicker 
-                                    onTimeSelect={handleTimeSelect} 
+                                    onTimeSelect={(time) => {
+                                        handleTimeSelect(time);
+                                        closeTimePicker();
+                                    }} 
                                     initialTime={formData[showTimePicker.field!] || undefined} 
                                 />
-                                <div style={{ marginTop: 'var(--space-6)', display: 'flex', justifyContent: 'center' }}>
-                                    <button 
-                                        type="button" 
-                                        className={styles.btnConfirm} 
-                                        style={{ width: '100%', marginLeft: 0 }}
-                                        onClick={closeTimePicker}
-                                    >
-                                        Valider
-                                    </button>
-                                </div>
                             </div>
                         </motion.div>
                     </div>
