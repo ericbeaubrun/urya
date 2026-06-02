@@ -355,7 +355,7 @@ function PrestationsAdminPage({
                                                     }
                                                 }}
                                             >
-                                                ✔ Valider
+                                                ✔ OK
                                             </button>
                                         )}
 

@@ -6,12 +6,9 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
-const navItems = [
-    { label: 'À propos', to: 'about' },
-    { label: 'Actualités', to: 'gallery' },
-    { label: 'Services', to: 'services' },
-    { label: 'Questions', to: 'faq' },
-];
+import content from '@/data/content.json';
+
+const { navigation } = content;
 
 interface NavigationProps {
     onContactClick?: () => void;
@@ -58,19 +55,19 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         onSetInactive={() => setIsHeroActive(false)}
                         style={{ cursor: 'pointer' }}
                     >
-                        <span className={styles.logoWhite}>DJ</span>
-                        <span className={styles.logoGradient}>URYA</span>
+                        <span className={styles.logoWhite}>{navigation.logo.first}</span>
+                        <span className={styles.logoGradient}>{navigation.logo.second}</span>
                     </ScrollLink>
 
                     {/* Desktop Navigation */}
                     <ul className={styles.desktopMenu}>
-                        {navItems.map((item) => (
+                        {navigation.items.map((item) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}
                                     spy={true}
                                     smooth={true}
-                                    offset={-80}
+                                    offset={40}
                                     duration={800}
                                     onClick={() => {
                                         handleNav();
@@ -91,13 +88,13 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         to="devis"
                         spy={true}
                         smooth={true}
-                        offset={-80}
+                        offset={240}
                         duration={800}
                         className={styles.ctaButton}
                         activeClass={styles.activeCta}
                         style={{ cursor: 'pointer' }}
                     >
-                        Réserver
+                        {navigation.cta}
                     </ScrollLink>
 
                     {/* Mobile Menu Button */}
@@ -105,6 +102,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         onClick={() => setMenuOpen(!menuOpen)}
                         className={styles.mobileMenuBtn}
                         aria-label="Menu"
+                        title={menuOpen ? "Fermer" : "Menu"}
                     >
                         {menuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -115,8 +113,16 @@ export default function Navigation({ onContactClick }: NavigationProps) {
             <div className={`${styles.mobileDrawer} ${menuOpen ? styles.drawerOpen : ''}`}>
                 <div className={styles.drawerOverlay} onClick={() => setMenuOpen(false)} />
                 <div className={styles.drawerContent}>
+                    <button
+                        onClick={() => setMenuOpen(false)}
+                        className={styles.closeDrawerBtn}
+                        aria-label="Fermer le menu"
+                        title="Fermer"
+                    >
+                        <X size={24} />
+                    </button>
                     <ul className={styles.mobileMenuList}>
-                        {navItems.map((item) => (
+                        {navigation.items.map((item) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}
@@ -148,7 +154,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         activeClass={styles.activeCtaMobile}
                         style={{ cursor: 'pointer' }}
                     >
-                        Réserver
+                        {navigation.cta}
                     </ScrollLink>
                 </div>
             </div>

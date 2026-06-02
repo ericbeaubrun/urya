@@ -5,12 +5,16 @@ import { Phone, Mail, Instagram, MapPin } from 'lucide-react';
 import styles from './About.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-const contactInfo = [
-    { icon: Phone, label: '+33 6 12 34 56 78', sub: 'Téléphone' },
-    { icon: Mail, label: 'booking@djnexus.fr', sub: 'Email' },
-    { icon: Instagram, label: '@djnexus_music', sub: 'Instagram' },
-    { icon: MapPin, label: 'Paris, France', sub: 'Localisation' },
-];
+import content from '@/data/content.json';
+
+const { about } = content;
+
+const ICON_MAP: Record<string, any> = {
+    Phone,
+    Mail,
+    Instagram,
+    MapPin
+};
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -32,6 +36,13 @@ const itemVariants = {
     }
 };
 
+const renderDescription = (text: string) => {
+    const parts = text.split('**');
+    return parts.map((part, i) => 
+        i % 2 === 1 ? <strong key={i} className={styles.textWhite}>{part}</strong> : part
+    );
+};
+
 export default function About() {
     return (
         <section id="about" className={styles.section}>
@@ -51,7 +62,7 @@ export default function About() {
                     >
                         <div className={styles.videoContainer}>
                             <video
-                                src="/video.mp4"
+                                src="/about_video.mp4"
                                 poster="https://images.pexels.com/photos/2390369/pexels-photo-2390369.jpeg?auto=compress&cs=tinysrgb&w=800"
                                 autoPlay
                                 loop
@@ -70,32 +81,25 @@ export default function About() {
                             className={styles.sectionTitle}
                             variants={itemVariants}
                         >
-                            Un artiste, une vision,
+                            {about.title.text}
                             <br />
-                            <span className={styles.textGradient}>votre soirée inoubliable.</span>
+                            <span className={styles.textGradient}>{about.title.highlight}</span>
                         </motion.h2>
 
                         <motion.div 
                             className={styles.textContent}
                             variants={itemVariants}
                         >
-                            <p>
-                                Depuis plus de 8 ans, <strong className={styles.textWhite}>DJ URYA</strong> électrise les dancefloors
-                                de Paris ... <strong className={styles.textWhite}>Open Format, Electronic</strong> et
-                                touches <strong className={styles.textWhite}>Chic</strong> — capable de s&apos;adapter à chaque ambiance, de
-                                l&apos;intime au grandiose.
-                            </p>
-                            <p>
-                                Chaque prestation est une collaboration : un rendez-vous de préparation, une playlist
-                                sur mesure, et une ... collective mémorable.
-                            </p>
+                            {about.description.map((para, i) => (
+                                <p key={i}>{renderDescription(para)}</p>
+                            ))}
                         </motion.div>
 
                         {/* Tags de styles musicaux */}
                         <motion.div 
                             className={styles.tagsContainer}
                         >
-                            {['Open Format', 'Electronic', 'House', 'Tech House', 'Commercial', 'Chic & Lounge'].map((tag) => (
+                            {about.tags.map((tag) => (
                                 <motion.span 
                                     key={tag} 
                                     className={styles.tag}
@@ -104,27 +108,36 @@ export default function About() {
                                     {tag}
                                 </motion.span>
                             ))}
+                            <motion.span 
+                                className={styles.tag}
+                                variants={itemVariants}
+                            >
+                                ...
+                            </motion.span>
                         </motion.div>
 
                         {/* Informations de contact (anciennement Gear) */}
                         <motion.div 
                             className={styles.gearGrid}
                         >
-                            {contactInfo.map(({ icon: Icon, label, sub }) => (
-                                <motion.div 
-                                    key={label} 
-                                    className={styles.gearCard}
-                                    variants={itemVariants}
-                                >
-                                    <div className={styles.gearIconWrapper}>
-                                        <Icon size={16} className={styles.gearIcon} />
-                                    </div>
-                                    <div>
-                                        <div className={styles.gearLabel}>{label}</div>
-                                        <div className={styles.gearSub}>{sub}</div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                            {about.contactInfo.map(({ icon: iconName, label, sub }) => {
+                                const Icon = ICON_MAP[iconName] || Phone;
+                                return (
+                                    <motion.div 
+                                        key={label} 
+                                        className={styles.gearCard}
+                                        variants={itemVariants}
+                                    >
+                                        <div className={styles.gearIconWrapper}>
+                                            <Icon size={16} className={styles.gearIcon} />
+                                        </div>
+                                        <div>
+                                            <div className={styles.gearLabel}>{label}</div>
+                                            <div className={styles.gearSub}>{sub}</div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
                         </motion.div>
 
                     </div>

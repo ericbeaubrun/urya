@@ -4,13 +4,9 @@ import { motion } from 'framer-motion';
 import styles from './Gallery.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-const galleryImages = [
-    { src: 'dj-urya_1.png', alt: 'DJ en plein mix', gridClass: styles.bigCard },
-    { src: 'dj-urya_2.png', alt: 'Foule en festival', gridClass: '' },
-    { src: 'dj-urya_3.png', alt: 'Jeux de lumières concert', gridClass: '' },
-    { src: 'dj-urya_4.png', alt: 'Ambiance soirée entreprise', gridClass: '' },
-    { src: 'dj-urya_5.png', alt: 'Piste de danse en club', gridClass: '' },
-];
+import content from '@/data/content.json';
+
+const { gallery } = content;
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -53,15 +49,15 @@ export default function Gallery() {
                         className={styles.sectionTitle}
                         variants={itemVariants}
                     >
-                        Capturer l&apos;énergie,
+                        {gallery.title.text}
                         <br />
-                        <span className={styles.textGradient}>immortaliser l&apos;instant</span>
+                        <span className={styles.textGradient}>{gallery.title.highlight}</span>
                     </motion.h2>
                     <motion.p 
                         className={styles.sectionSubtitle}
                         variants={itemVariants}
                     >
-                        Aperçu des moments forts et des ambiances créées lors des derniers événements.
+                        {gallery.subtitle}
                     </motion.p>
                 </div>
 
@@ -69,10 +65,10 @@ export default function Gallery() {
                 <motion.div 
                     className={styles.grid}
                 >
-                    {galleryImages.map((img, idx) => (
+                    {gallery.images.map((img: any, idx) => (
                         <motion.div
                             key={idx}
-                            className={`${styles.imageCard} ${img.gridClass}`}
+                            className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}
                             variants={itemVariants}
                         >
                             <img

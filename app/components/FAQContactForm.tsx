@@ -52,7 +52,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
             >
-                <span className={`${styles.question}`}>Vous avez une autre question ?</span>
+                <span className={`${styles.question}`}>Une autre question ? Contactez moi.</span>
                 <div className={styles.iconWrapper}>
                     <ChevronDown size={20} />
                 </div>
@@ -69,7 +69,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                     >
                         <div className={styles.content}>
                             <p style={{ marginBottom: '1.5rem' }}>
-                                Si vous n&apos;avez pas trouvé la réponse à votre question, n&apos;hésitez pas à m&apos;envoyer un message directement via ce formulaire.
+                                Si vous n&apos;avez pas trouvé la réponse à votre question, n&apos;hésitez pas à m&apos;envoyer un message directement via ce formulaire ou par mail : <strong><a href="mailto:2souchik@gmail.com">2souchik@gmail.com</a></strong>.
                             </p>
                             
                             <form onSubmit={handleSubmit} className={styles.form}>
@@ -80,7 +80,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         name="nom"
                                         value={form.nom}
                                         onChange={handleChange}
-                                        placeholder="Jean Dupont"
+                                        placeholder="Eric Beaubrun"
                                         required
                                         className={styles.input}
                                     />
@@ -93,7 +93,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         name="email"
                                         value={form.email}
                                         onChange={handleChange}
-                                        placeholder="jean@exemple.fr"
+                                        placeholder="eric@exemple.fr"
                                         required
                                         className={styles.input}
                                     />

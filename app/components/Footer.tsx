@@ -1,8 +1,18 @@
 'use client';
 
+import Image from 'next/image';
 import { Link as ScrollLink } from 'react-scroll';
-import { Instagram, Music, ExternalLink } from 'lucide-react';
 import styles from './Footer.module.css';
+
+import content from '@/data/content.json';
+
+const { footer, navigation } = content;
+
+const ICON_MAP: Record<string, string> = {
+    Instagram: '/insta.png',
+    TikTok: '/tiktok.png',
+    Youtube: '/youtube.png'
+};
 
 export default function Footer() {
     return (
@@ -18,21 +28,16 @@ export default function Footer() {
                         aria-label="Retour en haut"
                         style={{ cursor: 'pointer' }}
                     >
-                        <span className={styles.logoWhite}>DJ</span>
-                        <span className={styles.logoGradient}>URYA</span>
+                        <span className={styles.logoWhite}>{navigation.logo.first}</span>
+                        <span className={styles.logoGradient}>{navigation.logo.second}</span>
                     </ScrollLink>
 
                     {/* Navigation secondaire */}
                     <nav className={styles.nav}>
-                        {[
-                            { label: 'À propos', id: 'about' },
-                            { label: 'Actualités', id: 'gallery' },
-                            { label: 'Services', id: 'services' },
-                            { label: 'Questions', id: 'faq' },
-                        ].map((item) => (
+                        {navigation.items.map((item) => (
                             <ScrollLink
-                                key={item.id}
-                                to={item.id}
+                                key={item.to}
+                                to={item.to}
                                 smooth={true}
                                 offset={-80}
                                 duration={800}
@@ -46,40 +51,38 @@ export default function Footer() {
 
                     {/* Liens Réseaux Sociaux */}
                     <div className={styles.socials}>
-                        <a
-                            href="https://instagram.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.socialIcon}
-                            aria-label="Instagram"
-                        >
-                            <Instagram size={16} />
-                        </a>
-                        <a
-                            href="https://tiktok.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.socialIcon}
-                            aria-label="TikTok"
-                        >
-                            <Music size={16} />
-                        </a>
-                        <a
-                            href="https://soundcloud.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.socialIcon}
-                            aria-label="SoundCloud"
-                        >
-                            <ExternalLink size={16} />
-                        </a>
+                        {footer.socials.map((social) => {
+                            const iconSrc = ICON_MAP[social.platform];
+                            return (
+                                <a
+                                    key={social.platform}
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.socialIcon}
+                                    aria-label={social.platform}
+                                >
+                                    {iconSrc ? (
+                                        <Image
+                                            src={iconSrc}
+                                            alt={social.platform}
+                                            width={24}
+                                            height={24}
+                                            className={styles.socialImg}
+                                        />
+                                    ) : (
+                                        <span>{social.platform}</span>
+                                    )}
+                                </a>
+                            );
+                        })}
                     </div>
                 </div>
 
                 {/* Ligne du bas (Copyright) */}
                 <div className={styles.bottomRow}>
-                    <span>&copy; {new Date().getFullYear()} DJ URYA — Tous droits réservés.</span>
-                    <span className={styles.signature}>Fait avec passion · Paris, France</span>
+                    <span>&copy; {new Date().getFullYear()} {footer.copyright}</span>
+                    <span className={styles.signature}>{footer.signature}</span>
                 </div>
             </div>
         </footer>

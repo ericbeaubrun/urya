@@ -57,6 +57,13 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     });
 
     const [step, setStep] = useState(1);
+    const [viewMode, setViewMode] = useState<"prestation" | "appointment">("prestation");
+    const [appointmentData, setAppointmentData] = useState({
+        contact: "",
+        name: "",
+        availability: "",
+        type: "tel" as "tel" | "visio" | "physique"
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [message, setMessage] = useState("");
@@ -149,6 +156,23 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         setShowCalendar(false);
         if (errorFields.includes("date_debut")) {
             setErrorFields(prev => prev.filter(f => f !== "date_debut"));
+        }
+    };
+
+    const handleResetDate = () => {
+        setFormData((prev) => ({
+            ...prev,
+            date_debut: "",
+            date_fin: "",
+        }));
+        setShowCalendar(false);
+    };
+
+    const handleResetTime = () => {
+        if (showTimePicker.field) {
+            const field = showTimePicker.field;
+            setFormData(prev => ({ ...prev, [field]: "" }));
+            closeTimePicker();
         }
     };
 
@@ -359,6 +383,18 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
             const data = await res.json();
             if (res.ok) {
                 setIsSuccess(true);
+                setFormData({
+                    nom: "",
+                    mail: "",
+                    tel: "",
+                    date_debut: "",
+                    date_fin: "",
+                    heure_debut: "",
+                    heure_fin: "",
+                    type: "",
+                    lieu: "",
+                    notes: "",
+                });
                 return;
             } else {
                 setMessage(`Erreur: ${data.error}`);
@@ -376,6 +412,72 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         return clean.length > max ? `${clean.slice(0, max)}…` : clean;
     }
 
+    const handleAppointmentChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target;
+        setAppointmentData((prev) => ({ ...prev, [name]: value }));
+        if (errorFields.includes(name)) {
+            setErrorFields(prev => prev.filter(f => f !== name));
+        }
+    };
+
+    const handleAppointmentSubmit = async () => {
+        setIsSubmitting(true);
+        setMessage("");
+        setErrors([]);
+        setErrorFields([]);
+
+        const errs: string[] = [];
+        const errFields: string[] = [];
+
+        if (!appointmentData.name.trim()) {
+            errs.push("Le nom ou l'organisme est requis.");
+            errFields.push("name");
+        }
+        if (!appointmentData.contact.trim()) {
+            errs.push("Le contact (Email ou Tel) est requis.");
+            errFields.push("contact");
+        }
+        if (!appointmentData.availability.trim()) {
+            errs.push("Vos disponibilités sont requises.");
+            errFields.push("availability");
+        }
+
+        if (errs.length > 0) {
+            setErrors(errs);
+            setErrorFields(errFields);
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/appointments", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(appointmentData),
+            });
+
+            if (res.ok) {
+                setIsSuccess(true);
+                setAppointmentData({
+                    contact: "",
+                    name: "",
+                    availability: "",
+                    type: "tel"
+                });
+                return;
+            } else {
+                const data = await res.json();
+                setMessage(data.error || "Une erreur est survenue lors de l'envoi.");
+            }
+        } catch {
+            setMessage("Une erreur serveur est survenue.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const resetForm = () => {
         setFormData({
             nom: "",
@@ -388,6 +490,12 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
             type: "",
             lieu: "",
             notes: "",
+        });
+        setAppointmentData({
+            contact: "",
+            name: "",
+            availability: "",
+            type: "tel"
         });
         setStep(1);
         setIsSuccess(false);
@@ -415,9 +523,27 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                         <span className={styles.textGradient}>par une conversation</span>
                     </motion.h2>
                     <motion.p className={styles.sectionSubtitle} variants={itemVariants}>
-                        Décrivez votre projet, je vous réponds sous 24h avec une proposition personnalisée. Pour toute demande personnalisée contactez-moi par mail à <strong><a href="mailto:contact@julien-roussel.com">contact@julien-roussel.com</a></strong>.
+                        {viewMode === 'appointment' 
+                            ? "Vous hésitez encore ? Discutons-en de vive voix lors d'un court échange pour définir ensemble les contours de votre projet."
+                            : <>Décrivez votre projet, je vous réponds sous 24h avec une proposition personnalisée. Pour toute demande personnalisée contactez-moi par mail à <strong><a href="mailto:2souchik@gmail.com">2souchik@gmail.com</a></strong>.</>
+                        }
                     </motion.p>
                 </div>
+
+                <motion.div className={styles.toggleContainer} variants={itemVariants}>
+                    <button 
+                        className={`${styles.toggleBtn} ${viewMode === 'appointment' ? styles.toggleBtnActive : ''}`}
+                        onClick={() => { setViewMode('appointment'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}
+                    >
+                        Prendre un premier rendez-vous gratuit ?
+                    </button>
+                    <button 
+                        className={`${styles.toggleBtn} ${viewMode === 'prestation' ? styles.toggleBtnActive : ''}`}
+                        onClick={() => { setViewMode('prestation'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}
+                    >
+                        Réserver une prestation
+                    </button>
+                </motion.div>
 
                 <motion.div className={styles.card} variants={itemVariants}>
                     {isSuccess ? (
@@ -425,11 +551,69 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             <CheckCircle size={56} className={styles.successIcon} />
                             <h3 className={styles.successTitle}>Message envoyé !</h3>
                             <p className={styles.successText}>
-                                Merci pour votre demande. Je reviendrai vers vous dans les 24 heures avec une proposition personnalisée.
+                                {viewMode === 'appointment' 
+                                    ? "Merci pour votre demande de rendez-vous. Je reviendrai vers vous très prochainement pour confirmer l'horaire."
+                                    : "Merci pour votre demande. Je reviendrai vers vous dans les 24 heures avec une proposition personnalisée."
+                                }
                             </p>
                             <button onClick={resetForm} className={styles.btnReset}>
                                 Envoyer une autre demande
                             </button>
+                        </div>
+                    ) : viewMode === 'appointment' ? (
+                        <div className={styles.formSection}>
+                            {errors.length > 0 && (
+                                <div className={styles.errorContainer}>
+                                    {errors.map((err, i) => (
+                                        <p key={i} className={styles.errorMessage}>⚠️ {err}</p>
+                                    ))}
+                                </div>
+                            )}
+                            {message && <p className={styles.message}>{message}</p>}
+
+                            <div className={`${styles.field} ${errorFields.includes("name") ? styles.fieldHasError : ""}`}>
+                                <label className={styles.fieldLabelText}>Nom complet ou organisme <span className={styles.requiredStar}>*</span></label>
+                                <input name="name" value={appointmentData.name} onChange={handleAppointmentChange} placeholder="Eric Beaubrun / Entreprise" className={`${styles.input} ${errorFields.includes("name") ? styles.inputError : ""}`} />
+                            </div>
+
+                            <div className={`${styles.field} ${errorFields.includes("contact") ? styles.fieldHasError : ""}`}>
+                                <label className={styles.fieldLabelText}>Email ou Tel (pour vous recontacter) <span className={styles.requiredStar}>*</span></label>
+                                <input name="contact" value={appointmentData.contact} onChange={handleAppointmentChange} placeholder="eric@exemple.fr ou 06..." className={`${styles.input} ${errorFields.includes("contact") ? styles.inputError : ""}`} />
+                            </div>
+
+                            <div className={`${styles.field} ${errorFields.includes("availability") ? styles.fieldHasError : ""}`}>
+                                <label className={styles.fieldLabelText}>Vos disponibilités (dates et heures) <span className={styles.requiredStar}>*</span></label>
+                                <textarea name="availability" value={appointmentData.availability} onChange={handleAppointmentChange} rows={3} placeholder="Ex: Lundi après-midi, Jeudi matin..." className={`${styles.textarea} ${errorFields.includes("availability") ? styles.textareaError : ""}`} />
+                            </div>
+
+                            <div className={styles.field}>
+                                <label className={styles.fieldLabelText}>Type de rendez-vous souhaité</label>
+                                <div className={styles.appointmentTypeGrid}>
+                                    {(['tel', 'visio', 'physique'] as const).map((t) => (
+                                        <button 
+                                            key={t}
+                                            type="button"
+                                            className={`${styles.typeSelectBtn} ${appointmentData.type === t ? styles.typeSelectBtnActive : ""}`}
+                                            onClick={() => setAppointmentData(prev => ({ ...prev, type: t }))}
+                                        >
+                                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className={styles.navGroup}>
+                                <button className={styles.btnConfirm} disabled={isSubmitting} onClick={handleAppointmentSubmit}>
+                                    {isSubmitting ? (
+                                        <div className={styles.loaderGroup}>
+                                            <div className={styles.spinner} />
+                                            <span>Envoi...</span>
+                                        </div>
+                                    ) : (
+                                        "Envoyer la demande de rendez-vous"
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     ) : (
                         <>
@@ -547,12 +731,12 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                 <div className={styles.formSection}>
                                     <div className={`${styles.field} ${errorFields.includes("nom") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>Nom complet <span className={styles.requiredStar}>*</span></label>
-                                        <input name="nom" value={formData.nom} onChange={handleChange} placeholder="Jean Dupont" required className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`} />
+                                        <input name="nom" value={formData.nom} onChange={handleChange} placeholder="Eric Beaubrun" required className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("mail") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>Adresse Email <span className={styles.requiredStar}>*</span></label>
-                                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder="jean@exemple.fr" required className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`} />
+                                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder="eric@exemple.fr" required className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("tel") ? styles.fieldHasError : ""}`}>
@@ -636,9 +820,14 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                         >
                             <div className={styles.modalHeader}>
                                 <h3 className={styles.modalTitleRecap}>Choisir une date</h3>
-                                <button className={styles.btnCloseModal} onClick={() => setShowCalendar(false)}>
-                                    <X size={20} />
-                                </button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button className={styles.btnResetModal} onClick={handleResetDate} title="Réinitialiser">
+                                        <img src="/reset.png" alt="Reset" width={20} height={20} />
+                                    </button>
+                                    <button className={styles.btnCloseModal} onClick={() => setShowCalendar(false)} title="Fermer">
+                                        <X size={26} />
+                                    </button>
+                                </div>
                             </div>
                             <div className={styles.modalBody}>
                                 <CalendarPicker 
@@ -666,9 +855,14 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                 <h3 className={styles.modalTitleRecap}>
                                     Choisir l'heure de {showTimePicker.field === "heure_debut" ? "début" : "fin"}
                                 </h3>
-                                <button className={styles.btnCloseModal} onClick={closeTimePicker}>
-                                    <X size={20} />
-                                </button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button className={styles.btnResetModal} onClick={handleResetTime} title="Réinitialiser">
+                                        <img src="/reset.png" alt="Reset" width={20} height={20} />
+                                    </button>
+                                    <button className={styles.btnCloseModal} onClick={closeTimePicker} title="Fermer">
+                                        <X size={24} />
+                                    </button>
+                                </div>
                             </div>
                             <div className={styles.modalBody}>
                                 <TimePicker 

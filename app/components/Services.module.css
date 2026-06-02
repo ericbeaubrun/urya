@@ -242,3 +242,47 @@
 .ctaLink:hover .arrowIcon {
     transform: translateX(3px);
 }
+
+.extraOptionsContainer {
+    margin-top: var(--space-10);
+    padding: var(--space-5);
+    background: rgba(139, 92, 246, 0.02);
+    background: #111111;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.extraOptionsTitle {
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted);
+    /*color: #fff;*/
+    font-family: var(--font-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.extraOptionsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+.extraOptionItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2) var(--space-4);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-dim);
+    font-size: var(--fs-xs);
+}
+
+.extraOptionIcon {
+    display: none;
+}

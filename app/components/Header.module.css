@@ -161,6 +161,27 @@
     background-color: rgba(255, 255, 255, 0.08);
 }
 
+.closeDrawerBtn {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.closeDrawerBtn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
 /* MOBILE DRAWER */
 .mobileDrawer {
     position: fixed;
@@ -197,9 +218,10 @@
     bottom: 0;
     width: 100%;
     max-width: 300px;
-    background-color: #0b0b0e;
+    background-color: rgb(11 11 14 / 0.90);
     border-left: 1px solid var(--color-border);
     padding: var(--space-20) var(--space-6) var(--space-6);
+    padding-top: 5rem;
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;

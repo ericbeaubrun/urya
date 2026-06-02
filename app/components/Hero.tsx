@@ -6,6 +6,10 @@ import { Link as ScrollLink } from 'react-scroll';
 import styles from './Hero.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
+import content from '@/data/content.json';
+
+const { hero } = content;
+
 interface HeroProps {
     onContactClick?: () => void;
 }
@@ -35,13 +39,17 @@ export default function Hero({ onContactClick }: HeroProps) {
         <section id="hero" className={styles.heroSection}>
             {/* Background Media & Overlays */}
             <div className={styles.bgContainer}>
-                <img
-                    src="https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=1920"
-                    alt="DJ en action"
+                <video
+                    src="/hero_background.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                     className={styles.bgImage}
                 />
                 <div className={styles.bgOverlay} />
                 <div className={styles.bgGlow} />
+                <div className={styles.bottomShadow} />
             </div>
 
             {/* Main Content */}
@@ -56,21 +64,20 @@ export default function Hero({ onContactClick }: HeroProps) {
                 <motion.div className={styles.tag} variants={itemVariants}>
                     <span className={styles.tagPulse} />
                     <span className={styles.tagText}>
-            Disponible pour 2026 / 2027
+            {hero.status}
           </span>
                 </motion.div>
 
                 <motion.h1 className={styles.title} variants={itemVariants}>
-                    L&apos;énergie de votre
+                    {hero.title.line1}
                     <br />
-                    <span className={styles.textGradient}>événement</span>
+                    <span className={styles.textGradient}>{hero.title.highlight}</span>
                     <br />
-                    sur mesure.
+                    {hero.title.line2}
                 </motion.h1>
 
                 <motion.p className={styles.subtitle} variants={itemVariants}>
-                    DJ professionnel pour mariages, soirées d&apos;entreprise et clubs.
-                    Un univers sonore unique, une présence scénique incomparable.
+                    {hero.subtitle}
                 </motion.p>
 
                 {/* Call To Actions */}
@@ -83,7 +90,7 @@ export default function Hero({ onContactClick }: HeroProps) {
                         className={styles.primaryBtn}
                         style={{ cursor: 'pointer' }}
                     >
-                        Réserver une date
+                        {hero.ctas.primary}
                     </ScrollLink>
                     <ScrollLink
                         to="faq"
@@ -94,17 +101,13 @@ export default function Hero({ onContactClick }: HeroProps) {
                         className={styles.secondaryBtn}
                         style={{ cursor: 'pointer' }}
                     >
-                        Me contacter
+                        {hero.ctas.secondary}
                     </ScrollLink>
                 </motion.div>
 
                 {/* Stats Grid */}
                 <motion.div className={styles.statsGrid} variants={itemVariants}>
-                    {[
-                        { value: '8+', label: "années d'expérience" },
-                        { value: '400+', label: 'événements' },
-                        { value: '50+', label: 'clubs & festivals' },
-                    ].map((stat) => (
+                    {hero.stats.map((stat) => (
                         <div key={stat.label} className={styles.statCard}>
                             <div className={styles.statValue}>{stat.value}</div>
                             <div className={styles.statLabel}>{stat.label}</div>

@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: var(--color-bg-deep);
+    background-color: var(--color-bg);
     padding-top: var(--space-20);
 }
 
@@ -26,7 +26,7 @@
 .bgOverlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.7) 60%, var(--color-bg-deep) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.7) 60%, var(--color-bg) 100%);
 }
 
 .bgGlow {
@@ -39,6 +39,18 @@
     background-color: rgba(139, 92, 246, 0.08);
     filter: blur(120px);
     border-radius: var(--radius-full);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bottomShadow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%);
+    z-index: 2;
     pointer-events: none;
 }
 
@@ -136,7 +148,12 @@
     gap: var(--space-4);
 }
 
+
+
 @media (min-width: 640px) {
+
+
+
     .ctaGroup {
         flex-direction: row;
     }
@@ -203,8 +220,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-10);
+    gap: var(--space-6);
     flex-wrap: wrap;
+}
+
+@media (min-width: 640px) {
+    .statsGrid {
+        gap: var(--space-10);
+    }
 }
 
 @media (min-width: 768px) {
@@ -221,11 +244,17 @@
     font-weight: 500;
     font-family: var(--font-hero);
     text-transform: uppercase;
-    font-size: var(--fs-4xl);
+    font-size: var(--fs-2xl);
     background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+@media (min-width: 640px) {
+    .statValue {
+        font-size: var(--fs-4xl);
+    }
 }
 
 @media (min-width: 768px) {
@@ -236,11 +265,17 @@
 
 .statLabel {
     color: var(--color-text-dim);
-    font-size: var(--fs-xs);
+    font-size: 0.65rem;
     margin-top: var(--space-1);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-family: var(--font-secondary);
+}
+
+@media (min-width: 640px) {
+    .statLabel {
+        font-size: var(--fs-xs);
+    }
 }
 
 /* SCROLL INDICATOR */
