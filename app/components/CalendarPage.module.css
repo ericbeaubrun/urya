@@ -117,8 +117,6 @@
 
 .futureDay:hover {
     background-color: rgba(234, 179, 8, 0.08) !important;
-    box-shadow: inset 0 0 0 1px rgb(38 234 8 / 0.3);
-    background-color: rgba(234, 179, 8, 0.08) !important;
     box-shadow: inset 0 0 0 1px rgb(23 234 8 / 0.3);
 }
 

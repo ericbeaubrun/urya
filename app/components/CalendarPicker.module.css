@@ -52,7 +52,6 @@
     font-size: var(--fs-xs) !important;
     font-weight: 600 !important;
     padding: 0.4rem var(--space-3) !important;
-    border-radius: var(--radius-full) !important;
     margin-right: 8px;
     border-radius: var(--radius-md) !important;
     transition: var(--transition-fast) !important;
@@ -97,8 +96,6 @@
 }
 
 .futureDay:hover {
-    background-color: rgba(234, 179, 8, 0.08) !important;
-    box-shadow: inset 0 0 0 1px rgba(234, 179, 8, 0.6);
     background-color: rgb(255 255 255 / 0.08) !important;
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.6);
 }
@@ -126,18 +123,11 @@
 }
 
 .container :global(.fc-day-today .fc-daygrid-day-number) {
-    background-color: rgb(51 203 51 / 0.71) !important;
     background-color: rgb(46 164 46 / 0.71) !important;
-    color: #ffffff !important;
     color: #4ade80 !important;
-    /*border: 1px solid var(--color-border) !important;*/
     background-color: rgba(34, 197, 94, 0.1) !important;
-
     border-color: rgba(34, 197, 94, 0.3) !important;
-
-
     border-radius: var(--radius-sm);
-    padding: 0.25rem 0.4rem !important;
     padding: 0.1rem 0.3rem !important;
     font-weight: 500;
 }

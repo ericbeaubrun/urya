@@ -572,7 +572,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-6) var(--space-8);
     padding: var(--space-2) var(--space-4);
     border-bottom: 1px solid var(--color-border);
 }
@@ -587,7 +586,6 @@
 .btnCloseModal {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--color-border);
-    color: var(--color-text-muted);
     color: #b40a0a;
     padding: 0.5rem;
     border-radius: var(--radius-sm);
@@ -657,12 +655,9 @@
 }
 
 .dateIcon {
-    color: var(--color-primary-light);
     color: #fff;
-    /*opacity: 0.7;*/
 }
 
-/* APPOINTMENT TYPE GRID */
 .appointmentTypeGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -680,7 +675,6 @@
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-base);
-    /*text-transform: uppercase;*/
     letter-spacing: 0.05em;
 }
 

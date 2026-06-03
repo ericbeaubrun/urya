@@ -37,7 +37,6 @@
 
 .sectionTag {
     display: inline-block;
-    /*text-transform: uppercase;*/
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 0.15em;

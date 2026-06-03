@@ -854,7 +854,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                         >
                             <div className={styles.modalHeader}>
                                 <h3 className={styles.modalTitleRecap}>
-                                    Choisir l'heure de {showTimePicker.field === "heure_debut" ? "début" : "fin"}
+                                    Choisir l&apos;heure de {showTimePicker.field === "heure_debut" ? "début" : "fin"}
                                 </h3>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <button className={styles.btnResetModal} onClick={handleResetTime} title="Réinitialiser">

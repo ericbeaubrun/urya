@@ -90,7 +90,6 @@
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 0.15em;
-    /*text-transform: uppercase;*/
     font-family: var(--font-secondary);
 }
 
@@ -243,7 +242,6 @@
 .statValue {
     font-weight: 500;
     font-family: var(--font-hero);
-    /*text-transform: uppercase;*/
     font-size: var(--fs-2xl);
     background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
     -webkit-background-clip: text;
