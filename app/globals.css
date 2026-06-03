@@ -118,7 +118,7 @@ h1, h2, h3, h4, h5, h6 {
 
 h1, h2 {
     font-family: var(--font-hero);
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     letter-spacing: 0em;
     font-weight: 500;
     line-height: 1.1;
@@ -201,7 +201,7 @@ img, video {
 
 .sectionTag {
     display: inline-block;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 0.15em;

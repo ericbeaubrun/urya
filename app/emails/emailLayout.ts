@@ -42,7 +42,7 @@ export function emailLayout(content: string, title: string) {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
-            text-transform: uppercase;
+            /*text-transform: uppercase;*/
         }
         .content {
             line-height: 1.6;

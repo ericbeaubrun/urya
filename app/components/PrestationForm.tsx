@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import styles from "./PrestationForm.module.css";
 import CalendarPicker from "./CalendarPicker";
 import TimePicker from "./TimePicker";
-import {ANIMATION_ONCE} from "@/app/config";
+import {ANIMATION_ONCE, EXAMPLE_MAIL, EXAMPLE_NAME, EXAMPLE_PHONE} from "@/app/config";
 
 interface PrestationFormData {
     nom: string;
@@ -191,7 +191,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     };
 
     const formatDate = (dateStr: string) => {
-        if (!dateStr) return "Choisir une date...";
+        if (!dateStr) return "Choisir la date...";
         try {
             const date = new Date(dateStr);
             return new Intl.DateTimeFormat('fr-FR', {
@@ -530,20 +530,21 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                     </motion.p>
                 </div>
 
-                <motion.div className={styles.toggleContainer} variants={itemVariants}>
-                    <button 
-                        className={`${styles.toggleBtn} ${viewMode === 'appointment' ? styles.toggleBtnActive : ''}`}
-                        onClick={() => { setViewMode('appointment'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}
-                    >
-                        Prendre un premier rendez-vous gratuit ?
-                    </button>
-                    <button 
-                        className={`${styles.toggleBtn} ${viewMode === 'prestation' ? styles.toggleBtnActive : ''}`}
-                        onClick={() => { setViewMode('prestation'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}
-                    >
-                        Réserver une prestation
-                    </button>
-                </motion.div>
+                {/* @todo tester avant d'implementer*/}
+                {/*<motion.div className={styles.toggleContainer} variants={itemVariants}>*/}
+                {/*    <button */}
+                {/*        className={`${styles.toggleBtn} ${viewMode === 'appointment' ? styles.toggleBtnActive : ''}`}*/}
+                {/*        onClick={() => { setViewMode('appointment'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}*/}
+                {/*    >*/}
+                {/*        Prendre un premier rendez-vous gratuit ?*/}
+                {/*    </button>*/}
+                {/*    <button */}
+                {/*        className={`${styles.toggleBtn} ${viewMode === 'prestation' ? styles.toggleBtnActive : ''}`}*/}
+                {/*        onClick={() => { setViewMode('prestation'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}*/}
+                {/*    >*/}
+                {/*        Réserver une prestation*/}
+                {/*    </button>*/}
+                {/*</motion.div>*/}
 
                 <motion.div className={styles.card} variants={itemVariants}>
                     {isSuccess ? (
@@ -572,22 +573,22 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             {message && <p className={styles.message}>{message}</p>}
 
                             <div className={`${styles.field} ${errorFields.includes("name") ? styles.fieldHasError : ""}`}>
-                                <label className={styles.fieldLabelText}>Nom complet ou organisme <span className={styles.requiredStar}>*</span></label>
+                                <label className={styles.fieldLabelText}>Nom ou Organisme <span className={styles.requiredStar}>*</span></label>
                                 <input name="name" value={appointmentData.name} onChange={handleAppointmentChange} placeholder="Eric Beaubrun / Entreprise" className={`${styles.input} ${errorFields.includes("name") ? styles.inputError : ""}`} />
                             </div>
 
                             <div className={`${styles.field} ${errorFields.includes("contact") ? styles.fieldHasError : ""}`}>
-                                <label className={styles.fieldLabelText}>Email ou Tel (pour vous recontacter) <span className={styles.requiredStar}>*</span></label>
+                                <label className={styles.fieldLabelText}>Email ou Telélphone<span className={styles.requiredStar}>*</span></label>
                                 <input name="contact" value={appointmentData.contact} onChange={handleAppointmentChange} placeholder="eric@exemple.fr ou 06..." className={`${styles.input} ${errorFields.includes("contact") ? styles.inputError : ""}`} />
                             </div>
 
                             <div className={`${styles.field} ${errorFields.includes("availability") ? styles.fieldHasError : ""}`}>
-                                <label className={styles.fieldLabelText}>Vos disponibilités (dates et heures) <span className={styles.requiredStar}>*</span></label>
-                                <textarea name="availability" value={appointmentData.availability} onChange={handleAppointmentChange} rows={3} placeholder="Ex: Lundi après-midi, Jeudi matin..." className={`${styles.textarea} ${errorFields.includes("availability") ? styles.textareaError : ""}`} />
+                                <label className={styles.fieldLabelText}>Disponibilités (dates, heures) <span className={styles.requiredStar}>*</span></label>
+                                <textarea name="availability" value={appointmentData.availability} onChange={handleAppointmentChange} rows={3} placeholder="Lundi après-midi, Jeudi matin, 12h30..." className={`${styles.textarea} ${errorFields.includes("availability") ? styles.textareaError : ""}`} />
                             </div>
 
                             <div className={styles.field}>
-                                <label className={styles.fieldLabelText}>Type de rendez-vous souhaité</label>
+                                <label className={styles.fieldLabelText}>Rendez-vous souhaité</label>
                                 <div className={styles.appointmentTypeGrid}>
                                     {(['tel', 'visio', 'physique'] as const).map((t) => (
                                         <button 
@@ -731,17 +732,17 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                 <div className={styles.formSection}>
                                     <div className={`${styles.field} ${errorFields.includes("nom") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>Nom complet <span className={styles.requiredStar}>*</span></label>
-                                        <input name="nom" value={formData.nom} onChange={handleChange} placeholder="Eric Beaubrun" required className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`} />
+                                        <input name="nom" value={formData.nom} onChange={handleChange} placeholder={EXAMPLE_NAME} required className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("mail") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>Adresse Email <span className={styles.requiredStar}>*</span></label>
-                                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder="eric@exemple.fr" required className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`} />
+                                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder={EXAMPLE_MAIL} required className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("tel") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>Téléphone (facultatif)</label>
-                                        <input name="tel" value={formData.tel} onChange={handleChange} placeholder="+33 6 00 00 00 00" className={`${styles.input} ${errorFields.includes("tel") ? styles.inputError : ""}`} />
+                                        <input name="tel" value={formData.tel} onChange={handleChange} placeholder={EXAMPLE_PHONE} className={`${styles.input} ${errorFields.includes("tel") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={styles.navGroup}>

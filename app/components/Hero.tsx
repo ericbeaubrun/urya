@@ -77,7 +77,9 @@ export default function Hero({ onContactClick }: HeroProps) {
                 </motion.h1>
 
                 <motion.p className={styles.subtitle} variants={itemVariants}>
-                    {hero.subtitle}
+                    {hero.subtitle1}
+                    <br/>
+                    {hero.subtitle2}
                 </motion.p>
 
                 {/* Call To Actions */}

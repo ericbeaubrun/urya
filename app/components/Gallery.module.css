@@ -50,7 +50,7 @@
     font-size: var(--fs-xs);
     font-weight: 600;
     color: var(--color-text-dim);
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     letter-spacing: 0.15em;
     margin-bottom: var(--space-5);
     font-family: var(--font-secondary);
@@ -59,7 +59,7 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-3);
+    gap: var(--space-4);
     auto-rows: 180px;
 }
 

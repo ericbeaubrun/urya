@@ -22,7 +22,7 @@
 
 .columnTitle {
     font-size: var(--fs-xs);
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     color: var(--color-text-dim);
     font-weight: 600;
     padding-left: var(--space-2);

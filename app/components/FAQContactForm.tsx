@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
 import styles from './FAQ.module.css';
+import {EXAMPLE_MAIL, EXAMPLE_NAME} from "@/app/config";
 
 interface FAQContactFormProps {
     isOpen?: boolean;
@@ -80,7 +81,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         name="nom"
                                         value={form.nom}
                                         onChange={handleChange}
-                                        placeholder="Eric Beaubrun"
+                                        placeholder={EXAMPLE_NAME}
                                         required
                                         className={styles.input}
                                     />
@@ -93,7 +94,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         name="email"
                                         value={form.email}
                                         onChange={handleChange}
-                                        placeholder="eric@exemple.fr"
+                                        placeholder={EXAMPLE_MAIL}
                                         required
                                         className={styles.input}
                                     />

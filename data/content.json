@@ -1,7 +1,7 @@
 {
   "navigation": {
     "logo": {
-      "first": "DJ",
+      "first": "Dj",
       "second": "URYA"
     },
     "items": [
@@ -15,11 +15,12 @@
   "hero": {
     "status": "Disponible pour 2026 / 2027",
     "title": {
-      "line1": "Ensemble créons",
-      "highlight": "des souvenirs",
-      "line2": "uniques"
+      "line1": "ENSEMBLE CRÉONS",
+      "highlight": "DES SOUVENIRS",
+      "line2": "UNIQUES"
     },
-    "subtitle": "Prête à dynamiser votre événement ! Avec des sons variés et une ambiance conviviale, je transforme chaque fête en un moment inoubliable !",
+    "subtitle1": "Prête à dynamiser votre événement !",
+    "subtitle2": "Avec des sons variés et une ambiance conviviale, je transforme chaque fête en un moment inoubliable.",
     "ctas": {
       "primary": "Réserver une date",
       "secondary": "Me contacter"
@@ -32,12 +33,12 @@
   },
   "about": {
     "title": {
-      "text": "Votre DJ, tous styles, ",
-      "highlight": "toutes ambiances"
+      "text": "VOTRE Dj, TOUS STYLES, ",
+      "highlight": "TOUTES AMBIANCES"
     },
     "description": [
-      "Passionnée de musique et créatrice d’ambiances inoubliables. **Mariages**, **anniversaires**, **soirées** privées ou **événements** professionnels : je suis votre DJ pour faire de chaque instant un moment unique.",
-      "Avec une sélection musicale variée, des classiques intemporels aux derniers hits, j’adapte chaque mix à votre public, à vos goûts et à l’énergie du moment. Que ce soit en Île-de-France, en Provence ou à l'étranger, votre DJ est réactive et toujours disponible pour répondre à vos attentes."
+      "Passionnée de musique et créatrice d’ambiances inoubliables. Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre Dj pour faire de chaque instant un moment unique.",
+      "Avec une sélection musicale variée, des classiques intemporels aux derniers hits, j’adapte chaque mix à votre public, à vos goûts et à l’énergie du moment. Que ce soit en Île-de-France, en Provence ou à l'étranger, votre Dj est réactive et toujours disponible pour répondre à vos attentes."
     ],
     "tags": ["Disco","Funk","House","Electro","Latino","Musique Africaine","Pop"],
     "contactInfo": [
@@ -49,22 +50,22 @@
   },
   "gallery": {
     "title": {
-      "text": "Capturer l'énergie,",
-      "highlight": "immortaliser l'instant"
+      "text": "CAPTURER L'ÉNERGIE,",
+      "highlight": "IMMORTALISER L'INSTANT"
     },
     "subtitle": "Aperçu des moments forts et des ambiances créées lors des derniers événements.",
     "images": [
-      { "src": "dj-urya_1.png", "alt": "DJ en plein mix", "big": true },
+      { "src": "dj-urya_4.png", "alt": "Dj en plein mix", "big": true },
       { "src": "dj-urya_2.png", "alt": "Foule en festival" },
       { "src": "dj-urya_3.png", "alt": "Jeux de lumières concert" },
-      { "src": "dj-urya_4.png", "alt": "Ambiance soirée entreprise" },
+      { "src": "dj-urya_6.png", "alt": "Ambiance soirée entreprise" },
       { "src": "dj-urya_5.png", "alt": "Piste de danse en club" }
     ]
   },
   "services": {
     "title": {
-      "text": "Chaque événement mérite",
-      "highlight": "une expérience unique"
+      "text": "CHAQUE ÉVÉNEMENT MÉRITE",
+      "highlight": "UNE EXPÉRIENCE UNIQUE"
     },
     "subtitle": "Mon objectif : créer une atmosphère festive et élégante, où chaque invité profite pleinement de la fête. Que ce soit en Île-de-France, en Provence ou à l'étranger, votre DJ est réactive et toujours disponible pour répondre à vos attentes.",
     "items": [
@@ -119,8 +120,8 @@
   },
   "faq": {
     "title": {
-      "text": "Questions",
-      "highlight": "Fréquentes"
+      "text": "QUESTIONS",
+      "highlight": "FRÉQUENTES"
     },
     "items": [
       {
@@ -132,7 +133,7 @@
         "answer": "La flexibilité est l'une de mes priorités. Si vous m'informez suffisamment à l'avance, je ferai tout mon possible pour réajuster mon planning sans frais supplémentaires, sous réserve de disponibilité à la nouvelle date."
       },
       {
-        "question": "Facturez-vous les déplacements ?",
+        "question": "Facturez-vous le déplacement ?",
         "answer": "Les frais de déplacement sont inclus dans un rayon défini autour de ma base. Pour les prestations nationales ou internationales, un forfait kilométrique ou de transport transparent est calculé lors du devis initial."
       },
       {
@@ -155,7 +156,7 @@
       { "platform": "TikTok", "url": "https://www.tiktok.com/@djxuryax77", "icon": "Music" },
       { "platform": "Youtube", "url": "https://www.youtube.com/channel/UCnFBfafspOMtd_c3Yki-rkg", "icon": "ExternalLink" }
     ],
-    "copyright": "DJ URYA — Tous droits réservés.",
+    "copyright": "Dj URYA — Tous droits réservés.",
     "signature": "Dernière mise à jour le 02/06/2026 - Le Mée-sur-Seine, France"
   }
 }

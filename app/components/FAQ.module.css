@@ -37,7 +37,7 @@
 
 .sectionTag {
     display: inline-block;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 0.15em;
@@ -141,6 +141,7 @@
     color: var(--color-text-muted);
     line-height: 1.6;
     font-size: var(--fs-sm);
+    text-align: justify;
 }
 
 
@@ -164,7 +165,7 @@
     font-weight: 700;
     color: var(--color-text-deep);
     letter-spacing: 0.05em;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-family: var(--font-secondary);
 }
 

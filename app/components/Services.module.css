@@ -30,7 +30,7 @@
 
 .sectionTag {
     display: inline-block;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-size: var(--fs-xs);
     font-weight: 600;
     letter-spacing: 0.15em;
@@ -63,6 +63,7 @@
     margin-right: auto;
     line-height: 1.6;
     font-size: var(--fs-base);
+    /*text-align: justify;*/
 }
 
 /* GRILLE À 4 COLONNES */
@@ -198,7 +199,7 @@
 .priceLabel {
     font-size: 0.68rem;
     color: var(--color-text-dim);
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     letter-spacing: 0.05em;
     font-family: var(--font-secondary);
     line-height: 1;
@@ -260,7 +261,7 @@
     color: var(--color-text-muted);
     /*color: #fff;*/
     font-family: var(--font-secondary);
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     letter-spacing: 0.05em;
 }
 

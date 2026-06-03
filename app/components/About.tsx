@@ -62,7 +62,7 @@ export default function About() {
                     >
                         <div className={styles.videoContainer}>
                             <video
-                                src="/about_video.mp4"
+                                src="/about.mp4"
                                 poster="https://images.pexels.com/photos/2390369/pexels-photo-2390369.jpeg?auto=compress&cs=tinysrgb&w=800"
                                 autoPlay
                                 loop
@@ -70,6 +70,10 @@ export default function About() {
                                 playsInline
                                 className={styles.video}
                             />
+                            {/*<img*/}
+                            {/*    src="profil.png"*/}
+                            {/*    className={styles.video}*/}
+                            {/*/>*/}
                             <div className={styles.videoRing} />
                             <div className={styles.videoGradientOverlay} />
                         </div>
