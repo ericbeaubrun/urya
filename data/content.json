@@ -73,7 +73,7 @@
         "icon": "Heart",
         "title": "Mariages",
         "subtitle": "Prestation sur mesure : cocktail, dîner, ouverture de bal, soirée dansante.",
-        "image": "/mariage.jpg",
+        "image": "/mariage.png",
         "price": "À partir de 450 €",
         "inclusions": [
           "Matériel professionnel",
@@ -85,7 +85,7 @@
         "icon": "PartyPopper",
         "title": "Anniversaires",
         "subtitle": "Animation complète, ambiance personnalisée selon le thème et le public.",
-        "image": "/anniversaire.jpg",
+        "image": "/anniversaire.png",
         "price": "À partir de 450 €",
         "inclusions": [
           "Matériel professionnel",
@@ -97,7 +97,7 @@
         "icon": "Sparkles",
         "title": "Événements",
         "subtitle": "Soirées, fêtes associatives, fêtes d'entreprises, événements sportifs , séminaires, etc.",
-        "image": "/soiree_privee.png",
+        "image": "/soiree.png",
         "price": "À partir de 450 €",
         "inclusions": [
           "Matériel professionnel",
