@@ -25,6 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/prestations/toutes">Voir tout</Link>
           <Link href="/admin/prestations/calendrier">Vue calendrier</Link>
           <Link href="/admin/prestations/ajouter">Ajout de prestations</Link>
+          <Link href="/admin/content">Édition Contenu</Link>
                     <form
                         action={async () => {
                             "use server";

@@ -6,15 +6,14 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
-import content from '@/data/content.json';
-
-const { navigation } = content;
+import { useContent } from '@/app/ContentContext';
 
 interface NavigationProps {
     onContactClick?: () => void;
 }
 
 export default function Navigation({ onContactClick }: NavigationProps) {
+    const { navigation } = useContent();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isHeroActive, setIsHeroActive] = useState(true);

@@ -4,9 +4,7 @@ import Image from 'next/image';
 import { Link as ScrollLink } from 'react-scroll';
 import styles from './Footer.module.css';
 
-import content from '@/data/content.json';
-
-const { footer, navigation } = content;
+import { useContent } from '@/app/ContentContext';
 
 const ICON_MAP: Record<string, string> = {
     Instagram: '/insta.png',
@@ -15,6 +13,7 @@ const ICON_MAP: Record<string, string> = {
 };
 
 export default function Footer() {
+    const { footer, navigation } = useContent();
     return (
         <footer className={styles.footer}>
             <div className={styles.container}>

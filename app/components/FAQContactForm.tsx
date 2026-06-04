@@ -6,12 +6,15 @@ import { Send, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
 import styles from './FAQ.module.css';
 import {EXAMPLE_MAIL, EXAMPLE_NAME} from "@/app/config";
 
+import { useContent } from '@/app/ContentContext';
+
 interface FAQContactFormProps {
     isOpen?: boolean;
     setIsOpen?: (open: boolean) => void;
 }
 
 export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetIsOpen }: FAQContactFormProps) {
+    const { faqForm } = useContent();
     const [localIsOpen, setLocalIsOpen] = useState(false);
     
     const isOpen = propIsOpen !== undefined ? propIsOpen : localIsOpen;
@@ -46,6 +49,13 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
         }
     };
 
+    const renderDescription = (text: string) => {
+        const parts = text.split('**');
+        return parts.map((part, i) => 
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+        );
+    };
+
     return (
         <div className={`${styles.item} ${styles.contactFaqTrigger} ${isOpen ? styles.itemOpen : ''}`}>
             <button 
@@ -53,7 +63,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
             >
-                <span className={`${styles.question}`}>Une autre question ? Contactez moi.</span>
+                <span className={`${styles.question}`}>{faqForm.trigger}</span>
                 <div className={styles.iconWrapper}>
                     <ChevronDown size={20} />
                 </div>
@@ -70,12 +80,12 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                     >
                         <div className={styles.content}>
                             <p style={{ marginBottom: '1.5rem' }}>
-                                Si vous n&apos;avez pas trouvé la réponse à votre question, n&apos;hésitez pas à m&apos;envoyer un message directement via ce formulaire ou par mail : <strong><a href="mailto:2souchik@gmail.com">2souchik@gmail.com</a></strong>.
+                                {renderDescription(faqForm.description)}
                             </p>
                             
                             <form onSubmit={handleSubmit} className={styles.form}>
                                 <div className={styles.field}>
-                                    <label className={styles.fieldLabel}>Nom ou Organisation</label>
+                                    <label className={styles.fieldLabel}>{faqForm.fields.name}</label>
                                     <input
                                         type="text"
                                         name="nom"
@@ -88,7 +98,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                 </div>
 
                                 <div className={styles.field}>
-                                    <label className={styles.fieldLabel}>Email</label>
+                                    <label className={styles.fieldLabel}>{faqForm.fields.email}</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -101,13 +111,13 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                 </div>
 
                                 <div className={styles.field}>
-                                    <label className={styles.fieldLabel}>Message</label>
+                                    <label className={styles.fieldLabel}>{faqForm.fields.message}</label>
                                     <textarea
                                         name="message"
                                         rows={4}
                                         value={form.message}
                                         onChange={handleChange}
-                                        placeholder="Décrivez votre projet ou posez votre question..."
+                                        placeholder={faqForm.fields.placeholders.message}
                                         required
                                         className={styles.textarea}
                                     />
@@ -121,12 +131,12 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                     {status === 'sending' ? (
                                         <div className={styles.loaderGroup}>
                                             <div className={styles.spinner} />
-                                            <span>Envoi...</span>
+                                            <span>{faqForm.buttons.sending}</span>
                                         </div>
                                     ) : (
                                         <>
                                             <Send size={16} />
-                                            <span>Envoyer le message</span>
+                                            <span>{faqForm.buttons.send}</span>
                                         </>
                                     )}
                                 </button>
@@ -153,17 +163,17 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                     <AlertCircle size={36} className={styles.modalIconError} />
                                 )}
                                 <h3 className={styles.modalTitle}>
-                                    {status === 'sent' ? 'Message envoyé' : 'Erreur'}
+                                    {status === 'sent' ? faqForm.modal.success.title : faqForm.modal.error.title}
                                 </h3>
                                 <p className={styles.modalText}>
                                     {status === 'sent'
-                                        ? 'Je reviens vers vous très vite.'
-                                        : 'Une erreur est survenue. Réessayez.'}
+                                        ? faqForm.modal.success.text
+                                        : faqForm.modal.error.text}
                                 </p>
                             </div>
                             <div className={styles.modalActions}>
                                 <button className={styles.modalButton} onClick={() => setStatus('idle')}>
-                                    OK
+                                    {faqForm.modal.close}
                                 </button>
                             </div>
                         </motion.div>

@@ -7,9 +7,7 @@ import styles from './FAQ.module.css';
 import FAQContactForm from './FAQContactForm';
 import {ANIMATION_ONCE} from "@/app/config";
 
-import content from '@/data/content.json';
-
-const { faq } = content;
+import { useContent } from '@/app/ContentContext';
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -35,6 +33,7 @@ interface FAQProps {
 }
 
 export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps) {
+    const { faq } = useContent();
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     const toggleItem = (index: number) => {
@@ -43,8 +42,6 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
 
     return (
         <section id="faq" className={styles.section}>
-            {/*<div className={styles.bgGlow}/>*/}
-
             <motion.div
                 className={styles.container}
                 variants={containerVariants}
@@ -53,14 +50,13 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
                 viewport={{once: ANIMATION_ONCE, amount: 0.1}}
             >
                 <div className={styles.header}>
-                    {/*<span className={styles.sectionTag}>Assistance</span>*/}
                     <motion.h2 className={styles.title} variants={itemVariants}>
                         {faq.title.text} <span className={styles.textGradient}>{faq.title.highlight}</span>
                     </motion.h2>
                 </div>
 
                 <div className={styles.accordion}>
-                    {faq.items.map((item, idx) => {
+                    {faq.items.map((item: any, idx: number) => {
                         const isOpen = openIndex === idx;
                         return (
                             <motion.div

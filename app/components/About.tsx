@@ -5,9 +5,7 @@ import { Phone, Mail, Instagram, MapPin } from 'lucide-react';
 import styles from './About.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-import content from '@/data/content.json';
-
-const { about } = content;
+import { useContent } from '@/app/ContentContext';
 
 const ICON_MAP: Record<string, any> = {
     Phone,
@@ -44,6 +42,7 @@ const renderDescription = (text: string) => {
 };
 
 export default function About() {
+    const { about } = useContent();
     return (
         <section id="about" className={styles.section}>
             <motion.div 

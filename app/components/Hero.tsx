@@ -5,15 +5,14 @@ import { Link as ScrollLink } from 'react-scroll';
 import styles from './Hero.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-import content from '@/data/content.json';
-
-const { hero } = content;
+import { useContent } from '@/app/ContentContext';
 
 interface HeroProps {
     onContactClick?: () => void;
 }
 
 export default function Hero({ onContactClick }: HeroProps) {
+    const { hero } = useContent();
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {

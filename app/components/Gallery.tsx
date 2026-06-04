@@ -4,9 +4,7 @@ import { motion } from 'framer-motion';
 import styles from './Gallery.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-import content from '@/data/content.json';
-
-const { gallery } = content;
+import { useContent } from '@/app/ContentContext';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -35,6 +33,7 @@ const itemVariants = {
 };
 
 export default function Gallery() {
+    const { gallery } = useContent();
     return (
         <section id="gallery" className={styles.section}>
             <motion.div 

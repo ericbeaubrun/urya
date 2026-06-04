@@ -6,9 +6,7 @@ import { Link as ScrollLink } from 'react-scroll';
 import styles from './Services.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-import content from '@/data/content.json';
-
-const { services } = content;
+import { useContent } from '@/app/ContentContext';
 
 const ICON_MAP: Record<string, any> = {
     Heart,
@@ -38,6 +36,7 @@ const itemVariants = {
 };
 
 export default function Services() {
+    const { services } = useContent();
     return (
         <section id="services" className={styles.section}>
             <div className={styles.bgOverlay} />
@@ -69,7 +68,7 @@ export default function Services() {
 
                 {/* 4 Cards Grid */}
                 <div className={styles.grid}>
-                    {services.items.map((service, idx) => {
+                    {services.items.map((service: any, idx: number) => {
                         const Icon = ICON_MAP[service.icon] || Sparkles;
 
                         return (
@@ -101,7 +100,7 @@ export default function Services() {
                                     <p className={styles.cardSubtitle}>{service.subtitle}</p>
 
                                     <ul className={styles.inclusionsList}>
-                                        {service.inclusions.map((item) => (
+                                        {service.inclusions.map((item: string) => (
                                             <li key={item} className={styles.inclusionItem}>
                                                 <Check size={14} className={styles.checkIcon} />
                                                 <span>{item}</span>

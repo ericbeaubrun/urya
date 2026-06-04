@@ -7,6 +7,7 @@ import styles from "./PrestationForm.module.css";
 import CalendarPicker from "./CalendarPicker";
 import TimePicker from "./TimePicker";
 import {ANIMATION_ONCE, EXAMPLE_MAIL, EXAMPLE_NAME, EXAMPLE_PHONE} from "@/app/config";
+import {useContent} from "@/app/ContentContext";
 
 interface PrestationFormData {
     nom: string;
@@ -42,6 +43,7 @@ const itemVariants = {
 };
 
 export default function PrestationForm({ initialDate }: { initialDate?: string }) {
+    const { prestationForm } = useContent();
     const sectionRef = useRef<HTMLDivElement>(null);
     const [formData, setFormData] = useState<PrestationFormData>({
         nom: "",
@@ -112,28 +114,28 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const backBtnContent = (
         <>
             <img src="/arrow-left.svg" alt="" aria-hidden="true" width={18} height={18} />
-            <span>Précédent</span>
+            <span>{prestationForm.buttons.prev}</span>
         </>
     );
 
     const nextBtnContent = (
         <>
-            <span>Suivant</span>
+            <span>{prestationForm.buttons.next}</span>
             <img src="/arrow-right.svg" alt="" aria-hidden="true" width={18} height={18} />
         </>
     );
 
     const fieldLabels: Record<keyof PrestationFormData, string> = {
-        nom: "Nom *",
-        mail: "Email *",
-        tel: "Téléphone",
-        date_debut: "Date de début *",
-        date_fin: "Date de fin",
-        heure_debut: "Heure début",
-        heure_fin: "Heure fin",
-        type: "Type",
-        lieu: "Lieu",
-        notes: "Notes",
+        nom: prestationForm.fields.name + " *",
+        mail: prestationForm.fields.email + " *",
+        tel: prestationForm.fields.phone,
+        date_debut: prestationForm.fields.date + " *",
+        date_fin: prestationForm.fields.date_fin || "Date de fin",
+        heure_debut: prestationForm.fields.timeStart,
+        heure_fin: prestationForm.fields.timeEnd,
+        type: prestationForm.fields.type,
+        lieu: prestationForm.fields.location,
+        notes: prestationForm.fields.notes,
     };
 
     const handleChange = (
@@ -504,11 +506,15 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         setErrorFields([]);
     };
 
+    const renderSubtitle = (text: string) => {
+        const parts = text.split('**');
+        return parts.map((part, i) => 
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+        );
+    };
+
     return (
         <section id="devis" ref={sectionRef} className={styles.wrapper}>
-            {/*<div className={styles.bgGlowLeft} />*/}
-            {/*<div className={styles.bgGlowRight} />*/}
-
             <motion.div 
                 className={styles.container}
                 variants={containerVariants}
@@ -518,47 +524,31 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
             >
                 <div className={styles.header}>
                     <motion.h2 className={styles.sectionTitle} variants={itemVariants}>
-                        Votre événement commence
+                        {prestationForm.title.text}
                         <br />
-                        <span className={styles.textGradient}>par une conversation</span>
+                        <span className={styles.textGradient}>{prestationForm.title.highlight}</span>
                     </motion.h2>
                     <motion.p className={styles.sectionSubtitle} variants={itemVariants}>
                         {viewMode === 'appointment' 
-                            ? "Vous hésitez encore ? Discutons-en de vive voix lors d'un court échange pour définir ensemble les contours de votre projet."
-                            : <>Décrivez votre projet, je vous réponds sous 24h avec une proposition personnalisée. Pour toute demande personnalisée contactez-moi par mail à <strong><a href="mailto:2souchik@gmail.com">2souchik@gmail.com</a></strong>.</>
+                            ? renderSubtitle(prestationForm.subtitles.appointment)
+                            : renderSubtitle(prestationForm.subtitles.prestation)
                         }
                     </motion.p>
                 </div>
-
-                {/* @todo tester avant d'implementer*/}
-                {/*<motion.div className={styles.toggleContainer} variants={itemVariants}>*/}
-                {/*    <button */}
-                {/*        className={`${styles.toggleBtn} ${viewMode === 'appointment' ? styles.toggleBtnActive : ''}`}*/}
-                {/*        onClick={() => { setViewMode('appointment'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}*/}
-                {/*    >*/}
-                {/*        Prendre un premier rendez-vous gratuit ?*/}
-                {/*    </button>*/}
-                {/*    <button */}
-                {/*        className={`${styles.toggleBtn} ${viewMode === 'prestation' ? styles.toggleBtnActive : ''}`}*/}
-                {/*        onClick={() => { setViewMode('prestation'); setIsSuccess(false); setMessage(""); setErrors([]); setErrorFields([]); }}*/}
-                {/*    >*/}
-                {/*        Réserver une prestation*/}
-                {/*    </button>*/}
-                {/*</motion.div>*/}
 
                 <motion.div className={styles.card} variants={itemVariants}>
                     {isSuccess ? (
                         <div className={styles.successScreen}>
                             <CheckCircle size={56} className={styles.successIcon} />
-                            <h3 className={styles.successTitle}>Message envoyé !</h3>
+                            <h3 className={styles.successTitle}>{prestationForm.success.title}</h3>
                             <p className={styles.successText}>
                                 {viewMode === 'appointment' 
-                                    ? "Merci pour votre demande de rendez-vous. Je reviendrai vers vous très prochainement pour confirmer l'horaire."
-                                    : "Merci pour votre demande. Je reviendrai vers vous dans les 24 heures avec une proposition personnalisée."
+                                    ? prestationForm.success.textAppointment
+                                    : prestationForm.success.textPrestation
                                 }
                             </p>
                             <button onClick={resetForm} className={styles.btnReset}>
-                                Envoyer une autre demande
+                                {prestationForm.buttons.reset}
                             </button>
                         </div>
                     ) : viewMode === 'appointment' ? (
@@ -574,12 +564,12 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
                             <div className={`${styles.field} ${errorFields.includes("name") ? styles.fieldHasError : ""}`}>
                                 <label className={styles.fieldLabelText}>Nom ou Organisme <span className={styles.requiredStar}>*</span></label>
-                                <input name="name" value={appointmentData.name} onChange={handleAppointmentChange} placeholder="Eric Beaubrun / Entreprise" className={`${styles.input} ${errorFields.includes("name") ? styles.inputError : ""}`} />
+                                <input name="name" value={appointmentData.name} onChange={handleAppointmentChange} placeholder={EXAMPLE_NAME} className={`${styles.input} ${errorFields.includes("name") ? styles.inputError : ""}`} />
                             </div>
 
                             <div className={`${styles.field} ${errorFields.includes("contact") ? styles.fieldHasError : ""}`}>
                                 <label className={styles.fieldLabelText}>Email ou Telélphone<span className={styles.requiredStar}>*</span></label>
-                                <input name="contact" value={appointmentData.contact} onChange={handleAppointmentChange} placeholder="eric@exemple.fr ou 06..." className={`${styles.input} ${errorFields.includes("contact") ? styles.inputError : ""}`} />
+                                <input name="contact" value={appointmentData.contact} onChange={handleAppointmentChange} placeholder={`${EXAMPLE_MAIL} ou 06...`} className={`${styles.input} ${errorFields.includes("contact") ? styles.inputError : ""}`} />
                             </div>
 
                             <div className={`${styles.field} ${errorFields.includes("availability") ? styles.fieldHasError : ""}`}>
@@ -611,7 +601,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                             <span>Envoi...</span>
                                         </div>
                                     ) : (
-                                        "Envoyer la demande de rendez-vous"
+                                        prestationForm.buttons.sendAppointment
                                     )}
                                 </button>
                             </div>
@@ -619,22 +609,12 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                     ) : (
                         <>
                             <div className={styles.stepIndicator}>
-                                <div className={`${styles.stepItem} ${step >= 1 ? styles.active : ""}`}>
-                                    <span className={styles.stepNumber}>1</span>
-                                    <span className={styles.stepLabel}>Date et heure</span>
-                                </div>
-                                <div className={`${styles.stepItem} ${step >= 2 ? styles.active : ""}`}>
-                                    <span className={styles.stepNumber}>2</span>
-                                    <span className={styles.stepLabel}>Type de prestation</span>
-                                </div>
-                                <div className={`${styles.stepItem} ${step >= 3 ? styles.active : ""}`}>
-                                    <span className={styles.stepNumber}>3</span>
-                                    <span className={styles.stepLabel}>Vos Coordonnées</span>
-                                </div>
-                                <div className={`${styles.stepItem} ${step === 4 ? styles.active : ""}`}>
-                                    <span className={styles.stepNumber}>✔</span>
-                                    <span className={styles.stepLabel}>Récap</span>
-                                </div>
+                                {prestationForm.steps.map((s: any, i: number) => (
+                                    <div key={i} className={`${styles.stepItem} ${step >= (i + 1) ? styles.active : ""}`}>
+                                        <span className={styles.stepNumber}>{s.number}</span>
+                                        <span className={styles.stepLabel}>{s.label}</span>
+                                    </div>
+                                ))}
                             </div>
 
                             {errors.length > 0 && (
@@ -650,7 +630,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                 <div className={styles.formSection}>
                                     <div className={`${styles.field} ${errorFields.includes("date_debut") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>
-                                            Date de l&apos;événement <span className={styles.requiredStar}>*</span>
+                                            {prestationForm.fields.date} <span className={styles.requiredStar}>*</span>
                                         </label>
                                         <button 
                                             type="button" 
@@ -666,7 +646,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
                                     <div className={styles.fieldRow}>
                                         <div className={`${styles.field} ${errorFields.includes("heure_debut") ? styles.fieldHasError : ""}`}>
-                                            <label className={styles.fieldLabelText}>Heure de début</label>
+                                            <label className={styles.fieldLabelText}>{prestationForm.fields.timeStart}</label>
                                             <button 
                                                 type="button" 
                                                 className={`${styles.dateTrigger} ${formData.heure_debut ? styles.dateTriggerActive : ""} ${errorFields.includes("heure_debut") ? styles.dateTriggerError : ""}`}
@@ -679,7 +659,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                             </button>
                                         </div>
                                         <div className={`${styles.field} ${errorFields.includes("heure_fin") ? styles.fieldHasError : ""}`}>
-                                            <label className={styles.fieldLabelText}>Heure de fin</label>
+                                            <label className={styles.fieldLabelText}>{prestationForm.fields.timeEnd}</label>
                                             <button 
                                                 type="button" 
                                                 className={`${styles.dateTrigger} ${formData.heure_fin ? styles.dateTriggerActive : ""} ${errorFields.includes("heure_fin") ? styles.dateTriggerError : ""}`}
@@ -702,7 +682,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             {step === 2 && (
                                 <div className={styles.formSection}>
                                     <div className={`${styles.field} ${errorFields.includes("type") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>Type de prestation souhaité</label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.type}</label>
                                         <select name="type" value={formData.type} onChange={handleChange} className={`${styles.select} ${errorFields.includes("type") ? styles.selectError : ""}`}>
                                             <option value="">Sélectionnez...</option>
                                             {Object.entries(TYPE_LABEL_TO_VALUE).map(([label, value]) => (
@@ -712,13 +692,13 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("lieu") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>Adresse complète / Ville / Lieu</label>
-                                        <input name="lieu" value={formData.lieu} onChange={handleChange} placeholder="Ex: Château de Vaux, Paris" className={`${styles.input} ${errorFields.includes("lieu") ? styles.inputError : ""}`} />
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.location}</label>
+                                        <input name="lieu" value={formData.lieu} onChange={handleChange} placeholder={prestationForm.placeholders.location} className={`${styles.input} ${errorFields.includes("lieu") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("notes") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>Précisions ou options supplémentaires (Lumières, effets, lasers...)</label>
-                                        <textarea name="notes" value={formData.notes} onChange={handleChange} rows={4} placeholder="Détails du projet..." className={`${styles.textarea} ${errorFields.includes("notes") ? styles.textareaError : ""}`} />
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.notes}</label>
+                                        <textarea name="notes" value={formData.notes} onChange={handleChange} rows={4} placeholder={prestationForm.placeholders.notes} className={`${styles.textarea} ${errorFields.includes("notes") ? styles.textareaError : ""}`} />
                                     </div>
 
                                     <div className={styles.navGroup}>
@@ -731,17 +711,17 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             {step === 3 && (
                                 <div className={styles.formSection}>
                                     <div className={`${styles.field} ${errorFields.includes("nom") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>Nom complet <span className={styles.requiredStar}>*</span></label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.name} <span className={styles.requiredStar}>*</span></label>
                                         <input name="nom" value={formData.nom} onChange={handleChange} placeholder={EXAMPLE_NAME} required className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("mail") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>Adresse Email <span className={styles.requiredStar}>*</span></label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.email} <span className={styles.requiredStar}>*</span></label>
                                         <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder={EXAMPLE_MAIL} required className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`} />
                                     </div>
 
                                     <div className={`${styles.field} ${errorFields.includes("tel") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>Téléphone (facultatif)</label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.phone}</label>
                                         <input name="tel" value={formData.tel} onChange={handleChange} placeholder={EXAMPLE_PHONE} className={`${styles.input} ${errorFields.includes("tel") ? styles.inputError : ""}`} />
                                     </div>
 
@@ -785,8 +765,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                     </div>
 
                                     <p className={styles.privacyNote}>
-                                        Vos données sont uniquement utilisées pour traiter votre demande de prestation. 
-                                        Aucune donnée n&apos;est partagée ou revendue à des tiers.
+                                        {prestationForm.privacyNote}
                                     </p>
 
                                     <div className={styles.navGroup}>
@@ -798,7 +777,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                                     <span>Envoi...</span>
                                                 </div>
                                             ) : (
-                                                "Envoyer la demande "
+                                                prestationForm.buttons.send
                                             )}
                                         </button>
                                     </div>
