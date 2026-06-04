@@ -107,7 +107,7 @@ export default function Hero({ onContactClick }: HeroProps) {
 
                 {/* Stats Grid */}
                 <motion.div className={styles.statsGrid} variants={itemVariants}>
-                    {hero.stats.map((stat) => (
+                    {hero.stats.map((stat: { label: string; value: string }) => (
                         <div key={stat.label} className={styles.statCard}>
                             <div className={styles.statValue}>{stat.value}</div>
                             <div className={styles.statLabel}>{stat.label}</div>
