@@ -34,6 +34,7 @@ export const getSiteContent = unstable_cache(
     }
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function updateSiteContent(content: any) {
     const {error} = await supabaseAdmin()
         .from('site_content')

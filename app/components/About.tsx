@@ -7,6 +7,7 @@ import {ANIMATION_ONCE} from "@/app/config";
 
 import { useContent } from '@/app/ContentContext';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ICON_MAP: Record<string, any> = {
     Phone,
     Mail,

@@ -1,13 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import styles from './Gallery.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
-import { useContent } from '@/app/ContentContext';
+import {useContent} from '@/app/ContentContext';
 
 const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {opacity: 0},
     visible: {
         opacity: 1,
         transition: {
@@ -18,12 +18,12 @@ const containerVariants = {
 };
 
 const itemVariants = {
-    hidden: { 
-        opacity: 0, 
+    hidden: {
+        opacity: 0,
         y: 30
     },
-    visible: { 
-        opacity: 1, 
+    visible: {
+        opacity: 1,
         y: 0,
         transition: {
             duration: 0.8,
@@ -33,26 +33,26 @@ const itemVariants = {
 };
 
 export default function Gallery() {
-    const { gallery } = useContent();
+    const {gallery} = useContent();
     return (
         <section id="gallery" className={styles.section}>
-            <motion.div 
+            <motion.div
                 className={styles.container}
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: ANIMATION_ONCE, amount: 0.2 }}
+                viewport={{once: ANIMATION_ONCE, amount: 0.2}}
             >
                 <div className={styles.header}>
-                    <motion.h2 
+                    <motion.h2
                         className={styles.sectionTitle}
                         variants={itemVariants}
                     >
                         {gallery.title.text}
-                        <br />
+                        <br/>
                         <span className={styles.textGradient}>{gallery.title.highlight}</span>
                     </motion.h2>
-                    <motion.p 
+                    <motion.p
                         className={styles.sectionSubtitle}
                         variants={itemVariants}
                     >
@@ -61,23 +61,25 @@ export default function Gallery() {
                 </div>
 
                 {/* Grille Bento */}
-                <motion.div 
+                <motion.div
                     className={styles.grid}
                 >
-                    {gallery.images.map((img: any, idx) => (
-                        <motion.div
-                            key={idx}
-                            className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}
-                            variants={itemVariants}
-                        >
-                            <img
-                                src={img.src}
-                                alt={img.alt}
-                                className={styles.image}
-                                loading="lazy"
-                            />
-                        </motion.div>
-                    ))}
+                    {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        gallery.images.map((img: any, idx) => (
+                            <motion.div
+                                key={idx}
+                                className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}
+                                variants={itemVariants}
+                            >
+                                <img
+                                    src={img.src}
+                                    alt={img.alt}
+                                    className={styles.image}
+                                    loading="lazy"
+                                />
+                            </motion.div>
+                        ))}
                 </motion.div>
             </motion.div>
         </section>

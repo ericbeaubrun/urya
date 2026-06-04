@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { CheckCircle, Calendar, X, Clock } from 'lucide-react';
-import { motion, AnimatePresence } from "framer-motion";
+import {useState, useEffect, useRef} from "react";
+import {CheckCircle, Calendar, X, Clock} from 'lucide-react';
+import {motion, AnimatePresence} from "framer-motion";
 import styles from "./PrestationForm.module.css";
 import CalendarPicker from "./CalendarPicker";
 import TimePicker from "./TimePicker";
@@ -23,7 +23,7 @@ interface PrestationFormData {
 }
 
 const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {opacity: 0},
     visible: {
         opacity: 1,
         transition: {
@@ -34,16 +34,16 @@ const containerVariants = {
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: {opacity: 0, y: 30},
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.8, ease: "easeOut" }
+        transition: {duration: 0.8, ease: "easeOut"}
     }
 };
 
-export default function PrestationForm({ initialDate }: { initialDate?: string }) {
-    const { prestationForm } = useContent();
+export default function PrestationForm({initialDate}: { initialDate?: string }) {
+    const {prestationForm} = useContent();
     const sectionRef = useRef<HTMLDivElement>(null);
     const [formData, setFormData] = useState<PrestationFormData>({
         nom: "",
@@ -72,7 +72,10 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const [errors, setErrors] = useState<string[]>([]);
     const [errorFields, setErrorFields] = useState<string[]>([]);
     const [showCalendar, setShowCalendar] = useState(false);
-    const [showTimePicker, setShowTimePicker] = useState<{ active: boolean, field: "heure_debut" | "heure_fin" | null }>({
+    const [showTimePicker, setShowTimePicker] = useState<{
+        active: boolean,
+        field: "heure_debut" | "heure_fin" | null
+    }>({
         active: false,
         field: null
     });
@@ -113,7 +116,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
     const backBtnContent = (
         <>
-            <img src="/arrow-left.svg" alt="" aria-hidden="true" width={18} height={18} />
+            <img src="/arrow-left.svg" alt="" aria-hidden="true" width={18} height={18}/>
             <span>{prestationForm.buttons.prev}</span>
         </>
     );
@@ -121,7 +124,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const nextBtnContent = (
         <>
             <span>{prestationForm.buttons.next}</span>
-            <img src="/arrow-right.svg" alt="" aria-hidden="true" width={18} height={18} />
+            <img src="/arrow-right.svg" alt="" aria-hidden="true" width={18} height={18}/>
         </>
     );
 
@@ -141,8 +144,8 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setFormData((prev) => ({...prev, [name]: value}));
         // Effacer l'erreur du champ quand l'utilisateur commence à taper
         if (errorFields.includes(name)) {
             setErrorFields(prev => prev.filter(f => f !== name));
@@ -173,7 +176,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const handleResetTime = () => {
         if (showTimePicker.field) {
             const field = showTimePicker.field;
-            setFormData(prev => ({ ...prev, [field]: "" }));
+            setFormData(prev => ({...prev, [field]: ""}));
             closeTimePicker();
         }
     };
@@ -181,7 +184,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const handleTimeSelect = (timeStr: string) => {
         if (showTimePicker.field) {
             const field = showTimePicker.field;
-            setFormData(prev => ({ ...prev, [field]: timeStr }));
+            setFormData(prev => ({...prev, [field]: timeStr}));
             if (errorFields.includes(field)) {
                 setErrorFields(prev => prev.filter(f => f !== field));
             }
@@ -189,7 +192,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     };
 
     const closeTimePicker = () => {
-        setShowTimePicker({ active: false, field: null });
+        setShowTimePicker({active: false, field: null});
     };
 
     const formatDate = (dateStr: string) => {
@@ -281,8 +284,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         if (!mail_clean) {
             errors.push("L'email est requis.");
             errorFields.push("mail");
-        }
-        else if (!isValidEmail(mail_clean)) {
+        } else if (!isValidEmail(mail_clean)) {
             errors.push("Le format de l'email est invalide.");
             errorFields.push("mail");
         }
@@ -333,7 +335,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         setErrorFields([]);
 
         if (step === 1) {
-            const { errors, errorFields } = buildCleanPayload(formData);
+            const {errors, errorFields} = buildCleanPayload(formData);
             const dateErrors = errors.filter((e) => /date/.test(e.toLowerCase()));
             const dateErrorFields = errorFields.filter(f => f === "date_debut");
             if (dateErrors.length) {
@@ -343,7 +345,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
             }
         }
         if (step === 3) {
-            const { errors, errorFields } = buildCleanPayload(formData);
+            const {errors, errorFields} = buildCleanPayload(formData);
             const requiredErrors = errors.filter((e) => /(nom|email)/i.test(e));
             const requiredErrorFields = errorFields.filter(f => /nom|mail/.test(f));
             if (requiredErrors.length) {
@@ -369,7 +371,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         setErrorFields([]);
 
         try {
-            const { clean, errors, errorFields } = buildCleanPayload(formData);
+            const {clean, errors, errorFields} = buildCleanPayload(formData);
             if (errors.length) {
                 setErrors(errors);
                 setErrorFields(errorFields);
@@ -378,7 +380,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
             const res = await fetch("/api/prestations", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(clean),
             });
 
@@ -417,8 +419,8 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
     const handleAppointmentChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { name, value } = e.target;
-        setAppointmentData((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setAppointmentData((prev) => ({...prev, [name]: value}));
         if (errorFields.includes(name)) {
             setErrorFields(prev => prev.filter(f => f !== name));
         }
@@ -456,7 +458,7 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
         try {
             const res = await fetch("/api/appointments", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(appointmentData),
             });
 
@@ -508,28 +510,28 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
     const renderSubtitle = (text: string) => {
         const parts = text.split('**');
-        return parts.map((part, i) => 
+        return parts.map((part, i) =>
             i % 2 === 1 ? <strong key={i}>{part}</strong> : part
         );
     };
 
     return (
         <section id="devis" ref={sectionRef} className={styles.wrapper}>
-            <motion.div 
+            <motion.div
                 className={styles.container}
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: ANIMATION_ONCE, amount: 0.1 }}
+                viewport={{once: ANIMATION_ONCE, amount: 0.1}}
             >
                 <div className={styles.header}>
                     <motion.h2 className={styles.sectionTitle} variants={itemVariants}>
                         {prestationForm.title.text}
-                        <br />
+                        <br/>
                         <span className={styles.textGradient}>{prestationForm.title.highlight}</span>
                     </motion.h2>
                     <motion.p className={styles.sectionSubtitle} variants={itemVariants}>
-                        {viewMode === 'appointment' 
+                        {viewMode === 'appointment'
                             ? renderSubtitle(prestationForm.subtitles.appointment)
                             : renderSubtitle(prestationForm.subtitles.prestation)
                         }
@@ -539,10 +541,10 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                 <motion.div className={styles.card} variants={itemVariants}>
                     {isSuccess ? (
                         <div className={styles.successScreen}>
-                            <CheckCircle size={56} className={styles.successIcon} />
+                            <CheckCircle size={56} className={styles.successIcon}/>
                             <h3 className={styles.successTitle}>{prestationForm.success.title}</h3>
                             <p className={styles.successText}>
-                                {viewMode === 'appointment' 
+                                {viewMode === 'appointment'
                                     ? prestationForm.success.textAppointment
                                     : prestationForm.success.textPrestation
                                 }
@@ -562,30 +564,43 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             )}
                             {message && <p className={styles.message}>{message}</p>}
 
-                            <div className={`${styles.field} ${errorFields.includes("name") ? styles.fieldHasError : ""}`}>
-                                <label className={styles.fieldLabelText}>Nom ou Organisme <span className={styles.requiredStar}>*</span></label>
-                                <input name="name" value={appointmentData.name} onChange={handleAppointmentChange} placeholder={EXAMPLE_NAME} className={`${styles.input} ${errorFields.includes("name") ? styles.inputError : ""}`} />
+                            <div
+                                className={`${styles.field} ${errorFields.includes("name") ? styles.fieldHasError : ""}`}>
+                                <label className={styles.fieldLabelText}>Nom ou Organisme <span
+                                    className={styles.requiredStar}>*</span></label>
+                                <input name="name" value={appointmentData.name} onChange={handleAppointmentChange}
+                                       placeholder={EXAMPLE_NAME}
+                                       className={`${styles.input} ${errorFields.includes("name") ? styles.inputError : ""}`}/>
                             </div>
 
-                            <div className={`${styles.field} ${errorFields.includes("contact") ? styles.fieldHasError : ""}`}>
-                                <label className={styles.fieldLabelText}>Email ou Telélphone<span className={styles.requiredStar}>*</span></label>
-                                <input name="contact" value={appointmentData.contact} onChange={handleAppointmentChange} placeholder={`${EXAMPLE_MAIL} ou 06...`} className={`${styles.input} ${errorFields.includes("contact") ? styles.inputError : ""}`} />
+                            <div
+                                className={`${styles.field} ${errorFields.includes("contact") ? styles.fieldHasError : ""}`}>
+                                <label className={styles.fieldLabelText}>Email ou Telélphone<span
+                                    className={styles.requiredStar}>*</span></label>
+                                <input name="contact" value={appointmentData.contact} onChange={handleAppointmentChange}
+                                       placeholder={`${EXAMPLE_MAIL} ou 06...`}
+                                       className={`${styles.input} ${errorFields.includes("contact") ? styles.inputError : ""}`}/>
                             </div>
 
-                            <div className={`${styles.field} ${errorFields.includes("availability") ? styles.fieldHasError : ""}`}>
-                                <label className={styles.fieldLabelText}>Disponibilités (dates, heures) <span className={styles.requiredStar}>*</span></label>
-                                <textarea name="availability" value={appointmentData.availability} onChange={handleAppointmentChange} rows={3} placeholder="Lundi après-midi, Jeudi matin, 12h30..." className={`${styles.textarea} ${errorFields.includes("availability") ? styles.textareaError : ""}`} />
+                            <div
+                                className={`${styles.field} ${errorFields.includes("availability") ? styles.fieldHasError : ""}`}>
+                                <label className={styles.fieldLabelText}>Disponibilités (dates, heures) <span
+                                    className={styles.requiredStar}>*</span></label>
+                                <textarea name="availability" value={appointmentData.availability}
+                                          onChange={handleAppointmentChange} rows={3}
+                                          placeholder="Lundi après-midi, Jeudi matin, 12h30..."
+                                          className={`${styles.textarea} ${errorFields.includes("availability") ? styles.textareaError : ""}`}/>
                             </div>
 
                             <div className={styles.field}>
                                 <label className={styles.fieldLabelText}>Rendez-vous souhaité</label>
                                 <div className={styles.appointmentTypeGrid}>
                                     {(['tel', 'visio', 'physique'] as const).map((t) => (
-                                        <button 
+                                        <button
                                             key={t}
                                             type="button"
                                             className={`${styles.typeSelectBtn} ${appointmentData.type === t ? styles.typeSelectBtnActive : ""}`}
-                                            onClick={() => setAppointmentData(prev => ({ ...prev, type: t }))}
+                                            onClick={() => setAppointmentData(prev => ({...prev, type: t}))}
                                         >
                                             {t.charAt(0).toUpperCase() + t.slice(1)}
                                         </button>
@@ -594,10 +609,11 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                             </div>
 
                             <div className={styles.navGroup}>
-                                <button className={styles.btnConfirm} disabled={isSubmitting} onClick={handleAppointmentSubmit}>
+                                <button className={styles.btnConfirm} disabled={isSubmitting}
+                                        onClick={handleAppointmentSubmit}>
                                     {isSubmitting ? (
                                         <div className={styles.loaderGroup}>
-                                            <div className={styles.spinner} />
+                                            <div className={styles.spinner}/>
                                             <span>Envoi...</span>
                                         </div>
                                     ) : (
@@ -609,12 +625,15 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                     ) : (
                         <>
                             <div className={styles.stepIndicator}>
-                                {prestationForm.steps.map((s: any, i: number) => (
-                                    <div key={i} className={`${styles.stepItem} ${step >= (i + 1) ? styles.active : ""}`}>
-                                        <span className={styles.stepNumber}>{s.number}</span>
-                                        <span className={styles.stepLabel}>{s.label}</span>
-                                    </div>
-                                ))}
+                                {
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    prestationForm.steps.map((s: any, i: number) => (
+                                        <div key={i}
+                                             className={`${styles.stepItem} ${step >= (i + 1) ? styles.active : ""}`}>
+                                            <span className={styles.stepNumber}>{s.number}</span>
+                                            <span className={styles.stepLabel}>{s.label}</span>
+                                        </div>
+                                    ))}
                             </div>
 
                             {errors.length > 0 && (
@@ -628,47 +647,52 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
                             {step === 1 && (
                                 <div className={styles.formSection}>
-                                    <div className={`${styles.field} ${errorFields.includes("date_debut") ? styles.fieldHasError : ""}`}>
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("date_debut") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>
                                             {prestationForm.fields.date} <span className={styles.requiredStar}>*</span>
                                         </label>
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             className={`${styles.dateTrigger} ${formData.date_debut ? styles.dateTriggerActive : ""} ${errorFields.includes("date_debut") ? styles.dateTriggerError : ""}`}
                                             onClick={() => setShowCalendar(true)}
                                         >
                                             <span className={!formData.date_debut ? styles.datePlaceholder : ""}>
                                                 {formatDate(formData.date_debut)}
                                             </span>
-                                            <Calendar size={18} className={styles.dateIcon} />
+                                            <Calendar size={18} className={styles.dateIcon}/>
                                         </button>
                                     </div>
 
                                     <div className={styles.fieldRow}>
-                                        <div className={`${styles.field} ${errorFields.includes("heure_debut") ? styles.fieldHasError : ""}`}>
-                                            <label className={styles.fieldLabelText}>{prestationForm.fields.timeStart}</label>
-                                            <button 
-                                                type="button" 
+                                        <div
+                                            className={`${styles.field} ${errorFields.includes("heure_debut") ? styles.fieldHasError : ""}`}>
+                                            <label
+                                                className={styles.fieldLabelText}>{prestationForm.fields.timeStart}</label>
+                                            <button
+                                                type="button"
                                                 className={`${styles.dateTrigger} ${formData.heure_debut ? styles.dateTriggerActive : ""} ${errorFields.includes("heure_debut") ? styles.dateTriggerError : ""}`}
-                                                onClick={() => setShowTimePicker({ active: true, field: "heure_debut" })}
+                                                onClick={() => setShowTimePicker({active: true, field: "heure_debut"})}
                                             >
                                                 <span className={!formData.heure_debut ? styles.datePlaceholder : ""}>
                                                     {formData.heure_debut || "Choisir l'heure..."}
                                                 </span>
-                                                <Clock size={18} className={styles.dateIcon} />
+                                                <Clock size={18} className={styles.dateIcon}/>
                                             </button>
                                         </div>
-                                        <div className={`${styles.field} ${errorFields.includes("heure_fin") ? styles.fieldHasError : ""}`}>
-                                            <label className={styles.fieldLabelText}>{prestationForm.fields.timeEnd}</label>
-                                            <button 
-                                                type="button" 
+                                        <div
+                                            className={`${styles.field} ${errorFields.includes("heure_fin") ? styles.fieldHasError : ""}`}>
+                                            <label
+                                                className={styles.fieldLabelText}>{prestationForm.fields.timeEnd}</label>
+                                            <button
+                                                type="button"
                                                 className={`${styles.dateTrigger} ${formData.heure_fin ? styles.dateTriggerActive : ""} ${errorFields.includes("heure_fin") ? styles.dateTriggerError : ""}`}
-                                                onClick={() => setShowTimePicker({ active: true, field: "heure_fin" })}
+                                                onClick={() => setShowTimePicker({active: true, field: "heure_fin"})}
                                             >
                                                 <span className={!formData.heure_fin ? styles.datePlaceholder : ""}>
                                                     {formData.heure_fin || "Choisir l'heure..."}
                                                 </span>
-                                                <Clock size={18} className={styles.dateIcon} />
+                                                <Clock size={18} className={styles.dateIcon}/>
                                             </button>
                                         </div>
                                     </div>
@@ -681,9 +705,11 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
                             {step === 2 && (
                                 <div className={styles.formSection}>
-                                    <div className={`${styles.field} ${errorFields.includes("type") ? styles.fieldHasError : ""}`}>
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("type") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>{prestationForm.fields.type}</label>
-                                        <select name="type" value={formData.type} onChange={handleChange} className={`${styles.select} ${errorFields.includes("type") ? styles.selectError : ""}`}>
+                                        <select name="type" value={formData.type} onChange={handleChange}
+                                                className={`${styles.select} ${errorFields.includes("type") ? styles.selectError : ""}`}>
                                             <option value="">Sélectionnez...</option>
                                             {Object.entries(TYPE_LABEL_TO_VALUE).map(([label, value]) => (
                                                 <option key={value} value={value}>{label}</option>
@@ -691,14 +717,21 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                         </select>
                                     </div>
 
-                                    <div className={`${styles.field} ${errorFields.includes("lieu") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.location}</label>
-                                        <input name="lieu" value={formData.lieu} onChange={handleChange} placeholder={prestationForm.placeholders.location} className={`${styles.input} ${errorFields.includes("lieu") ? styles.inputError : ""}`} />
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("lieu") ? styles.fieldHasError : ""}`}>
+                                        <label
+                                            className={styles.fieldLabelText}>{prestationForm.fields.location}</label>
+                                        <input name="lieu" value={formData.lieu} onChange={handleChange}
+                                               placeholder={prestationForm.placeholders.location}
+                                               className={`${styles.input} ${errorFields.includes("lieu") ? styles.inputError : ""}`}/>
                                     </div>
 
-                                    <div className={`${styles.field} ${errorFields.includes("notes") ? styles.fieldHasError : ""}`}>
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("notes") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>{prestationForm.fields.notes}</label>
-                                        <textarea name="notes" value={formData.notes} onChange={handleChange} rows={4} placeholder={prestationForm.placeholders.notes} className={`${styles.textarea} ${errorFields.includes("notes") ? styles.textareaError : ""}`} />
+                                        <textarea name="notes" value={formData.notes} onChange={handleChange} rows={4}
+                                                  placeholder={prestationForm.placeholders.notes}
+                                                  className={`${styles.textarea} ${errorFields.includes("notes") ? styles.textareaError : ""}`}/>
                                     </div>
 
                                     <div className={styles.navGroup}>
@@ -710,19 +743,30 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
                             {step === 3 && (
                                 <div className={styles.formSection}>
-                                    <div className={`${styles.field} ${errorFields.includes("nom") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.name} <span className={styles.requiredStar}>*</span></label>
-                                        <input name="nom" value={formData.nom} onChange={handleChange} placeholder={EXAMPLE_NAME} required className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`} />
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("nom") ? styles.fieldHasError : ""}`}>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.name} <span
+                                            className={styles.requiredStar}>*</span></label>
+                                        <input name="nom" value={formData.nom} onChange={handleChange}
+                                               placeholder={EXAMPLE_NAME} required
+                                               className={`${styles.input} ${errorFields.includes("nom") ? styles.inputError : ""}`}/>
                                     </div>
 
-                                    <div className={`${styles.field} ${errorFields.includes("mail") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.email} <span className={styles.requiredStar}>*</span></label>
-                                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder={EXAMPLE_MAIL} required className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`} />
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("mail") ? styles.fieldHasError : ""}`}>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields.email} <span
+                                            className={styles.requiredStar}>*</span></label>
+                                        <input type="email" name="mail" value={formData.mail} onChange={handleChange}
+                                               placeholder={EXAMPLE_MAIL} required
+                                               className={`${styles.input} ${errorFields.includes("mail") ? styles.inputError : ""}`}/>
                                     </div>
 
-                                    <div className={`${styles.field} ${errorFields.includes("tel") ? styles.fieldHasError : ""}`}>
+                                    <div
+                                        className={`${styles.field} ${errorFields.includes("tel") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>{prestationForm.fields.phone}</label>
-                                        <input name="tel" value={formData.tel} onChange={handleChange} placeholder={EXAMPLE_PHONE} className={`${styles.input} ${errorFields.includes("tel") ? styles.inputError : ""}`} />
+                                        <input name="tel" value={formData.tel} onChange={handleChange}
+                                               placeholder={EXAMPLE_PHONE}
+                                               className={`${styles.input} ${errorFields.includes("tel") ? styles.inputError : ""}`}/>
                                     </div>
 
                                     <div className={styles.navGroup}>
@@ -755,7 +799,8 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
                                                 return (
                                                     <li key={k} className={styles.recapItem}>
                                                         <span className={styles.recapLabel}>
-                                                            {baseLabel} {hasStar && (<span className={styles.requiredStar}>*</span>)} :
+                                                            {baseLabel} {hasStar && (
+                                                            <span className={styles.requiredStar}>*</span>)} :
                                                         </span>
                                                         <span className={styles.recapValue}>{displayValue}</span>
                                                     </li>
@@ -770,10 +815,11 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
 
                                     <div className={styles.navGroup}>
                                         <button className={styles.btnBack} onClick={prevStep}>{backBtnContent}</button>
-                                        <button className={styles.btnConfirm} disabled={isSubmitting} onClick={handleSubmit}>
+                                        <button className={styles.btnConfirm} disabled={isSubmitting}
+                                                onClick={handleSubmit}>
                                             {isSubmitting ? (
                                                 <div className={styles.loaderGroup}>
-                                                    <div className={styles.spinner} />
+                                                    <div className={styles.spinner}/>
                                                     <span>Envoi...</span>
                                                 </div>
                                             ) : (
@@ -791,28 +837,30 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
             <AnimatePresence>
                 {showCalendar && (
                     <div className={styles.modalOverlay} onClick={() => setShowCalendar(false)}>
-                        <motion.div 
-                            className={styles.modalContent} 
+                        <motion.div
+                            className={styles.modalContent}
                             onClick={(e) => e.stopPropagation()}
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            initial={{opacity: 0, scale: 0.9, y: 20}}
+                            animate={{opacity: 1, scale: 1, y: 0}}
+                            exit={{opacity: 0, scale: 0.9, y: 20}}
                         >
                             <div className={styles.modalHeader}>
                                 <h3 className={styles.modalTitleRecap}>Choisir une date</h3>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button className={styles.btnResetModal} onClick={handleResetDate} title="Réinitialiser">
-                                        <img src="/reset.png" alt="Reset" width={20} height={20} />
+                                <div style={{display: 'flex', gap: '8px'}}>
+                                    <button className={styles.btnResetModal} onClick={handleResetDate}
+                                            title="Réinitialiser">
+                                        <img src="/reset.png" alt="Reset" width={20} height={20}/>
                                     </button>
-                                    <button className={styles.btnCloseModal} onClick={() => setShowCalendar(false)} title="Fermer">
-                                        <X size={26} />
+                                    <button className={styles.btnCloseModal} onClick={() => setShowCalendar(false)}
+                                            title="Fermer">
+                                        <X size={26}/>
                                     </button>
                                 </div>
                             </div>
                             <div className={styles.modalBody}>
-                                <CalendarPicker 
-                                    onDateSelect={handleDateSelect} 
-                                    initialDate={formData.date_debut || undefined} 
+                                <CalendarPicker
+                                    onDateSelect={handleDateSelect}
+                                    initialDate={formData.date_debut || undefined}
                                 />
                             </div>
                         </motion.div>
@@ -823,34 +871,35 @@ export default function PrestationForm({ initialDate }: { initialDate?: string }
             <AnimatePresence>
                 {showTimePicker.active && (
                     <div className={styles.modalOverlay} onClick={closeTimePicker}>
-                        <motion.div 
-                            className={styles.modalContent} 
-                            style={{ maxWidth: '400px' }}
+                        <motion.div
+                            className={styles.modalContent}
+                            style={{maxWidth: '400px'}}
                             onClick={(e) => e.stopPropagation()}
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            initial={{opacity: 0, scale: 0.9, y: 20}}
+                            animate={{opacity: 1, scale: 1, y: 0}}
+                            exit={{opacity: 0, scale: 0.9, y: 20}}
                         >
                             <div className={styles.modalHeader}>
                                 <h3 className={styles.modalTitleRecap}>
                                     Choisir l&apos;heure de {showTimePicker.field === "heure_debut" ? "début" : "fin"}
                                 </h3>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button className={styles.btnResetModal} onClick={handleResetTime} title="Réinitialiser">
-                                        <img src="/reset.png" alt="Reset" width={20} height={20} />
+                                <div style={{display: 'flex', gap: '8px'}}>
+                                    <button className={styles.btnResetModal} onClick={handleResetTime}
+                                            title="Réinitialiser">
+                                        <img src="/reset.png" alt="Reset" width={20} height={20}/>
                                     </button>
                                     <button className={styles.btnCloseModal} onClick={closeTimePicker} title="Fermer">
-                                        <X size={24} />
+                                        <X size={24}/>
                                     </button>
                                 </div>
                             </div>
                             <div className={styles.modalBody}>
-                                <TimePicker 
+                                <TimePicker
                                     onTimeSelect={(time) => {
                                         handleTimeSelect(time);
                                         closeTimePicker();
-                                    }} 
-                                    initialTime={formData[showTimePicker.field!] || undefined} 
+                                    }}
+                                    initialTime={formData[showTimePicker.field!] || undefined}
                                 />
                             </div>
                         </motion.div>

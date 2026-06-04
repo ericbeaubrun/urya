@@ -9,7 +9,7 @@ export default function MaintenancePage() {
                     Nous mettons à jour notre contenu pour vous offrir la meilleure expérience possible.
                 </p>
                 <div className={styles.loader}></div>
-                <p className={styles.footer}>Revenez d'ici quelques instants.</p>
+                <p className={styles.footer}>Revenez d&apos;ici quelques instants.</p>
             </div>
         </div>
     );
