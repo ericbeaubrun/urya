@@ -17,15 +17,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div>
       <div className={styles.header}>
         <div className={styles.userInfo}>
-          <strong>Connecté en tant que:</strong> {session?.user?.email}
+          <strong>{session?.user?.email}</strong>
         </div>
         <nav className={styles.nav}>
-          <Link href="/admin/prestations/futures">Prestations à venir</Link>
-          <Link href="/admin/prestations/passees">Prestations passées</Link>
-          <Link href="/admin/prestations/toutes">Voir tout</Link>
-          <Link href="/admin/prestations/calendrier">Vue calendrier</Link>
-          <Link href="/admin/prestations/ajouter">Ajout de prestations</Link>
-          <Link href="/admin/content">Édition Contenu</Link>
+            <Link href="/admin/prestations/ajouter">Ajouter une prestation</Link>
+            <Link href="/admin/prestations/futures">Prestations à venir</Link>
+            <Link href="/admin/prestations/passees">Prestations passées</Link>
+            <Link href="/admin/prestations/toutes">Toutes les prestations</Link>
+            <Link href="/admin/prestations/calendrier">Calendrier</Link>
+          <Link href="/admin/content">Editer le Contenu</Link>
                     <form
                         action={async () => {
                             "use server";

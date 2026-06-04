@@ -66,7 +66,7 @@ export default function Gallery() {
                 >
                     {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        gallery.images.map((img: any, idx) => (
+                        gallery.images.map((img: any, idx : any) => (
                             <motion.div
                                 key={idx}
                                 className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}

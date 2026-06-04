@@ -89,21 +89,21 @@ export default function ContentEditor({initialContent}: { initialContent: any })
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h1 className={styles.title}>Édition du Contenu</h1>
+                <h1 className={styles.title}>Éditeur de Contenu (Beta*)</h1>
                 <div className={styles.buttonGroup}>
-                    <button
-                        onClick={handleRefreshOnly}
-                        disabled={refreshing || saving}
-                        className={styles.refreshBtn}
-                    >
-                        {refreshing ? 'Rafraîchissement...' : 'Rafraîchir le cache'}
-                    </button>
+                    {/*<button*/}
+                    {/*    onClick={handleRefreshOnly}*/}
+                    {/*    disabled={refreshing || saving}*/}
+                    {/*    className={styles.refreshBtn}*/}
+                    {/*>*/}
+                    {/*    {refreshing ? 'Rafraîchissement...' : 'Rafraîchir le cache'}*/}
+                    {/*</button>*/}
                     <button
                         onClick={handleSave}
                         disabled={saving || refreshing}
                         className={styles.saveBtn}
                     >
-                        {saving ? 'Sauvegarde...' : 'Sauvegarder et Appliquer'}
+                        {saving ? 'Sauvegarde...' : ''}
                     </button>
                 </div>
             </div>

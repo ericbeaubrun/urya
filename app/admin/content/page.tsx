@@ -1,7 +1,7 @@
-import { getSiteContent } from "@/lib/content";
+import {getSiteContent} from "@/lib/content";
 import ContentEditor from "./ContentEditor";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import {auth} from "@/auth";
+import {redirect} from "next/navigation";
 
 export default async function ContentAdminPage() {
     const session = await auth();
@@ -14,8 +14,8 @@ export default async function ContentAdminPage() {
     const content = await getSiteContent();
 
     return (
-        <div style={{ background: '#09090b', minHeight: '100vh' }}>
-            <ContentEditor initialContent={content} />
+        <div style={{background: '#09090b', minHeight: '100vh'}}>
+            <ContentEditor initialContent={content}/>
         </div>
     );
 }
