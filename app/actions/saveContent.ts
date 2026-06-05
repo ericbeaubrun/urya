@@ -11,7 +11,7 @@ export async function saveAndRefreshContent(newContent: any) {
         if (error) throw error;
 
         // 2. Purge du cache
-        revalidateTag('site-content', 'layout');
+        revalidateTag('site-content');
 
         return {success: true, message: 'Contenu sauvegardé et cache rafraîchi !'};
     }

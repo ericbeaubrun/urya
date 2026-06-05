@@ -13,6 +13,11 @@ interface HeroProps {
 
 export default function Hero({ onContactClick }: HeroProps) {
     const { hero } = useContent();
+
+    if (!hero) return null;
+
+    const stats = Array.isArray(hero.stats) ? hero.stats : [];
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -67,11 +72,11 @@ export default function Hero({ onContactClick }: HeroProps) {
                 </motion.div>
 
                 <motion.h1 className={styles.title} variants={itemVariants}>
-                    {hero.title.line1}
+                    {hero.title?.line1}
                     <br />
-                    <span className={styles.textGradient}>{hero.title.highlight}</span>
+                    <span className={styles.textGradient}>{hero.title?.highlight}</span>
                     <br />
-                    {hero.title.line2}
+                    {hero.title?.line2}
                 </motion.h1>
 
                 <motion.p className={styles.subtitle} variants={itemVariants}>
@@ -90,7 +95,7 @@ export default function Hero({ onContactClick }: HeroProps) {
                         className={styles.primaryBtn}
                         style={{ cursor: 'pointer' }}
                     >
-                        {hero.ctas.primary}
+                        {hero.ctas?.primary}
                     </ScrollLink>
                     <ScrollLink
                         to="faq"
@@ -101,14 +106,14 @@ export default function Hero({ onContactClick }: HeroProps) {
                         className={styles.secondaryBtn}
                         style={{ cursor: 'pointer' }}
                     >
-                        {hero.ctas.secondary}
+                        {hero.ctas?.secondary}
                     </ScrollLink>
                 </motion.div>
 
                 {/* Stats Grid */}
                 <motion.div className={styles.statsGrid} variants={itemVariants}>
-                    {hero.stats.map((stat: { label: string; value: string }) => (
-                        <div key={stat.label} className={styles.statCard}>
+                    {stats.map((stat: { label: string; value: string }, idx: number) => (
+                        <div key={idx} className={styles.statCard}>
                             <div className={styles.statValue}>{stat.value}</div>
                             <div className={styles.statLabel}>{stat.label}</div>
                         </div>
@@ -125,8 +130,6 @@ export default function Hero({ onContactClick }: HeroProps) {
                 aria-label="Découvrir la suite"
                 style={{ cursor: 'pointer' }}
             >
-                {/*<span className={styles.scrollText}>Découvrir</span>*/}
-                {/*<ChevronDown size={20} className={styles.scrollIcon} />*/}
             </ScrollLink>
         </section>
     );

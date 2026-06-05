@@ -36,6 +36,7 @@ const itemVariants = {
 };
 
 const renderDescription = (text: string) => {
+    if (!text) return "";
     const parts = text.split('**');
     return parts.map((part, i) =>
         i % 2 === 1 ? <strong key={i} className={styles.textWhite}>{part}</strong> : part
@@ -44,6 +45,14 @@ const renderDescription = (text: string) => {
 
 export default function About() {
     const {about} = useContent();
+    
+    // Sécurité si about est manquant
+    if (!about) return null;
+
+    const tags = Array.isArray(about.tags) ? about.tags : [];
+    const contactInfo = Array.isArray(about.contactInfo) ? about.contactInfo : [];
+    const description = Array.isArray(about.description) ? about.description : [];
+
     return (
         <section id="about" className={styles.section}>
             <motion.div
@@ -80,36 +89,32 @@ export default function About() {
                             className={styles.sectionTitle}
                             variants={itemVariants}
                         >
-                            {about.title.text}
+                            {about.title?.text}
                             <br/>
-                            <span className={styles.textGradient}>{about.title.highlight}</span>
+                            <span className={styles.textGradient}>{about.title?.highlight}</span>
                         </motion.h2>
 
                         <motion.div
                             className={styles.textContent}
                             variants={itemVariants}
                         >
-                            {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                about.description.map((para: any, i: any) => (
-                                    <p key={i}>{renderDescription(para)}</p>
-                                ))}
+                            {description.map((para: any, i: number) => (
+                                <p key={i}>{renderDescription(para)}</p>
+                            ))}
                         </motion.div>
 
                         <motion.div
                             className={styles.tagsContainer}
                         >
-                            {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                about.tags.map((tag: any) => (
-                                    <motion.span
-                                        key={tag}
-                                        className={styles.tag}
-                                        variants={itemVariants}
-                                    >
-                                        {tag}
-                                    </motion.span>
-                                ))}
+                            {tags.map((tag: any) => (
+                                <motion.span
+                                    key={tag}
+                                    className={styles.tag}
+                                    variants={itemVariants}
+                                >
+                                    {tag}
+                                </motion.span>
+                            ))}
                             <motion.span
                                 className={styles.tag}
                                 variants={itemVariants}
@@ -121,9 +126,7 @@ export default function About() {
                         <motion.div
                             className={styles.gearGrid}
                         >
-                            {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                about.contactInfo.map(({icon: iconName, label, sub}: any) => {
+                            {contactInfo.map(({icon: iconName, label, sub}: any) => {
                                     const Icon = ICON_MAP[iconName] || Phone;
                                     return (
                                         <motion.div

@@ -38,6 +38,12 @@ const itemVariants = {
 
 export default function Services() {
     const {services} = useContent();
+
+    if (!services) return null;
+
+    const items = Array.isArray(services.items) ? services.items : [];
+    const extraOptionsItems = Array.isArray(services.extraOptions?.items) ? services.extraOptions.items : [];
+
     return (
         <section id="services" className={styles.section}>
             <div className={styles.bgOverlay}/>
@@ -55,9 +61,9 @@ export default function Services() {
                         className={styles.sectionTitle}
                         variants={itemVariants}
                     >
-                        {services.title.text}
+                        {services.title?.text}
                         <br/>
-                        <span className={styles.textGradient}>{services.title.highlight}</span>
+                        <span className={styles.textGradient}>{services.title?.highlight}</span>
                     </motion.h2>
                     <motion.p
                         className={styles.sectionSubtitle}
@@ -69,14 +75,13 @@ export default function Services() {
 
                 {/* 4 Cards Grid */}
                 <div className={styles.grid}>
-                    {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        services.items.map((service: any, idx: number) => {
+                    {items.map((service: any, idx: number) => {
                             const Icon = ICON_MAP[service.icon] || Sparkles;
+                            const inclusions = Array.isArray(service.inclusions) ? service.inclusions : [];
 
                             return (
                                 <motion.div
-                                    key={service.title}
+                                    key={service.title || idx}
                                     className={styles.card}
                                     variants={itemVariants}
                                 >
@@ -103,8 +108,8 @@ export default function Services() {
                                         <p className={styles.cardSubtitle}>{service.subtitle}</p>
 
                                         <ul className={styles.inclusionsList}>
-                                            {service.inclusions.map((item: string) => (
-                                                <li key={item} className={styles.inclusionItem}>
+                                            {inclusions.map((item: string, i: number) => (
+                                                <li key={i} className={styles.inclusionItem}>
                                                     <Check size={14} className={styles.checkIcon}/>
                                                     <span>{item}</span>
                                                 </li>
@@ -144,8 +149,8 @@ export default function Services() {
                     >
                         <h3 className={styles.extraOptionsTitle}>{services.extraOptions.title}</h3>
                         <div className={styles.extraOptionsGrid}>
-                            {services.extraOptions.items.map((item: string) => (
-                                <div key={item} className={styles.extraOptionItem}>
+                            {extraOptionsItems.map((item: string, i: number) => (
+                                <div key={i} className={styles.extraOptionItem}>
                                     <span>{item}</span>
                                 </div>
                             ))}

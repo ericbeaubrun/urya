@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
-import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
@@ -32,6 +31,10 @@ export default function Navigation({ onContactClick }: NavigationProps) {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
+    if (!navigation) return null;
+
+    const navItems = Array.isArray(navigation.items) ? navigation.items : [];
+
     const handleNav = () => {
         setMenuOpen(false);
     };
@@ -54,13 +57,13 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         onSetInactive={() => setIsHeroActive(false)}
                         style={{ cursor: 'pointer' }}
                     >
-                        <span className={styles.logoWhite}>{navigation.logo.first}</span>
-                        <span className={styles.logoGradient}>{navigation.logo.second}</span>
+                        <span className={styles.logoWhite}>{navigation.logo?.first}</span>
+                        <span className={styles.logoGradient}>{navigation.logo?.second}</span>
                     </ScrollLink>
 
                     {/* Desktop Navigation */}
                     <ul className={styles.desktopMenu}>
-                        {navigation.items.map((item) => (
+                        {navItems.map((item: any) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}
@@ -121,7 +124,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         <X size={24} />
                     </button>
                     <ul className={styles.mobileMenuList}>
-                        {navigation.items.map((item) => (
+                        {navItems.map((item: any) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}
@@ -160,4 +163,3 @@ export default function Navigation({ onContactClick }: NavigationProps) {
         </>
     );
 }
-

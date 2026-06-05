@@ -36,6 +36,10 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
     const {faq} = useContent();
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+    if (!faq) return null;
+
+    const items = Array.isArray(faq.items) ? faq.items : [];
+
     const toggleItem = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
     };
@@ -51,14 +55,12 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
             >
                 <div className={styles.header}>
                     <motion.h2 className={styles.title} variants={itemVariants}>
-                        {faq.title.text} <span className={styles.textGradient}>{faq.title.highlight}</span>
+                        {faq.title?.text} <span className={styles.textGradient}>{faq.title?.highlight}</span>
                     </motion.h2>
                 </div>
 
                 <div className={styles.accordion}>
-                    {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        faq.items.map((item: any, idx: number) => {
+                    {items.map((item: any, idx: number) => {
                             const isOpen = openIndex === idx;
                             return (
                                 <motion.div

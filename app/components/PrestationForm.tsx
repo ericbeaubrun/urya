@@ -114,31 +114,35 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
         };
     }, [showCalendar, showTimePicker.active]);
 
+    if (!prestationForm) return null;
+
+    const steps = Array.isArray(prestationForm.steps) ? prestationForm.steps : [];
+
     const backBtnContent = (
         <>
             <img src="/arrow-left.svg" alt="" aria-hidden="true" width={18} height={18}/>
-            <span>{prestationForm.buttons.prev}</span>
+            <span>{prestationForm.buttons?.prev}</span>
         </>
     );
 
     const nextBtnContent = (
         <>
-            <span>{prestationForm.buttons.next}</span>
+            <span>{prestationForm.buttons?.next}</span>
             <img src="/arrow-right.svg" alt="" aria-hidden="true" width={18} height={18}/>
         </>
     );
 
     const fieldLabels: Record<keyof PrestationFormData, string> = {
-        nom: prestationForm.fields.name + " *",
-        mail: prestationForm.fields.email + " *",
-        tel: prestationForm.fields.phone,
-        date_debut: prestationForm.fields.date + " *",
-        date_fin: prestationForm.fields.date_fin || "Date de fin",
-        heure_debut: prestationForm.fields.timeStart,
-        heure_fin: prestationForm.fields.timeEnd,
-        type: prestationForm.fields.type,
-        lieu: prestationForm.fields.location,
-        notes: prestationForm.fields.notes,
+        nom: (prestationForm.fields?.name || "Nom") + " *",
+        mail: (prestationForm.fields?.email || "Email") + " *",
+        tel: prestationForm.fields?.phone || "Téléphone",
+        date_debut: (prestationForm.fields?.date || "Date") + " *",
+        date_fin: prestationForm.fields?.date_fin || "Date de fin",
+        heure_debut: prestationForm.fields?.timeStart || "Heure début",
+        heure_fin: prestationForm.fields?.timeEnd || "Heure fin",
+        type: prestationForm.fields?.type || "Type",
+        lieu: prestationForm.fields?.location || "Lieu",
+        notes: prestationForm.fields?.notes || "Notes",
     };
 
     const handleChange = (
@@ -509,6 +513,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
     };
 
     const renderSubtitle = (text: string) => {
+        if (!text) return "";
         const parts = text.split('**');
         return parts.map((part, i) =>
             i % 2 === 1 ? <strong key={i}>{part}</strong> : part
@@ -526,14 +531,14 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
             >
                 <div className={styles.header}>
                     <motion.h2 className={styles.sectionTitle} variants={itemVariants}>
-                        {prestationForm.title.text}
+                        {prestationForm.title?.text}
                         <br/>
-                        <span className={styles.textGradient}>{prestationForm.title.highlight}</span>
+                        <span className={styles.textGradient}>{prestationForm.title?.highlight}</span>
                     </motion.h2>
                     <motion.p className={styles.sectionSubtitle} variants={itemVariants}>
                         {viewMode === 'appointment'
-                            ? renderSubtitle(prestationForm.subtitles.appointment)
-                            : renderSubtitle(prestationForm.subtitles.prestation)
+                            ? renderSubtitle(prestationForm.subtitles?.appointment)
+                            : renderSubtitle(prestationForm.subtitles?.prestation)
                         }
                     </motion.p>
                 </div>
@@ -542,15 +547,15 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                     {isSuccess ? (
                         <div className={styles.successScreen}>
                             <CheckCircle size={56} className={styles.successIcon}/>
-                            <h3 className={styles.successTitle}>{prestationForm.success.title}</h3>
+                            <h3 className={styles.successTitle}>{prestationForm.success?.title}</h3>
                             <p className={styles.successText}>
                                 {viewMode === 'appointment'
-                                    ? prestationForm.success.textAppointment
-                                    : prestationForm.success.textPrestation
+                                    ? prestationForm.success?.textAppointment
+                                    : prestationForm.success?.textPrestation
                                 }
                             </p>
                             <button onClick={resetForm} className={styles.btnReset}>
-                                {prestationForm.buttons.reset}
+                                {prestationForm.buttons?.reset}
                             </button>
                         </div>
                     ) : viewMode === 'appointment' ? (
@@ -617,7 +622,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                             <span>Envoi...</span>
                                         </div>
                                     ) : (
-                                        prestationForm.buttons.sendAppointment
+                                        prestationForm.buttons?.sendAppointment
                                     )}
                                 </button>
                             </div>
@@ -625,9 +630,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                     ) : (
                         <>
                             <div className={styles.stepIndicator}>
-                                {
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    prestationForm.steps.map((s: any, i: number) => (
+                                {steps.map((s: any, i: number) => (
                                         <div key={i}
                                              className={`${styles.stepItem} ${step >= (i + 1) ? styles.active : ""}`}>
                                             <span className={styles.stepNumber}>{s.number}</span>
@@ -650,7 +653,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                     <div
                                         className={`${styles.field} ${errorFields.includes("date_debut") ? styles.fieldHasError : ""}`}>
                                         <label className={styles.fieldLabelText}>
-                                            {prestationForm.fields.date} <span className={styles.requiredStar}>*</span>
+                                            {prestationForm.fields?.date} <span className={styles.requiredStar}>*</span>
                                         </label>
                                         <button
                                             type="button"
@@ -668,7 +671,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                         <div
                                             className={`${styles.field} ${errorFields.includes("heure_debut") ? styles.fieldHasError : ""}`}>
                                             <label
-                                                className={styles.fieldLabelText}>{prestationForm.fields.timeStart}</label>
+                                                className={styles.fieldLabelText}>{prestationForm.fields?.timeStart}</label>
                                             <button
                                                 type="button"
                                                 className={`${styles.dateTrigger} ${formData.heure_debut ? styles.dateTriggerActive : ""} ${errorFields.includes("heure_debut") ? styles.dateTriggerError : ""}`}
@@ -683,7 +686,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                         <div
                                             className={`${styles.field} ${errorFields.includes("heure_fin") ? styles.fieldHasError : ""}`}>
                                             <label
-                                                className={styles.fieldLabelText}>{prestationForm.fields.timeEnd}</label>
+                                                className={styles.fieldLabelText}>{prestationForm.fields?.timeEnd}</label>
                                             <button
                                                 type="button"
                                                 className={`${styles.dateTrigger} ${formData.heure_fin ? styles.dateTriggerActive : ""} ${errorFields.includes("heure_fin") ? styles.dateTriggerError : ""}`}
@@ -707,7 +710,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                 <div className={styles.formSection}>
                                     <div
                                         className={`${styles.field} ${errorFields.includes("type") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.type}</label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields?.type}</label>
                                         <select name="type" value={formData.type} onChange={handleChange}
                                                 className={`${styles.select} ${errorFields.includes("type") ? styles.selectError : ""}`}>
                                             <option value="">Sélectionnez...</option>
@@ -720,17 +723,17 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                     <div
                                         className={`${styles.field} ${errorFields.includes("lieu") ? styles.fieldHasError : ""}`}>
                                         <label
-                                            className={styles.fieldLabelText}>{prestationForm.fields.location}</label>
+                                            className={styles.fieldLabelText}>{prestationForm.fields?.location}</label>
                                         <input name="lieu" value={formData.lieu} onChange={handleChange}
-                                               placeholder={prestationForm.placeholders.location}
+                                               placeholder={prestationForm.placeholders?.location}
                                                className={`${styles.input} ${errorFields.includes("lieu") ? styles.inputError : ""}`}/>
                                     </div>
 
                                     <div
                                         className={`${styles.field} ${errorFields.includes("notes") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.notes}</label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields?.notes}</label>
                                         <textarea name="notes" value={formData.notes} onChange={handleChange} rows={4}
-                                                  placeholder={prestationForm.placeholders.notes}
+                                                  placeholder={prestationForm.placeholders?.notes}
                                                   className={`${styles.textarea} ${errorFields.includes("notes") ? styles.textareaError : ""}`}/>
                                     </div>
 
@@ -745,7 +748,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                 <div className={styles.formSection}>
                                     <div
                                         className={`${styles.field} ${errorFields.includes("nom") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.name} <span
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields?.name} <span
                                             className={styles.requiredStar}>*</span></label>
                                         <input name="nom" value={formData.nom} onChange={handleChange}
                                                placeholder={EXAMPLE_NAME} required
@@ -754,7 +757,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
 
                                     <div
                                         className={`${styles.field} ${errorFields.includes("mail") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.email} <span
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields?.email} <span
                                             className={styles.requiredStar}>*</span></label>
                                         <input type="email" name="mail" value={formData.mail} onChange={handleChange}
                                                placeholder={EXAMPLE_MAIL} required
@@ -763,7 +766,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
 
                                     <div
                                         className={`${styles.field} ${errorFields.includes("tel") ? styles.fieldHasError : ""}`}>
-                                        <label className={styles.fieldLabelText}>{prestationForm.fields.phone}</label>
+                                        <label className={styles.fieldLabelText}>{prestationForm.fields?.phone}</label>
                                         <input name="tel" value={formData.tel} onChange={handleChange}
                                                placeholder={EXAMPLE_PHONE}
                                                className={`${styles.input} ${errorFields.includes("tel") ? styles.inputError : ""}`}/>
@@ -823,7 +826,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                                     <span>Envoi...</span>
                                                 </div>
                                             ) : (
-                                                prestationForm.buttons.send
+                                                prestationForm.buttons?.send
                                             )}
                                         </button>
                                     </div>

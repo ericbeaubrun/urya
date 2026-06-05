@@ -14,6 +14,12 @@ const ICON_MAP: Record<string, string> = {
 
 export default function Footer() {
     const { footer, navigation } = useContent();
+
+    if (!footer || !navigation) return null;
+
+    const navItems = Array.isArray(navigation.items) ? navigation.items : [];
+    const socials = Array.isArray(footer.socials) ? footer.socials : [];
+
     return (
         <footer className={styles.footer}>
             <div className={styles.container}>
@@ -27,13 +33,13 @@ export default function Footer() {
                         aria-label="Retour en haut"
                         style={{ cursor: 'pointer' }}
                     >
-                        <span className={styles.logoWhite}>{navigation.logo.first}</span>
-                        <span className={styles.logoGradient}>{navigation.logo.second}</span>
+                        <span className={styles.logoWhite}>{navigation.logo?.first}</span>
+                        <span className={styles.logoGradient}>{navigation.logo?.second}</span>
                     </ScrollLink>
 
                     {/* Navigation secondaire */}
                     <nav className={styles.nav}>
-                        {navigation.items.map((item) => (
+                        {navItems.map((item: any) => (
                             <ScrollLink
                                 key={item.to}
                                 to={item.to}
@@ -50,7 +56,7 @@ export default function Footer() {
 
                     {/* Liens Réseaux Sociaux */}
                     <div className={styles.socials}>
-                        {footer.socials.map((social) => {
+                        {socials.map((social: any) => {
                             const iconSrc = ICON_MAP[social.platform];
                             return (
                                 <a

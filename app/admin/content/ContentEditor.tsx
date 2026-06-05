@@ -19,12 +19,14 @@ export default function ContentEditor({initialContent}: { initialContent: any })
             setSaving(true);
             const result = await saveAndRefreshContent(content);
             setSaving(false);
+            // window.location.reload();
 
-            if (result.success) {
-                alert(result.message);
-            } else {
-                alert('Erreur : ' + result.message);
-            }
+            // if (result.success) {
+            //     alert(result.message);
+            //     window.location.reload();
+            // } else {
+            //     alert('Erreur : ' + result.message);
+            // }
         } catch (e) {
             alert('Erreur lors de la sauvegarde : ' + (e as Error).message);
         }
@@ -35,7 +37,14 @@ export default function ContentEditor({initialContent}: { initialContent: any })
         setRefreshing(true);
         const result = await refreshSiteContent();
         setRefreshing(false);
-        alert(result.message);
+        window.location.reload();
+
+        // if (result.success) {
+        //     alert(result.message);
+        //     window.location.reload();
+        // } else {
+        //     alert('Erreur : ' + result.message);
+        // }
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateField = (path: string[], value: any) => {
@@ -44,8 +53,15 @@ export default function ContentEditor({initialContent}: { initialContent: any })
             const newContent = {...prev};
             let current = newContent;
             for (let i = 0; i < path.length - 1; i++) {
-                current[path[i]] = {...current[path[i]]};
-                current = current[path[i]];
+                const key = path[i];
+                const nextKey = path[i + 1];
+
+                if (Array.isArray(current[key])) {
+                    current[key] = [...current[key]];
+                } else {
+                    current[key] = {...current[key]};
+                }
+                current = current[key];
             }
             current[path[path.length - 1]] = value;
             return newContent;
@@ -91,19 +107,19 @@ export default function ContentEditor({initialContent}: { initialContent: any })
             <div className={styles.header}>
                 <h1 className={styles.title}>Éditeur de Contenu (Beta*)</h1>
                 <div className={styles.buttonGroup}>
-                    {/*<button*/}
-                    {/*    onClick={handleRefreshOnly}*/}
-                    {/*    disabled={refreshing || saving}*/}
-                    {/*    className={styles.refreshBtn}*/}
-                    {/*>*/}
-                    {/*    {refreshing ? 'Rafraîchissement...' : 'Rafraîchir le cache'}*/}
-                    {/*</button>*/}
+                    <button
+                        onClick={handleRefreshOnly}
+                        disabled={refreshing || saving}
+                        className={styles.refreshBtn}
+                    >
+                        {refreshing ? 'Rafraîchissement...' : 'Rafraîchir'}
+                    </button>
                     <button
                         onClick={handleSave}
                         disabled={saving || refreshing}
                         className={styles.saveBtn}
                     >
-                        {saving ? 'Sauvegarde...' : ''}
+                        {saving ? 'Sauvegarde...' : 'Valider les modifications'}
                     </button>
                 </div>
             </div>
@@ -149,7 +165,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             <h3 className={styles.subTitle}>Statistiques</h3>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                content.hero?.stats?.map((stat: any, index: number) => (
+                                Array.isArray(content.hero?.stats) && content.hero.stats.map((stat: any, index: number) => (
                                     <div key={index} className={styles.listItem}>
                                         <div className={styles.grid} style={{flex: 1}}>
                                             {renderInput('Valeur', ['hero', 'stats', index.toString(), 'value'])}
@@ -167,7 +183,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             <h3 className={styles.subTitle}>Description</h3>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                content.about?.description?.map((_: any, index: number) => (
+                                Array.isArray(content.about?.description) && content.about.description.map((_: any, index: number) => (
                                     <div key={index} className={styles.fieldGroup}>
                   <textarea
                       className={styles.textarea}
@@ -189,7 +205,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                         <div className={styles.subSection}>
                             <h3 className={styles.subTitle}>Tags</h3>
                             <div className={styles.fieldGroup}>
-                                {content.about?.tags?.map((tag: string, index: number) => (
+                                {Array.isArray(content.about?.tags) && content.about.tags.map((tag: string, index: number) => (
                                     <div key={index} className={styles.listItem} style={{marginBottom: '0.5rem'}}>
                                         <input
                                             className={styles.input}
@@ -230,7 +246,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             <div className={styles.grid}>
                                 {
                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    content.about?.contactInfo?.map((info: any, index: number) => (
+                                    Array.isArray(content.about?.contactInfo) && content.about.contactInfo.map((info: any, index: number) => (
                                         <div key={index} className={styles.listItem}
                                              style={{flexDirection: 'column', gap: '0.5rem'}}>
                                             <div style={{
@@ -269,7 +285,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             </div>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                content.services?.items?.map((item: any, index: number) => (
+                                Array.isArray(content.services?.items) && content.services.items.map((item: any, index: number) => (
                                     <div key={index} className={styles.listItem} style={{flexDirection: 'column'}}>
                                         <div style={{
                                             display: 'flex',
@@ -301,7 +317,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                         </div>
                                         <div style={{width: '100%', marginTop: '1rem'}}>
                                             <label className={styles.label}>Inclusions</label>
-                                            {item.inclusions?.map((inclusion: string, iIndex: number) => (
+                                            {Array.isArray(item.inclusions) && item.inclusions.map((inclusion: string, iIndex: number) => (
                                                 <div key={iIndex} className={styles.listItem}
                                                      style={{marginBottom: '0.5rem', background: '#18181b'}}>
                                                     <input
@@ -362,7 +378,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             {renderInput('Titre des options', ['services', 'extraOptions', 'title'])}
                             <div className={styles.fieldGroup}>
                                 <label className={styles.label}>Liste des options</label>
-                                {content.services?.extraOptions?.items?.map((item: string, index: number) => (
+                                {Array.isArray(content.services?.extraOptions?.items) && content.services.extraOptions.items.map((item: string, index: number) => (
                                     <div key={index} className={styles.listItem} style={{marginBottom: '0.5rem'}}>
                                         <input
                                             className={styles.input}
@@ -427,7 +443,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             </div>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                content.faq?.items?.map((item: any, index: number) => (
+                                Array.isArray(content.faq?.items) && content.faq.items.map((item: any, index: number) => (
                                     <div key={index} className={styles.listItem} style={{flexDirection: 'column'}}>
                                         <div style={{
                                             display: 'flex',
@@ -518,7 +534,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             <div className={styles.grid}>
                                 {
                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    content.prestationForm?.steps?.map((step: any, index: number) => (
+                                    Array.isArray(content.prestationForm?.steps) && content.prestationForm.steps.map((step: any, index: number) => (
                                         <div key={index} className={styles.listItem}
                                              style={{flexDirection: 'column', gap: '0.5rem'}}>
                                         <span className={styles.label}

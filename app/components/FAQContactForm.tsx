@@ -23,6 +23,8 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
     const [form, setForm] = useState({ nom: '', email: '', message: '' });
     const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
+    if (!faqForm) return null;
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -50,6 +52,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
     };
 
     const renderDescription = (text: string) => {
+        if (!text) return "";
         const parts = text.split('**');
         return parts.map((part, i) => 
             i % 2 === 1 ? <strong key={i}>{part}</strong> : part
@@ -85,7 +88,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                             
                             <form onSubmit={handleSubmit} className={styles.form}>
                                 <div className={styles.field}>
-                                    <label className={styles.fieldLabel}>{faqForm.fields.name}</label>
+                                    <label className={styles.fieldLabel}>{faqForm.fields?.name}</label>
                                     <input
                                         type="text"
                                         name="nom"
@@ -98,7 +101,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                 </div>
 
                                 <div className={styles.field}>
-                                    <label className={styles.fieldLabel}>{faqForm.fields.email}</label>
+                                    <label className={styles.fieldLabel}>{faqForm.fields?.email}</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -111,13 +114,13 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                 </div>
 
                                 <div className={styles.field}>
-                                    <label className={styles.fieldLabel}>{faqForm.fields.message}</label>
+                                    <label className={styles.fieldLabel}>{faqForm.fields?.message}</label>
                                     <textarea
                                         name="message"
                                         rows={4}
                                         value={form.message}
                                         onChange={handleChange}
-                                        placeholder={faqForm.fields.placeholders.message}
+                                        placeholder={faqForm.fields?.placeholders?.message}
                                         required
                                         className={styles.textarea}
                                     />
@@ -131,12 +134,12 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                     {status === 'sending' ? (
                                         <div className={styles.loaderGroup}>
                                             <div className={styles.spinner} />
-                                            <span>{faqForm.buttons.sending}</span>
+                                            <span>{faqForm.buttons?.sending}</span>
                                         </div>
                                     ) : (
                                         <>
                                             <Send size={16} />
-                                            <span>{faqForm.buttons.send}</span>
+                                            <span>{faqForm.buttons?.send}</span>
                                         </>
                                     )}
                                 </button>
@@ -163,17 +166,17 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                     <AlertCircle size={36} className={styles.modalIconError} />
                                 )}
                                 <h3 className={styles.modalTitle}>
-                                    {status === 'sent' ? faqForm.modal.success.title : faqForm.modal.error.title}
+                                    {status === 'sent' ? faqForm.modal?.success?.title : faqForm.modal?.error?.title}
                                 </h3>
                                 <p className={styles.modalText}>
                                     {status === 'sent'
-                                        ? faqForm.modal.success.text
-                                        : faqForm.modal.error.text}
+                                        ? faqForm.modal?.success?.text
+                                        : faqForm.modal?.error?.text}
                                 </p>
                             </div>
                             <div className={styles.modalActions}>
                                 <button className={styles.modalButton} onClick={() => setStatus('idle')}>
-                                    {faqForm.modal.close}
+                                    {faqForm.modal?.close}
                                 </button>
                             </div>
                         </motion.div>

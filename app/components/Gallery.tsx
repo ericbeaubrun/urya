@@ -34,6 +34,11 @@ const itemVariants = {
 
 export default function Gallery() {
     const {gallery} = useContent();
+
+    if (!gallery) return null;
+
+    const images = Array.isArray(gallery.images) ? gallery.images : [];
+
     return (
         <section id="gallery" className={styles.section}>
             <motion.div
@@ -48,9 +53,9 @@ export default function Gallery() {
                         className={styles.sectionTitle}
                         variants={itemVariants}
                     >
-                        {gallery.title.text}
+                        {gallery.title?.text}
                         <br/>
-                        <span className={styles.textGradient}>{gallery.title.highlight}</span>
+                        <span className={styles.textGradient}>{gallery.title?.highlight}</span>
                     </motion.h2>
                     <motion.p
                         className={styles.sectionSubtitle}
@@ -64,9 +69,7 @@ export default function Gallery() {
                 <motion.div
                     className={styles.grid}
                 >
-                    {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        gallery.images.map((img: any, idx : any) => (
+                    {images.map((img: any, idx : number) => (
                             <motion.div
                                 key={idx}
                                 className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}
