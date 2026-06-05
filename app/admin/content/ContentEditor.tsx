@@ -119,7 +119,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                         disabled={saving || refreshing}
                         className={styles.saveBtn}
                     >
-                        {saving ? 'Sauvegarde...' : 'Valider les modifications'}
+                        {saving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
                     </button>
                 </div>
             </div>
@@ -594,6 +594,18 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                     </div>
                 )}
             </div>
+            <div className={styles.header}>
+                <div className={styles.buttonGroup}>
+                    <button
+                        onClick={handleSave}
+                        disabled={saving || refreshing}
+                        className={styles.saveBtn}
+                    >
+                        {saving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
+                    </button>
+                </div>
+            </div>
+
         </div>
     );
 }
