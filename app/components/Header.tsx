@@ -63,7 +63,9 @@ export default function Navigation({ onContactClick }: NavigationProps) {
 
                     {/* Desktop Navigation */}
                     <ul className={styles.desktopMenu}>
-                        {navItems.map((item: any) => (
+                        {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            navItems.map((item: any) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}
@@ -124,7 +126,9 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         <X size={24} />
                     </button>
                     <ul className={styles.mobileMenuList}>
-                        {navItems.map((item: any) => (
+                        {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            navItems.map((item: any) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}

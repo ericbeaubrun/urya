@@ -45,7 +45,7 @@ const renderDescription = (text: string) => {
 
 export default function About() {
     const {about} = useContent();
-    
+
     // Sécurité si about est manquant
     if (!about) return null;
 
@@ -98,23 +98,27 @@ export default function About() {
                             className={styles.textContent}
                             variants={itemVariants}
                         >
-                            {description.map((para: any, i: number) => (
-                                <p key={i}>{renderDescription(para)}</p>
-                            ))}
+                            {
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                description.map((para: any, i: number) => (
+                                    <p key={i}>{renderDescription(para)}</p>
+                                ))}
                         </motion.div>
 
                         <motion.div
                             className={styles.tagsContainer}
                         >
-                            {tags.map((tag: any) => (
-                                <motion.span
-                                    key={tag}
-                                    className={styles.tag}
-                                    variants={itemVariants}
-                                >
-                                    {tag}
-                                </motion.span>
-                            ))}
+                            {
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                tags.map((tag: any) => (
+                                    <motion.span
+                                        key={tag}
+                                        className={styles.tag}
+                                        variants={itemVariants}
+                                    >
+                                        {tag}
+                                    </motion.span>
+                                ))}
                             <motion.span
                                 className={styles.tag}
                                 variants={itemVariants}
@@ -127,23 +131,23 @@ export default function About() {
                             className={styles.gearGrid}
                         >
                             {contactInfo.map(({icon: iconName, label, sub}: any) => {
-                                    const Icon = ICON_MAP[iconName] || Phone;
-                                    return (
-                                        <motion.div
-                                            key={label}
-                                            className={styles.gearCard}
-                                            variants={itemVariants}
-                                        >
-                                            <div className={styles.gearIconWrapper}>
-                                                <Icon size={16} className={styles.gearIcon}/>
-                                            </div>
-                                            <div>
-                                                <div className={styles.gearLabel}>{label}</div>
-                                                <div className={styles.gearSub}>{sub}</div>
-                                            </div>
-                                        </motion.div>
-                                    );
-                                })}
+                                const Icon = ICON_MAP[iconName] || Phone;
+                                return (
+                                    <motion.div
+                                        key={label}
+                                        className={styles.gearCard}
+                                        variants={itemVariants}
+                                    >
+                                        <div className={styles.gearIconWrapper}>
+                                            <Icon size={16} className={styles.gearIcon}/>
+                                        </div>
+                                        <div>
+                                            <div className={styles.gearLabel}>{label}</div>
+                                            <div className={styles.gearSub}>{sub}</div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
                         </motion.div>
 
                     </div>

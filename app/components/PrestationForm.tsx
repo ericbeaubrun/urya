@@ -630,7 +630,9 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                     ) : (
                         <>
                             <div className={styles.stepIndicator}>
-                                {steps.map((s: any, i: number) => (
+                                {
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    steps.map((s: any, i: number) => (
                                         <div key={i}
                                              className={`${styles.stepItem} ${step >= (i + 1) ? styles.active : ""}`}>
                                             <span className={styles.stepNumber}>{s.number}</span>

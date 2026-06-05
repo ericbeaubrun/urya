@@ -75,7 +75,9 @@ export default function Services() {
 
                 {/* 4 Cards Grid */}
                 <div className={styles.grid}>
-                    {items.map((service: any, idx: number) => {
+                    {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        items.map((service: any, idx: number) => {
                             const Icon = ICON_MAP[service.icon] || Sparkles;
                             const inclusions = Array.isArray(service.inclusions) ? service.inclusions : [];
 

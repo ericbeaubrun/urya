@@ -60,7 +60,9 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
                 </div>
 
                 <div className={styles.accordion}>
-                    {items.map((item: any, idx: number) => {
+                    {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        items.map((item: any, idx: number) => {
                             const isOpen = openIndex === idx;
                             return (
                                 <motion.div

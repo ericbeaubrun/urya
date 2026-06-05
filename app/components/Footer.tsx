@@ -39,7 +39,9 @@ export default function Footer() {
 
                     {/* Navigation secondaire */}
                     <nav className={styles.nav}>
-                        {navItems.map((item: any) => (
+                        {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            navItems.map((item: any) => (
                             <ScrollLink
                                 key={item.to}
                                 to={item.to}
@@ -56,7 +58,9 @@ export default function Footer() {
 
                     {/* Liens Réseaux Sociaux */}
                     <div className={styles.socials}>
-                        {socials.map((social: any) => {
+                        {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            socials.map((social: any) => {
                             const iconSrc = ICON_MAP[social.platform];
                             return (
                                 <a
