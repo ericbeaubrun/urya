@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
             clientId = newClient.id;
         }
 
-        // Définition d'un type explicite pour les données d'insertion de prestation
+
         interface PrestationInsert {
             id_client: string;
             statut: string;
