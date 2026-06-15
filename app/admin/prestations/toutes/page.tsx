@@ -9,7 +9,6 @@ export default async function PrestationsToutesPage() {
     }
 
     return (
-        // Liste futures + passées, sans formulaire
         <PrestationsAdminPage showComposer={false} sections={["futures", "passees"]} />
     );
 }

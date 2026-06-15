@@ -9,7 +9,6 @@ export default async function PrestationsPasseesPage() {
     }
 
     return (
-        // Liste des passées uniquement
         <PrestationsAdminPage showComposer={false} sections={["passees"]} />
     );
 }

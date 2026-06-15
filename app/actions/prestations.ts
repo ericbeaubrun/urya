@@ -86,9 +86,6 @@ function cleanPrestationData(data: any) {
 }
 
 
-/**
- * Ajouter une prestation (réservé aux admins)
- */
 export async function addPrestation(prestationData: {
     id_client?: string;
     statut?: string;

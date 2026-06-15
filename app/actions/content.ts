@@ -2,9 +2,7 @@
 
 import { revalidateTag } from 'next/cache';
 
-/**
- * Action pour forcer le rafraîchissement du contenu du site
- */
+
 export async function refreshSiteContent() {
   console.log('>>> [ACTION] PURGE DU CACHE CONTENU SOLICITÉE');
   try {

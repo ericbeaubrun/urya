@@ -9,7 +9,6 @@ export default async function PrestationsFuturesPage() {
     }
 
     return (
-        // Liste des futures uniquement
         <PrestationsAdminPage showComposer={false} sections={["futures"]} />
     );
 }

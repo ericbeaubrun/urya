@@ -66,10 +66,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
         onCreatedAction();
     }
 
-    // ---------------------
-    // Ajouter un client
-    // ---------------------
-
     async function handleAddClient() {
         if (!newClient.nom || !newClient.mail)
             return alert("Nom + email obligatoires");
@@ -99,16 +95,12 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
         onCreatedAction();
     }
 
-    // ---------------------
-    // Rendu
-    // ---------------------
-
     return (
         <div className={styles.formContainer}>
             <h2>Ajouter une nouvelle prestation</h2>
 
             <form onSubmit={handleSubmit} className={styles.form}>
-                {/* DATES -------------------------------------------------------------- */}
+
                 <div className={styles.formGroup}>
                     <label>Date de début *</label>
                     <input
@@ -138,7 +130,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     />
                 </div>
 
-                {/* HEURES -------------------------------------------------------------- */}
                 <div className={styles.row}>
                     <div className={styles.formGroup}>
                         <label>Heure début</label>
@@ -169,7 +160,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     </div>
                 </div>
 
-                {/* TYPE -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Type de prestation</label>
                     <input
@@ -185,7 +175,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     />
                 </div>
 
-                {/* LIEU -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Lieu</label>
                     <input
@@ -201,7 +190,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     />
                 </div>
 
-                {/* CLIENT -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Client</label>
                     <div className={styles.clientRow}>
@@ -273,7 +261,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     )}
                 </div>
 
-                {/* STATUT -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Statut</label>
                     <select
@@ -292,7 +279,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     </select>
                 </div>
 
-                {/* NOTES -------------------------------------------------------------- */}
                 <div className={styles.formGroup}>
                     <label>Notes</label>
                     <textarea
@@ -308,7 +294,6 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     ></textarea>
                 </div>
 
-                {/* SUBMIT -------------------------------------------------------------- */}
                 <button type="submit" disabled={loading} className={styles.submitBtn}>
                     {loading ? "⏳" : "➕ Ajouter"}
                 </button>

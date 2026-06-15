@@ -65,7 +65,6 @@ export default function Gallery() {
                     </motion.p>
                 </div>
 
-                {/* Grille Bento */}
                 <motion.div
                     className={styles.grid}
                 >

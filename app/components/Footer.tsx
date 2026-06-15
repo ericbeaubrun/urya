@@ -24,7 +24,6 @@ export default function Footer() {
         <footer className={styles.footer}>
             <div className={styles.container}>
                 <div className={styles.topRow}>
-                    {/* Logo / Back to top */}
                     <ScrollLink
                         to="hero"
                         smooth={true}
@@ -37,7 +36,6 @@ export default function Footer() {
                         <span className={styles.logoGradient}>{navigation.logo?.second}</span>
                     </ScrollLink>
 
-                    {/* Navigation secondaire */}
                     <nav className={styles.nav}>
                         {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,7 +54,6 @@ export default function Footer() {
                         ))}
                     </nav>
 
-                    {/* Liens Réseaux Sociaux */}
                     <div className={styles.socials}>
                         {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,7 +85,6 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Ligne du bas (Copyright) */}
                 <div className={styles.bottomRow}>
                     <span>&copy; {new Date().getFullYear()} {footer.copyright}</span>
                     <span className={styles.signature}>{footer.signature}</span>

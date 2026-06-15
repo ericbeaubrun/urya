@@ -20,12 +20,10 @@ export default function Navigation({ onContactClick }: NavigationProps) {
     useEffect(() => {
         const onScroll = () => {
             setScrolled(window.scrollY > 40);
-            // On force l'activation du logo si on est tout en haut
             if (window.scrollY < 10) {
                 setIsHeroActive(true);
             }
         };
-        // Vérification initiale
         onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });
         return () => window.removeEventListener('scroll', onScroll);
@@ -61,7 +59,6 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         <span className={styles.logoGradient}>{navigation.logo?.second}</span>
                     </ScrollLink>
 
-                    {/* Desktop Navigation */}
                     <ul className={styles.desktopMenu}>
                         {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,7 +84,6 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         ))}
                     </ul>
 
-                    {/* Desktop CTA */}
                     <ScrollLink
                         to="devis"
                         spy={true}
@@ -101,7 +97,6 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         {navigation.cta}
                     </ScrollLink>
 
-                    {/* Mobile Menu Button */}
                     <button
                         onClick={() => setMenuOpen(!menuOpen)}
                         className={styles.mobileMenuBtn}
@@ -113,7 +108,6 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                 </div>
             </nav>
 
-            {/* Mobile Drawer */}
             <div className={`${styles.mobileDrawer} ${menuOpen ? styles.drawerOpen : ''}`}>
                 <div className={styles.drawerOverlay} onClick={() => setMenuOpen(false)} />
                 <div className={styles.drawerContent}>

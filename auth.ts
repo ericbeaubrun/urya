@@ -14,7 +14,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return null;
                 }
 
-                // Vérifier les credentials avec Supabase
                 const admin = await verifyAdminCredentials(
                     credentials.email as string,
                     credentials.password as string
@@ -27,7 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 return {
                     id: admin.id,
                     email: admin.email,
-                    name: admin.email, // Utiliser l'email comme nom
+                    name: admin.email,
                 };
             }
         })

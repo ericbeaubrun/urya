@@ -27,7 +27,7 @@
     padding: 6px 10px;
     border: 1px solid rgba(255, 255, 255, 0.22);
     background: #1b2333;
-    border-radius: 0; /* cohérent avec le style admin */
+    border-radius: 0;
 }
 
 .nav a:hover {
@@ -74,4 +74,4 @@
     .userInfo {
         font-size: 0.9rem;
     }
-    }
+}

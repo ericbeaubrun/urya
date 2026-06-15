@@ -40,7 +40,6 @@ export default function Hero({ onContactClick }: HeroProps) {
 
     return (
         <section id="hero" className={styles.heroSection}>
-            {/* Background Media & Overlays */}
             <div className={styles.bgContainer}>
                 <video
                     src="/hero_background.mp4"
@@ -55,15 +54,13 @@ export default function Hero({ onContactClick }: HeroProps) {
                 <div className={styles.bottomShadow} />
             </div>
 
-            {/* Main Content */}
-            <motion.div 
+            <motion.div
                 className={styles.content}
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: ANIMATION_ONCE, amount: 0.1 }}
             >
-                {/* Status Tag */}
                 <motion.div className={styles.tag} variants={itemVariants}>
                     <span className={styles.tagPulse} />
                     <span className={styles.tagText}>
@@ -85,7 +82,6 @@ export default function Hero({ onContactClick }: HeroProps) {
                     {hero.subtitle2}
                 </motion.p>
 
-                {/* Call To Actions */}
                 <motion.div className={styles.ctaGroup} variants={itemVariants}>
                     <ScrollLink
                         to="devis"
@@ -110,7 +106,6 @@ export default function Hero({ onContactClick }: HeroProps) {
                     </ScrollLink>
                 </motion.div>
 
-                {/* Stats Grid */}
                 <motion.div className={styles.statsGrid} variants={itemVariants}>
                     {stats.map((stat: { label: string; value: string }, idx: number) => (
                         <div key={idx} className={styles.statCard}>
@@ -121,7 +116,6 @@ export default function Hero({ onContactClick }: HeroProps) {
                 </motion.div>
             </motion.div>
 
-            {/* Scroll Down Indicator */}
             <ScrollLink
                 to="about"
                 smooth={true}

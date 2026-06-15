@@ -62,11 +62,6 @@
     color: var(--color-text-main);
     border-color: var(--color-primary-light);
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
-
-    /*font-weight: 700;*/
-    /*color: black;*/
-    /*border-color: white;*/
-    /*background-color: white;*/
 }
 
 .footer {

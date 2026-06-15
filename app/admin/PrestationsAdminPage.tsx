@@ -355,7 +355,8 @@ function PrestationsAdminPage({
                                                     }
                                                 }}
                                             >
-                                                ✔ OK
+                                                {/*✔ OK*/}
+                                                Valider Réservation
                                             </button>
                                         )}
 

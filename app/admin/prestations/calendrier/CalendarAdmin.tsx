@@ -14,7 +14,6 @@ export default function CalendarAdmin() {
     const [events, setEvents] = useState<any[]>([]);
     const calendarRef = useRef<FC | null>(null);
 
-    // Déterminer une vue initiale en fonction de la largeur
     const initialView = useMemo(() => {
         if (typeof window === "undefined") return "dayGridMonth";
         const w = window.innerWidth;

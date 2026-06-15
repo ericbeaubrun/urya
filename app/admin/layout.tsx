@@ -3,33 +3,30 @@ import Link from "next/link";
 import styles from "./AdminPage.module.css";
 import React from "react";
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({children}: { children: React.ReactNode }) {
     const session = await auth();
 
-
-
-    // Redirigé par middleware / pages protégées, mais on sécurise ici aussi
     if (!session) {
-        // Laisser Next middleware/routeur gérer; sinon on pourrait utiliser redirect("/login")
+        // redirect("/login")
     }
 
     return (
-    <div>
-      <div className={styles.header}>
-        <div className={styles.userInfo}>
-          <strong>{session?.user?.email}</strong>
-        </div>
-        <nav className={styles.nav}>
-            <Link href="/admin/prestations/ajouter">Ajouter une prestation</Link>
-            <Link href="/admin/prestations/futures">Prestations à venir</Link>
-            <Link href="/admin/prestations/passees">Prestations passées</Link>
-            <Link href="/admin/prestations/toutes">Toutes les prestations</Link>
-            <Link href="/admin/prestations/calendrier">Calendrier</Link>
-          <Link href="/admin/content">Editer le Contenu</Link>
+        <div>
+            <div className={styles.header}>
+                <div className={styles.userInfo}>
+                    <strong>{session?.user?.email}</strong>
+                </div>
+                <nav className={styles.nav}>
+                    <Link href="/admin/prestations/ajouter">Ajouter une prestation</Link>
+                    <Link href="/admin/prestations/futures">Prestations à venir</Link>
+                    <Link href="/admin/prestations/passees">Prestations passées</Link>
+                    <Link href="/admin/prestations/toutes">Toutes les prestations</Link>
+                    <Link href="/admin/prestations/calendrier">Calendrier</Link>
+                    <Link href="/admin/content">Editer le Contenu</Link>
                     <form
                         action={async () => {
                             "use server";
-                            await signOut({ redirectTo: "/" });
+                            await signOut({redirectTo: "/"});
                         }}
                     >
                         <button type="submit" className={styles.logoutButton}>Déconnexion</button>

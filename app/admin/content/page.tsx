@@ -10,7 +10,6 @@ export default async function ContentAdminPage() {
         redirect("/login");
     }
 
-    // Récupérer le contenu actuel (sans cache pour l'édition)
     const content = await getSiteContent();
 
     return (
