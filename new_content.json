@@ -1,0 +1,326 @@
+{
+  "faq": {
+    "items": [
+      {
+        "answer": "Absolument. Je sais que l'énergie d'une soirée peut parfois dépasser les prévisions. Si l'ambiance est au rendez-vous et que vous souhaitez prolonger le mix, je m'adapte en temps réel pour assurer la continuité de l'événement.",
+        "question": "Si besoin est, accepteriez-vous de faire des heures supplémentaires ?"
+      },
+      {
+        "answer": "La flexibilité est l'une de mes priorités. Si vous m'informez suffisamment à l'avance, je ferai tout mon possible pour réajuster mon planning sans frais supplémentaires, sous réserve de disponibilité à la nouvelle date.",
+        "question": "Que se passe-t-il si ma date ou mes horaires changent ?"
+      },
+      {
+        "answer": "Les frais de déplacement sont inclus dans un rayon défini autour de ma base. Pour les prestations nationales ou internationales, un forfait kilométrique ou de transport transparent est calculé lors du devis initial.",
+        "question": "Facturez-vous le déplacement ?"
+      },
+      {
+        "answer": "Pour les prestations de longue durée (soirées complètes), un repas prestataire est apprécié. Concernant l'hébergement, il n'est généralement requis que pour les déplacements lointains nécessitant un repos après le set pour des raisons de sécurité.",
+        "question": "Avez-vous besoin d'un repas ou d'un hébergement ?"
+      },
+      {
+        "answer": "Il me faut environ 1 heure pour installer et calibrer mon système de sonorisation et d'éclairage. J'arrive systématiquement en avance pour m'assurer que tout est opérationnel avant l'arrivée de vos premiers invités.",
+        "question": "Combien de temps vous faut-il pour l'installation ?"
+      },
+      {
+        "answer": "C'est votre événement, votre univers sonore. Nous définissons ensemble une 'Playlist' de vos incontournables et une 'Blacklist' de ce que vous ne voulez surtout pas entendre. Je me charge ensuite de mixer ces choix de manière fluide et professionnelle.",
+        "question": "Est-il possible de choisir les chansons qui seront jouées ?"
+      }
+    ],
+    "title": {
+      "text": "QUESTIONS",
+      "highlight": "FRÉQUENTES"
+    }
+  },
+  "hero": {
+    "ctas": {
+      "primary": "Réserver une date",
+      "secondary": "Me contacter"
+    },
+    "stats": [
+      {
+        "label": "années d'expérience",
+        "value": "10+"
+      },
+      {
+        "label": "styles musicaux",
+        "value": "50+"
+      },
+      {
+        "label": "événements animés",
+        "value": "100+"
+      }
+    ],
+    "title": {
+      "line1": "ENSEMBLE CRÉONS",
+      "line2": "UNIQUES",
+      "highlight": "DES SOUVENIRS"
+    },
+    "status": "Disponible pour 2026 / 2027",
+    "subtitle1": "Prête à dynamiser votre événement !",
+    "subtitle2": "Avec des sons variés et une ambiance conviviale, je transforme chaque fête en un moment inoubliable."
+  },
+  "about": {
+    "tags": [
+      "Disco",
+      "Funk",
+      "House",
+      "Electro",
+      "Latino",
+      "Musique Africaine",
+      "Pop"
+    ],
+    "title": {
+      "text": "VOTRE Dj, TOUS STYLES, ",
+      "highlight": "TOUTES AMBIANCES"
+    },
+    "contactInfo": [
+      {
+        "sub": "Téléphone",
+        "icon": "Phone",
+        "label": "07 43 35 65 17"
+      },
+      {
+        "sub": "Email",
+        "icon": "Mail",
+        "label": "2souchik@gmail.com"
+      },
+      {
+        "sub": "Instagram",
+        "icon": "Instagram",
+        "label": "@djxuryax77"
+      },
+      {
+        "sub": "Localisation",
+        "icon": "MapPin",
+        "label": "Melun, Seine-et-Marne"
+      }
+    ],
+    "description": [
+      "Passionnée de musique et créatrice d’ambiances inoubliables. Mariages, anniversaires, soirées privées ou événements professionnels : je suis votre Dj pour faire de chaque instant un moment unique.",
+      "Avec une sélection musicale variée, des classiques intemporels aux derniers hits, j’adapte chaque mix à votre public, à vos goûts et à l’énergie du moment. Que ce soit en Île-de-France, en Provence ou à l'étranger, votre Dj est réactive et toujours disponible pour répondre à vos attentes."
+    ]
+  },
+  "footer": {
+    "socials": [
+      {
+        "url": "https://www.instagram.com/djxuryax77/",
+        "icon": "Instagram",
+        "platform": "Instagram"
+      },
+      {
+        "url": "https://www.tiktok.com/@djxuryax77",
+        "icon": "Music",
+        "platform": "TikTok"
+      },
+      {
+        "url": "https://www.youtube.com/channel/UCnFBfafspOMtd_c3Yki-rkg",
+        "icon": "ExternalLink",
+        "platform": "Youtube"
+      }
+    ],
+    "copyright": "Dj URYA — Tous droits réservés.",
+    "signature": "Dernière mise à jour le 04/06/2026 - Le Mée-sur-Seine, France"
+  },
+  "faqForm": {
+    "modal": {
+      "close": "OK",
+      "error": {
+        "text": "Une erreur est survenue. Réessayez.",
+        "title": "Erreur"
+      },
+      "success": {
+        "text": "Je reviens vers vous très vite.",
+        "title": "Message envoyé"
+      }
+    },
+    "fields": {
+      "name": "Nom ou Organisation",
+      "email": "Email",
+      "message": "Message",
+      "placeholders": {
+        "message": "Décrivez votre projet ou posez votre question..."
+      }
+    },
+    "buttons": {
+      "send": "Envoyer le message",
+      "sending": "Envoi..."
+    },
+    "trigger": "Une autre question ? Contactez moi.",
+    "description": "Si vous n'avez pas trouvé la réponse à votre question, n'hésitez pas à m'envoyer un message directement via ce formulaire ou par mail : **2souchik@gmail.com**."
+  },
+  "gallery": {
+    "title": {
+      "text": "CAPTURER L'ÉNERGIE,",
+      "highlight": "IMMORTALISER L'INSTANT"
+    },
+    "images": [
+      {
+        "alt": "Dj en plein mix",
+        "big": true,
+        "src": "dj-urya_4.png"
+      },
+      {
+        "alt": "Foule en festival",
+        "src": "dj-urya_2.png"
+      },
+      {
+        "alt": "Jeux de lumières concert",
+        "src": "dj-urya_3.png"
+      },
+      {
+        "alt": "Ambiance soirée entreprise",
+        "src": "dj-urya_6.png"
+      },
+      {
+        "alt": "Piste de danse en club",
+        "src": "dj-urya_5.png"
+      }
+    ],
+    "subtitle": "Aperçu des moments forts et des ambiances créées lors des derniers événements."
+  },
+  "services": {
+    "items": [
+      {
+        "icon": "Heart",
+        "image": "/mariage.png",
+        "price": "À partir de 450 €",
+        "title": "Mariages",
+        "subtitle": "Prestation sur mesure : cocktail, dîner, ouverture de bal, soirée dansante.",
+        "inclusions": [
+          "Matériel professionnel",
+          "Mix 100% personnalisé",
+          "Coordination, installation et désinstallation incluses"
+        ]
+      },
+      {
+        "icon": "PartyPopper",
+        "image": "/anniversaire.png",
+        "price": "À partir de 450 €",
+        "title": "Anniversaires",
+        "subtitle": "Animation complète, ambiance personnalisée selon le thème et le public.",
+        "inclusions": [
+          "Matériel professionnel",
+          "Mix 100% personnalisé",
+          "Coordination, installation et désinstallation incluses"
+        ]
+      },
+      {
+        "icon": "Sparkles",
+        "image": "/soiree.png",
+        "price": "À partir de 450 €",
+        "title": "Événements",
+        "subtitle": "Soirées, fêtes associatives, fêtes d'entreprises, événements sportifs , séminaires, etc.",
+        "inclusions": [
+          "Matériel professionnel",
+          "Mix 100% personnalisé",
+          "Coordination, installation et désinstallation incluses"
+        ]
+      },
+      {
+        "icon": "Sparkles",
+        "image": "/soiree.png",
+        "price": "À partir de ... €",
+        "title": "Nouveau Service",
+        "subtitle": "Description du service",
+        "inclusions": []
+      }
+    ],
+    "title": {
+      "text": "CHAQUE ÉVÉNEMENT MÉRITE",
+      "highlight": "UNE EXPÉRIENCE UNIQUE"
+    },
+    "subtitle": "Mon objectif : créer une atmosphère festive et élégante, où chaque invité profite pleinement de la fête. Que ce soit en Île-de-France, en Provence ou à l'étranger, votre DJ est réactive et toujours disponible pour répondre à vos attentes.",
+    "extraOptions": {
+      "items": [
+        "Jeux de lumières",
+        "Fumée",
+        "Lasers",
+        "Effets spéciaux",
+        "Vidéo projection",
+        "Animation micro"
+      ],
+      "title": "Options supplémentaires"
+    }
+  },
+  "navigation": {
+    "cta": "Réserver",
+    "logo": {
+      "first": "Dj",
+      "second": "URYA"
+    },
+    "items": [
+      {
+        "to": "about",
+        "label": "À propos"
+      },
+      {
+        "to": "gallery",
+        "label": "Actualités"
+      },
+      {
+        "to": "services",
+        "label": "Services"
+      },
+      {
+        "to": "faq",
+        "label": "Questions"
+      }
+    ]
+  },
+  "prestationForm": {
+    "steps": [
+      {
+        "label": "Date et heure",
+        "number": "1"
+      },
+      {
+        "label": "Type de prestation",
+        "number": "2"
+      },
+      {
+        "label": "Vos Coordonnées",
+        "number": "3"
+      },
+      {
+        "label": "Récap",
+        "number": "✔"
+      }
+    ],
+    "title": {
+      "text": "Votre événement commence",
+      "highlight": "par une conversation"
+    },
+    "fields": {
+      "date": "Date de l'événement",
+      "name": "Nom complet",
+      "type": "Type de prestation souhaité",
+      "email": "Adresse Email",
+      "notes": "Précisions ou options supplémentaires (Lumières, effets, lasers...)",
+      "phone": "Téléphone (facultatif)",
+      "timeEnd": "Heure de fin",
+      "location": "Adresse complète / Ville / Lieu",
+      "timeStart": "Heure de début"
+    },
+    "buttons": {
+      "next": "Suivant",
+      "prev": "Précédent",
+      "send": "Envoyer la demande",
+      "reset": "Envoyer une autre demande",
+      "sendAppointment": "Envoyer la demande de rendez-vous"
+    },
+    "success": {
+      "title": "Message envoyé !",
+      "textPrestation": "Merci pour votre demande. Je reviendrai vers vous dans les 24 heures avec une proposition personnalisée.",
+      "textAppointment": "Merci pour votre demande de rendez-vous. Je reviendrai vers vous très prochainement pour confirmer l'horaire."
+    },
+    "subtitles": {
+      "prestation": "Décrivez votre projet, je vous réponds sous 24h avec une proposition personnalisée. Pour toute demande personnalisée contactez-moi par mail à **2souchik@gmail.com**.",
+      "appointment": "Vous hésitez encore ? Discutons-en de vive voix lors d'un court échange pour définir ensemble les contours de votre projet."
+    },
+    "privacyNote": "Vos données sont uniquement utilisées pour traiter votre demande de prestation. Aucune donnée n'est partagée ou revendue à des tiers.",
+    "placeholders": {
+      "notes": "Détails du projet...",
+      "location": "Ex: Château de Vaux, Paris"
+    }
+  }
+}
