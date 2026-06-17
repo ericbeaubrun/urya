@@ -64,7 +64,6 @@
     resize: vertical;
 }
 
-/* Etats de focus pour champs du formulaire */
 .formGroup input:focus,
 .formGroup select:focus,
 .formGroup textarea:focus,
@@ -74,14 +73,12 @@
     box-shadow: 0 0 0 2px rgba(199, 210, 254, 0.25);
 }
 
-/* Placeholders lisibles sur fond sombre */
 .formGroup input::placeholder,
 .formGroup textarea::placeholder,
 .newClientForm input::placeholder {
     color: rgba(243, 244, 246, 0.7);
 }
 
-/* Menu déroulant sombre également */
 .formGroup select option {
     background-color: #1b2333;
     color: #f3f4f6;

@@ -8,9 +8,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
 
 
-    // Redirigé par middleware / pages protégées, mais on sécurise ici aussi
+   
     if (!session) {
-        // Laisser Next middleware/routeur gérer; sinon on pourrait utiliser redirect("/login")
+        //redirect("/login")
     }
 
     return (

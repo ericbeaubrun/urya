@@ -1,6 +1,5 @@
 import {NextRequest, NextResponse} from 'next/server';
-import {connectToDatabase} from '@/lib/mongodb';
-import {ObjectId} from 'mongodb';
+import {supabaseAdmin} from '@/lib/supabase_client';
 import {Resend} from "resend"
 import {clientEmailTemplate} from "@/app/emails/userEmail";
 import {adminEmailTemplate} from "@/app/emails/adminEmail";
@@ -40,33 +39,76 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const {db} = await connectToDatabase();
 
-        let clientId: ObjectId;
-        const existingClient = await db.collection('clients').findOne({ mail });
+        let clientId: string;
+        const {data: existingClient, error: clientCheckError} = await supabaseAdmin()
+            .from('clients')
+            .select('id')
+            .eq('mail', mail)
+            .single();
 
-        if (existingClient) {
-            clientId = existingClient._id;
-
-            await db.collection('clients').updateOne(
-                { _id: clientId },
-                {
-                    $set: {
-                        nom,
-                        tel: tel || null
-                    }
-                }
+        if (clientCheckError && clientCheckError.code !== 'PGRST116') {
+            console.error('Erreur lors de la vérification du client:', clientCheckError);
+            return NextResponse.json(
+                {error: 'Erreur lors de la vérification du client.'},
+                {status: 500}
             );
-        } else {
-            const result = await db.collection('clients').insertOne({
-                nom,
-                mail,
-                tel: tel || null
-            });
-            clientId = result.insertedId;
         }
 
-        const prestationData = {
+        if (existingClient) {
+            clientId = existingClient.id;
+
+            const {error: updateError} = await supabaseAdmin()
+                .from('clients')
+                .update({
+                    nom,
+                    tel: tel || null
+                })
+                .eq('id', clientId);
+
+            if (updateError) {
+                console.error('Erreur lors de la mise à jour du client:', updateError);
+                return NextResponse.json(
+                    {error: 'Erreur lors de la mise à jour du client.'},
+                    {status: 500}
+                );
+            }
+        } else {
+            const {data: newClient, error: clientError} = await supabaseAdmin()
+                .from('clients')
+                .insert({
+                    nom,
+                    mail,
+                    tel: tel || null
+                })
+                .select('id')
+                .single();
+
+            if (clientError) {
+                console.error('Erreur lors de la création du client:', clientError);
+                return NextResponse.json(
+                    {error: 'Erreur lors de la création du client.'},
+                    {status: 500}
+                );
+            }
+
+            clientId = newClient.id;
+        }
+
+
+        interface PrestationInsert {
+            id_client: string;
+            statut: string;
+            date_debut: string;
+            date_fin: string | null;
+            heure_debut: string | null;
+            heure_fin: string | null;
+            type: string | null;
+            lieu: string | null;
+            notes: string | null;
+        }
+
+        const prestationData: PrestationInsert = {
             id_client: clientId,
             statut: 'en_attente',
             date_debut,
@@ -78,9 +120,14 @@ export async function POST(req: NextRequest) {
             notes: notes || null
         };
 
-        const resultPrestation = await db.collection('prestations').insertOne(prestationData);
+        const {data: prestation, error: prestationError} = await supabaseAdmin()
+            .from('prestations')
+            .insert(prestationData)
+            .select()
+            .single();
 
-        if (!resultPrestation.insertedId) {
+        if (prestationError) {
+            console.error('Erreur lors de la création de la prestation:', prestationError);
             return NextResponse.json(
                 {error: 'Erreur lors de la création de la prestation.'},
                 {status: 500}
