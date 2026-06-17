@@ -7,6 +7,7 @@ import {
     getClients,
     deletePrestation,
     updatePrestation,
+    updateClient,
     addClient
 } from "../actions/prestations";
 
@@ -248,12 +249,11 @@ function PrestationsAdminPage({
                                                 await updatePrestation(p.id, editData);
 
                                                 if (editData.id_client && editClient) {
-                                                    await addClient(
-                                                        editClient.nom!,
-                                                        editClient.mail!,
-                                                        editClient.tel || null,
-                                                        editData.id_client
-                                                    );
+                                                    await updateClient(editData.id_client, {
+                                                        nom: editClient.nom,
+                                                        mail: editClient.mail,
+                                                        tel: editClient.tel
+                                                    });
                                                 }
 
                                                 setLoading(false);

@@ -1,4 +1,4 @@
-import {supabaseAdmin} from "./supabase_client";
+import { connectToDatabase } from "./mongodb";
 import bcrypt from "bcryptjs";
 
 export interface Admin {
@@ -15,23 +15,21 @@ export async function verifyAdminCredentials(
     password: string
 ): Promise<{ id: string; email: string } | null> {
     try {
-        // Récupérer l'admin depuis Supabase avec le service role key
-        const {data, error} = await supabaseAdmin()
-            .from("admins")
-            .select("id, email, password_hash")
-            .eq("email", email)
-            .single();
+        const { db } = await connectToDatabase();
+        
+        // Récupérer l'admin depuis MongoDB
+        const admin = await db.collection("admins").findOne({ email });
 
-        console.log("supabase data : ");
-        console.log(data);
+        console.log("mongo data : ");
+        console.log(admin);
 
-        if (error || !data) {
-            console.error("Admin not found:", error);
+        if (!admin) {
+            console.error("Admin not found");
             return null;
         }
 
         // Vérifier le mot de passe
-        const isValidPassword = await bcrypt.compare(password, data.password_hash);
+        const isValidPassword = await bcrypt.compare(password, admin.password_hash);
 
         if (!isValidPassword) {
             return null;
@@ -39,8 +37,8 @@ export async function verifyAdminCredentials(
 
         // Retourner les infos de l'admin (sans le hash)
         return {
-            id: data.id,
-            email: data.email,
+            id: admin._id.toString(),
+            email: admin.email,
         };
     } catch (error) {
         console.error("Error verifying admin credentials:", error);

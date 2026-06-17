@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return null;
                 }
 
-                // Vérifier les credentials avec Supabase
+                // Vérifier les credentials avec MongoDB
                 const admin = await verifyAdminCredentials(
                     credentials.email as string,
                     credentials.password as string

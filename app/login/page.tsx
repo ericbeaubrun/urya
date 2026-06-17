@@ -82,7 +82,7 @@ export default function LoginPage() {
 
                 <div className={styles.infoBox}>
                     <strong>Note:</strong><br/>
-                    Utilisez les identifiants admin configurés dans votre base de données Supabase.
+                    Utilisez les identifiants admin configurés dans votre base de données MongoDB.
                     <br/><br/>
                     Pour créer un admin, consultez le README.md
                 </div>

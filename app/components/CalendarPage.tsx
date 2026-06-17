@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {EventContentArg, EventInput} from "@fullcalendar/core";
-import {supabase_client} from "@/lib/supabase_client";
+import {getPublicPrestations} from "@/app/actions/prestations";
 import styles from "../styles/CalendarPage.module.css";
 import {useRouter} from "next/navigation";
 import {FILTER_PRESTATION_CALENDAR, ANIMATION_ONCE} from "@/app/config/config";
@@ -52,15 +52,14 @@ export default function CalendarPage() {
 
     useEffect(() => {
         async function loadEvents() {
-            let {data, error} = await supabase_client
-                .from("public_prestations_calendar")
-                .select("*");
+            const result = await getPublicPrestations();
 
-
-            if (error) {
-                console.error("Erreur lors du chargement des événements:", error);
+            if (!result.success) {
+                console.error("Erreur lors du chargement des événements:", result.error);
                 return;
             }
+
+            let data = result.data;
 
             if (FILTER_PRESTATION_CALENDAR) {
                 data = (data || []).filter(

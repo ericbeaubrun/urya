@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {supabase_client} from "@/lib/supabase_client";
+import {getAllPrestationsForCalendar} from "@/app/actions/prestations";
 import styles from "@/app/styles/CalendarPage.module.css";
 
 type FC = any;
@@ -25,14 +25,14 @@ export default function CalendarAdmin() {
 
     useEffect(() => {
         async function loadEvents() {
-            const { data, error } = await supabase_client
-                .from("public_prestations_calendar")
-                .select("*");
+            const result = await getAllPrestationsForCalendar();
 
-            if (error) {
-                console.error("Erreur chargement calendrier admin:", error);
+            if (!result.success) {
+                console.error("Erreur chargement calendrier admin:", result.error);
                 return;
             }
+
+            const data = result.data;
 
             const formatted = (data || []).map((ev: any) => {
                 const eventData: any = {
