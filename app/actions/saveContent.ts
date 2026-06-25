@@ -16,6 +16,9 @@ export async function saveAndRefreshContent(newContent: any) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     catch (error: any) {
         console.error('Erreur lors de la sauvegarde du contenu:', error);
-        return {success: false, message: error.message || 'Erreur lors de la sauvegarde.'};
+        return {
+            success: false,
+            message: "Erreur suivante durant la sauvegarde : " + error.message || 'Erreur inconnue lors de la sauvegarde.'
+        };
     }
 }

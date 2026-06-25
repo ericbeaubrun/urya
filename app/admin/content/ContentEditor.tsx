@@ -7,7 +7,7 @@ import styles from './ContentEditor.module.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ContentEditor({initialContent}: { initialContent: any }) {
-    const [content, setContent] = useState(initialContent);
+    const [content, setContent] = useState(initialContent || {});
     const [activeTab, setActiveTab] = useState('hero');
     const [saving, setSaving] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
@@ -21,12 +21,12 @@ export default function ContentEditor({initialContent}: { initialContent: any })
             setSaving(false);
             // window.location.reload();
 
-            // if (result.success) {
-            //     alert(result.message);
-            //     window.location.reload();
-            // } else {
-            //     alert('Erreur : ' + result.message);
-            // }
+            if (result.success) {
+                alert(result.message);
+                window.location.reload();
+            } else {
+                alert('Erreur : ' + result.message);
+            }
         } catch (e) {
             alert('Erreur lors de la sauvegarde : ' + (e as Error).message);
         }
