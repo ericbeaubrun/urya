@@ -79,13 +79,6 @@ export default function LoginPage() {
                         Se connecter
                     </button>
                 </form>
-
-                <div className={styles.infoBox}>
-                    <strong>Note:</strong><br/>
-                    Utilisez les identifiants admin configurés dans votre base de données Supabase.
-                    <br/><br/>
-                    Pour créer un admin, consultez le README.md
-                </div>
             </div>
         </div>
     );
