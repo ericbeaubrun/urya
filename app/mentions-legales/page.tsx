@@ -57,7 +57,8 @@ export default async function MentionsLegalesPage() {
                     <div className={styles.definitionRow}>
                         <span className={styles.definitionTerm}>TVA</span>
                         <span className={styles.definitionValue}>
-                            {editor.vatNumber || 'TVA non applicable, article 293 B du Code général des impôts'}
+                            {/*{editor.vatNumber || 'TVA non applicable, article 293 B du Code général des impôts'}*/}
+                            {editor.vatNumber ?editor.vatNumber : <LegalValue value="" label="vatNumber" />}
                         </span>
                     </div>
                     <div className={styles.definitionRow}>

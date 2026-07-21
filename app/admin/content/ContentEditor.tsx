@@ -549,12 +549,12 @@ export default function ContentEditor({initialContent}: { initialContent: any })
 
                 {activeTab === 'legal' && (
                     <>
-                        <p className={styles.helpText}>
-                            Ces informations alimentent les pages « Mentions légales » et « Politique de
-                            confidentialité ». Tout champ laissé vide s&apos;affiche en <code>*********</code> sur le
-                            site : le site reste fonctionnel, mais ces mentions sont obligatoires (article 6 de la
-                            LCEN) et doivent être complétées avant la mise en ligne définitive.
-                        </p>
+                        {/*<p className={styles.helpText}>*/}
+                        {/*    Ces informations alimentent les pages « Mentions légales » et « Politique de*/}
+                        {/*    confidentialité ». Tout champ laissé vide s&apos;affiche en <code>*********</code> sur le*/}
+                        {/*    site : le site reste fonctionnel, mais ces mentions sont obligatoires (article 6 de la*/}
+                        {/*    LCEN) et doivent être complétées avant la mise en ligne définitive.*/}
+                        {/*</p>*/}
 
                         <div className={`${styles.subSection} ${styles.subSectionFirst}`}>
                             <h3 className={styles.subTitle}>Éditeur du site</h3>
