@@ -1,77 +1,184 @@
 .header {
-    background-color: #0e1321;
-    color: #f3f4f6;
-    padding: 15px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.bar {
+    max-width: var(--adm-max);
+    margin: 0 auto;
+    padding: 0.7rem 1.25rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 
-.userInfo {
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--adm-text);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-right: auto;
+}
+
+.brandMark {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--adm-radius-sm);
+    background: var(--adm-primary);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.brandText {
     font-size: 0.95rem;
+}
+
+.burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 38px;
+    height: 34px;
+    padding: 0 8px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+}
+
+.burger span {
+    display: block;
+    height: 1.5px;
+    background: var(--adm-text);
+    border-radius: 2px;
+}
+
+.panel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .nav {
     display: flex;
-    gap: 12px;
     align-items: center;
+    gap: 0.25rem;
     flex-wrap: wrap;
 }
 
-.nav a {
-    text-decoration: none;
-    color: #f9fafb;
-    padding: 6px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    background: #1b2333;
-    border-radius: 0;
+.link {
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--adm-radius-sm);
+    color: var(--adm-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background var(--adm-transition), color var(--adm-transition);
 }
 
-.nav a:hover {
-    background: #2f3e51;
+.link:hover {
+    background: var(--adm-surface-2);
+    color: var(--adm-text);
+}
+
+.linkActive {
+    background: var(--adm-primary-soft);
+    color: #c4b5fd;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--adm-border);
+}
+
+.email {
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    color: var(--adm-dim);
 }
 
 .logoutButton {
-    padding: 8px 16px;
-    background-color: #dc3545;
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 0;
-    cursor: pointer;
+    padding: 0.4rem 0.8rem;
+    background: transparent;
+    color: var(--adm-muted);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+    font-size: 0.8rem;
     font-weight: 500;
+    transition: var(--adm-transition);
 }
 
 .logoutButton:hover {
-    background-color: #c82333;
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.4);
+    background: var(--adm-danger-soft);
 }
 
-@media (max-width: 768px) {
-    .header {
+.main {
+    max-width: var(--adm-max);
+    margin: 0 auto;
+    padding: 1.75rem 1.25rem 4rem;
+}
+
+@media (max-width: 900px) {
+    .burger {
+        display: flex;
+    }
+
+    .panel {
+        display: none;
+        width: 100%;
         flex-direction: column;
         align-items: stretch;
+        gap: 0.75rem;
+        padding-top: 0.85rem;
+        margin-top: 0.15rem;
+        border-top: 1px solid var(--adm-border);
+    }
+
+    .panelOpen {
+        display: flex;
     }
 
     .nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.15rem;
+    }
+
+    .link {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .account {
         justify-content: space-between;
-        gap: 8px;
+        padding-left: 0;
+        padding-top: 0.75rem;
+        border-left: none;
+        border-top: 1px solid var(--adm-border);
     }
 
-    .logoutButton {
-        width: 100%;
-        align-self: stretch;
-    }
-}
-
-@media (max-width: 480px) {
-    .nav a {
-        padding: 6px 8px;
-        font-size: 0.9rem;
+    .email {
+        max-width: none;
     }
 
-    .userInfo {
-        font-size: 0.9rem;
+    .main {
+        padding: 1.25rem 1rem 3rem;
     }
 }

@@ -59,7 +59,8 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
     });
 
     const [step, setStep] = useState(1);
-    const [viewMode, setViewMode] = useState<"prestation" | "appointment">("prestation");
+    // Le setter n'est pas utilisé : le mode est fixé à l'initialisation.
+    const [viewMode] = useState<"prestation" | "appointment">("prestation");
     const [appointmentData, setAppointmentData] = useState({
         contact: "",
         name: "",

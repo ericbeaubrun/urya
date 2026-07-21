@@ -19,6 +19,18 @@ export interface Prestation {
     client?: Client;
 }
 
+/** Ligne exposée par la vue Supabase publique `public_prestations_calendar`. */
+export interface CalendarRow {
+    id: string;
+    type: string | null;
+    statut: string | null;
+    date_debut: string | null;
+    date_fin: string | null;
+    heure_debut: string | null;
+    heure_fin: string | null;
+    lieu: string | null;
+}
+
 export interface PrestationFormData {
     id_client: string;
     statut: string;

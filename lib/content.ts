@@ -2,8 +2,10 @@ import {supabase_client, supabaseAdmin} from "@/lib/supabase_client";
 
 import {unstable_cache} from 'next/cache';
 
-async function fetchSiteContent() {
-    console.log('--- [DB] Tentative de récupération pour ID 1 ---');
+/** Contenu éditorial du site, structure libre pilotée par l'éditeur admin. */
+export type SiteContent = Record<string, unknown>;
+
+async function fetchSiteContent(): Promise<SiteContent | null> {
     try {
         const {data, error} = await supabase_client
             .from('site_content')
@@ -12,27 +14,16 @@ async function fetchSiteContent() {
             .single();
 
         if (error) {
-            console.error('--- [DB] ERREUR SUPABASE:', error); // Affiche l'erreur réelle
+            console.error('[content] Lecture Supabase échouée:', error.message);
             return null;
         }
 
-        console.log('--- [DB] Données reçues:', data); // Vérifiez si c'est null ou un objet
-        return data?.content || null;
+        return (data?.content as SiteContent) ?? null;
     } catch (err) {
-        console.error('--- [DB] ERREUR CRITIQUE:', err);
+        console.error('[content] Erreur réseau lors de la lecture:', err);
         return null;
     }
 }
-// export const getSiteContent = unstable_cache(
-//     async () => {
-//         return fetchSiteContent();
-//     },
-//     ['site-content-v1'],
-//     {
-//         revalidate: false, // Cache permanent
-//         tags: ['site-content'], // Tag pour le rafraîchissement manuel
-//     }
-// );
 
 export const getSiteContent = unstable_cache(
     async () => {
@@ -46,27 +37,25 @@ export const getSiteContent = unstable_cache(
     },
     ['site-content-v1'],
     {
-        // revalidate: 3600,
         tags: ['site-content'],
     }
 );
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function updateSiteContent(content: any) {
+export async function updateSiteContent(content: SiteContent) {
     try {
-        const client = supabaseAdmin();
-        const { data, error } = await client
+        const {error} = await supabaseAdmin()
             .from('site_content')
-            .upsert({ id: 1, content });
+            .upsert({id: 1, content});
 
         if (error) {
-            console.error('Erreur DB:', error);
-            return { error };
+            console.error('[content] Écriture Supabase échouée:', error.message);
+            return {error};
         }
-        return { error: null };
+
+        return {error: null};
     } catch (err) {
-        console.error('Erreur Réseau/Auth:', err);
-        return { error: { message: err instanceof Error ? err.message : 'Erreur inconnue' } };
+        console.error('[content] Erreur réseau lors de l\'écriture:', err);
+        return {error: {message: err instanceof Error ? err.message : 'Erreur inconnue'}};
     }
 }

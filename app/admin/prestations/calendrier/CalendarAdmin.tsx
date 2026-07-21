@@ -5,14 +5,32 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import type {EventContentArg} from "@fullcalendar/core";
 import {supabase_client} from "@/lib/supabase_client";
 import styles from "@/app/components/CalendarPage.module.css";
+import admin from "./CalendarAdmin.module.css";
 
-type FC = any;
+import type {CalendarRow} from "@/app/admin/DataTypes";
+
+interface CalendarEvent {
+    id: string;
+    title: string;
+    start?: string;
+    end?: string;
+    extendedProps: {
+        type: string | null;
+        statut: string | null;
+        heure_debut: string | null;
+        heure_fin: string | null;
+        date_debut: string | null;
+        date_fin: string | null;
+        lieu: string | null;
+    };
+}
 
 export default function CalendarAdmin() {
-    const [events, setEvents] = useState<any[]>([]);
-    const calendarRef = useRef<FC | null>(null);
+    const [events, setEvents] = useState<CalendarEvent[]>([]);
+    const calendarRef = useRef<FullCalendar | null>(null);
 
     const initialView = useMemo(() => {
         if (typeof window === "undefined") return "dayGridMonth";
@@ -33,8 +51,8 @@ export default function CalendarAdmin() {
                 return;
             }
 
-            const formatted = (data || []).map((ev: any) => {
-                const eventData: any = {
+            const formatted = ((data ?? []) as CalendarRow[]).map((ev) => {
+                const eventData: CalendarEvent = {
                     id: ev.id,
                     title: ev.type || "Prestation",
                     extendedProps: {
@@ -71,7 +89,7 @@ export default function CalendarAdmin() {
         loadEvents();
     }, []);
 
-    function renderEventContent(eventInfo: any) {
+    function renderEventContent(eventInfo: EventContentArg) {
         return (
             <div className={styles.eventContent}>
                 <div className={styles.eventTime}>
@@ -85,9 +103,13 @@ export default function CalendarAdmin() {
     }
 
     return (
-        <div className={styles.wrapper}>
-            {/*<h1 className={styles.calendarTitle}>Calendrier des prestations (admin)</h1>*/}
-            <div className={styles.container}>
+        <div className={admin.page}>
+            <div className={admin.head}>
+                <h1>Calendrier</h1>
+                <p>{events.length} prestation{events.length > 1 ? "s" : ""} planifiée{events.length > 1 ? "s" : ""}</p>
+            </div>
+            <div className={`${styles.wrapper} ${admin.wrapper}`}>
+                <div className={`${styles.container} ${admin.card}`}>
                 <FullCalendar
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -119,6 +141,7 @@ export default function CalendarAdmin() {
                     eventContent={renderEventContent}
                     buttonText={{ today: "aujourd'hui", month: "Mois", week: "Semaine", day: "Jour" }}
                 />
+                </div>
             </div>
         </div>
     );

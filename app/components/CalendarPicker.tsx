@@ -8,6 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import {EventContentArg, EventInput} from "@fullcalendar/core";
 import {supabase_client} from "@/lib/supabase_client";
 import {FILTER_PRESTATION_CALENDAR} from "@/app/config";
+import type {CalendarRow} from "@/app/admin/DataTypes";
 import styles from "./CalendarPicker.module.css";
 
 interface CalendarPickerProps {
@@ -51,7 +52,7 @@ export default function CalendarPicker({onDateSelect, initialDate}: CalendarPick
 
     useEffect(() => {
         async function loadEvents() {
-            let {data, error} = await supabase_client
+            const {data, error} = await supabase_client
                 .from("public_prestations_calendar")
                 .select("*");
 
@@ -60,13 +61,14 @@ export default function CalendarPicker({onDateSelect, initialDate}: CalendarPick
                 return;
             }
 
-            if (FILTER_PRESTATION_CALENDAR) {
-                data = (data || []).filter(
+            const rows = (data ?? []) as CalendarRow[];
+            const visibleRows = FILTER_PRESTATION_CALENDAR
+                ? rows.filter(
                     (ev) => ev.statut !== "en_attente" && ev.statut !== "annulee"
-                );
-            }
+                )
+                : rows;
 
-            const formattedEvents: EventInput[] = (data || []).map((ev: any) => {
+            const formattedEvents: EventInput[] = visibleRows.map((ev) => {
                 const mappedLabel = ev?.type ? (TYPE_LABEL_TO_VALUE[ev.type] ?? ev.type) : undefined;
                 const title = mappedLabel ?? "Prestation";
 

@@ -1,19 +1,25 @@
 'use client';
 
 import {motion} from 'framer-motion';
-import {Phone, Mail, Instagram, MapPin} from 'lucide-react';
+import {Phone, Mail, Instagram, MapPin, type LucideIcon} from 'lucide-react';
 import styles from './About.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
 import {useContent} from '@/app/ContentContext';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, LucideIcon> = {
     Phone,
     Mail,
     Instagram,
     MapPin
 };
+
+/** Entrée de contact éditable depuis l'admin ; structure non garantie. */
+interface ContactInfoItem {
+    icon?: string;
+    label?: string;
+    sub?: string;
+}
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -130,8 +136,8 @@ export default function About() {
                         <motion.div
                             className={styles.gearGrid}
                         >
-                            {contactInfo.map(({icon: iconName, label, sub}: any) => {
-                                const Icon = ICON_MAP[iconName] || Phone;
+                            {(contactInfo as ContactInfoItem[]).map(({icon: iconName, label, sub}) => {
+                                const Icon = (iconName && ICON_MAP[iconName]) || Phone;
                                 return (
                                     <motion.div
                                         key={label}

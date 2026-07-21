@@ -1,57 +1,93 @@
 "use server";
 
-import {auth} from "@/auth";
-import {supabase_client, supabaseAdmin} from "@/lib/supabase_client";
+import {supabaseAdmin} from "@/lib/supabase_client";
+import {requireAdmin as verifyAdmin} from "@/lib/require-admin";
 import {revalidatePath} from "next/cache";
+import type {Client, Prestation} from "@/app/admin/DataTypes";
 
-async function verifyAdmin() {
-    const session = await auth();
+/**
+ * Colonnes qu'un administrateur est autorisé à modifier sur une prestation.
+ * Tout champ absent de cette liste est ignoré : sans allowlist, l'objet reçu
+ * était transmis tel quel à Supabase, ce qui permettait d'écrire n'importe
+ * quelle colonne (id, id_client, horodatages...).
+ */
+const PRESTATION_UPDATABLE_FIELDS = [
+    "id_client",
+    "statut",
+    "date_debut",
+    "date_fin",
+    "heure_debut",
+    "heure_fin",
+    "type",
+    "lieu",
+    "notes",
+] as const;
 
-    if (!session?.user?.email) {
-        throw new Error("Non authentifié. Veuillez vous connecter.");
+type PrestationUpdatableField = (typeof PRESTATION_UPDATABLE_FIELDS)[number];
+export type PrestationInput = Partial<Record<PrestationUpdatableField, string | null>>;
+
+/** Colonnes modifiables sur un client. */
+const CLIENT_UPDATABLE_FIELDS = ["nom", "mail", "tel"] as const;
+
+type ClientUpdatableField = (typeof CLIENT_UPDATABLE_FIELDS)[number];
+export type ClientInput = Partial<Record<ClientUpdatableField, string | null>>;
+
+/**
+ * Ne conserve que les colonnes autorisées et normalise les chaînes vides en
+ * `null` (une chaîne vide dans une colonne date fait échouer Postgres).
+ */
+function pickAllowedFields<K extends string>(
+    data: Record<string, unknown>,
+    allowed: readonly K[]
+): Partial<Record<K, string | null>> {
+    const cleaned: Partial<Record<K, string | null>> = {};
+
+    for (const key of allowed) {
+        if (!(key in data)) continue;
+
+        const value = data[key];
+        if (value === undefined) continue;
+
+        cleaned[key] =
+            value === "" || value === null ? null : String(value);
     }
 
-    const {data, error} = await supabaseAdmin()
-        .from("admins")
-        .select("id, email")
-        .eq("email", session.user.email)
-        .single();
+    return cleaned;
+}
 
-    if (error || !data) {
-        throw new Error("Accès refusé. Vous n'êtes pas administrateur.");
-    }
-
-    return data;
+function errorResult(error: unknown) {
+    return {
+        success: false as const,
+        error: error instanceof Error ? error.message : "Erreur inconnue",
+    };
 }
 
 export async function getClients() {
     try {
+        await verifyAdmin();
+
         const {data, error} = await supabaseAdmin()
             .from("clients")
-            .select("*")
+            .select("id, nom, mail, tel")
             .order("nom", {ascending: true});
 
         if (error) {
             throw new Error(`Erreur lors du chargement des clients: ${error.message}`);
         }
 
-        return {success: true, data};
+        return {success: true as const, data: (data ?? []) as Client[]};
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erreur inconnue",
-            data: []
-        };
+        return {...errorResult(error), data: [] as Client[]};
     }
 }
 
-export async function addClient(nom: string, mail: string, p0: string | null, tel?: string) {
+export async function addClient(nom: string, mail: string, tel?: string | null) {
     try {
-        const admin = await verifyAdmin();
+        await verifyAdmin();
 
         const {data, error} = await supabaseAdmin()
             .from("clients")
-            .insert([{nom, mail, tel}])
+            .insert([{nom, mail, tel: tel || null}])
             .select();
 
         if (error) {
@@ -61,57 +97,53 @@ export async function addClient(nom: string, mail: string, p0: string | null, te
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return {success: true, data};
+        return {success: true as const, data: (data ?? []) as Client[]};
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erreur inconnue"
-        };
+        return errorResult(error);
     }
 }
 
-function cleanPrestationData(data: any) {
-    const {
-        id,
-        client,
-        ...rest
-    } = data;
-
-    const cleaned: any = {};
-    for (const key in rest) {
-        cleaned[key] = rest[key] === "" ? null : rest[key];
-    }
-
-    return cleaned;
-}
-
-
-export async function addPrestation(prestationData: {
-    id_client?: string;
-    statut?: string;
-    date_debut: string;
-    date_fin?: string | null;
-    heure_debut?: string;
-    heure_fin?: string;
-    type?: string;
-    lieu?: string;
-    notes?: string;
-}) {
+export async function updateClient(id: string, clientData: ClientInput) {
     try {
-        const admin = await verifyAdmin();
+        await verifyAdmin();
 
+        const cleaned = pickAllowedFields(clientData, CLIENT_UPDATABLE_FIELDS);
+
+        if (Object.keys(cleaned).length === 0) {
+            throw new Error("Aucun champ modifiable fourni.");
+        }
+
+        const {data, error} = await supabaseAdmin()
+            .from("clients")
+            .update(cleaned)
+            .eq("id", id)
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(`Erreur lors de la modification du client: ${error.message}`);
+        }
+
+        revalidatePath("/");
+        revalidatePath("/admin");
+
+        return {success: true as const, data: data as Client};
+    } catch (error) {
+        return errorResult(error);
+    }
+}
+
+export async function addPrestation(prestationData: PrestationInput & { date_debut: string }) {
+    try {
+        await verifyAdmin();
+
+        const cleaned = pickAllowedFields(prestationData, PRESTATION_UPDATABLE_FIELDS);
 
         const {data, error} = await supabaseAdmin()
             .from("prestations")
             .insert([{
-                id_client: prestationData.id_client || null,
-                statut: prestationData.statut || "en_attente",
-                date_debut: prestationData.date_debut,
-                heure_debut: prestationData.heure_debut || null,
-                heure_fin: prestationData.heure_fin || null,
-                type: prestationData.type || null,
-                lieu: prestationData.lieu || null,
-                notes: prestationData.notes || null,
+                ...cleaned,
+                statut: cleaned.statut || "en_attente",
             }])
             .select();
 
@@ -119,23 +151,18 @@ export async function addPrestation(prestationData: {
             throw new Error(`Erreur lors de l'ajout: ${error.message}`);
         }
 
-
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return {success: true, data};
+        return {success: true as const, data: (data ?? []) as Prestation[]};
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erreur inconnue"
-        };
+        return errorResult(error);
     }
 }
 
 export async function deletePrestation(id: string) {
     try {
-        const admin = await verifyAdmin();
-
+        await verifyAdmin();
 
         const {error} = await supabaseAdmin()
             .from("prestations")
@@ -146,24 +173,24 @@ export async function deletePrestation(id: string) {
             throw new Error(`Erreur lors de la suppression: ${error.message}`);
         }
 
-
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return {success: true};
+        return {success: true as const};
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erreur inconnue"
-        };
+        return errorResult(error);
     }
 }
 
-export async function updatePrestation(id: string, prestationData: any) {
+export async function updatePrestation(id: string, prestationData: PrestationInput) {
     try {
-        const admin = await verifyAdmin();
+        await verifyAdmin();
 
-        const cleaned = cleanPrestationData(prestationData);
+        const cleaned = pickAllowedFields(prestationData, PRESTATION_UPDATABLE_FIELDS);
+
+        if (Object.keys(cleaned).length === 0) {
+            throw new Error("Aucun champ modifiable fourni.");
+        }
 
         const {data, error} = await supabaseAdmin()
             .from("prestations")
@@ -177,18 +204,16 @@ export async function updatePrestation(id: string, prestationData: any) {
         revalidatePath("/");
         revalidatePath("/admin");
 
-        return {success: true, data};
+        return {success: true as const, data: data as Prestation};
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erreur inconnue"
-        };
+        return errorResult(error);
     }
 }
 
-
 export async function getPrestations() {
     try {
+        await verifyAdmin();
+
         const {data, error} = await supabaseAdmin()
             .from("prestations")
             .select(`
@@ -201,12 +226,8 @@ export async function getPrestations() {
             throw new Error(`Erreur lors du chargement: ${error.message}`);
         }
 
-        return {success: true, data};
+        return {success: true as const, data: (data ?? []) as Prestation[]};
     } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Erreur inconnue",
-            data: []
-        };
+        return {...errorResult(error), data: [] as Prestation[]};
     }
 }

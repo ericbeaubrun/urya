@@ -37,14 +37,12 @@ export default function ContentEditor({initialContent}: { initialContent: any })
         setRefreshing(true);
         const result = await refreshSiteContent();
         setRefreshing(false);
-        window.location.reload();
 
-        // if (result.success) {
-        //     alert(result.message);
-        //     window.location.reload();
-        // } else {
-        //     alert('Erreur : ' + result.message);
-        // }
+        if (result.success) {
+            window.location.reload();
+        } else {
+            alert('Erreur : ' + result.message);
+        }
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateField = (path: string[], value: any) => {
@@ -54,7 +52,6 @@ export default function ContentEditor({initialContent}: { initialContent: any })
             let current = newContent;
             for (let i = 0; i < path.length - 1; i++) {
                 const key = path[i];
-                const nextKey = path[i + 1];
 
                 if (Array.isArray(current[key])) {
                     current[key] = [...current[key]];
@@ -105,7 +102,10 @@ export default function ContentEditor({initialContent}: { initialContent: any })
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h1 className={styles.title}>Éditeur de Contenu (Beta*)</h1>
+                <div>
+                    <h1 className={styles.title}>Éditeur de contenu</h1>
+                    <p className={styles.subtitle}>Modifiez les textes du site public, puis enregistrez.</p>
+                </div>
                 <div className={styles.buttonGroup}>
                     <button
                         onClick={handleRefreshOnly}
@@ -167,7 +167,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 Array.isArray(content.hero?.stats) && content.hero.stats.map((stat: any, index: number) => (
                                     <div key={index} className={styles.listItem}>
-                                        <div className={styles.grid} style={{flex: 1}}>
+                                        <div className={styles.grid}>
                                             {renderInput('Valeur', ['hero', 'stats', index.toString(), 'value'])}
                                             {renderInput('Label', ['hero', 'stats', index.toString(), 'label'])}
                                         </div>
@@ -179,7 +179,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
 
                 {activeTab === 'about' && (
                     <>
-                        <div className={styles.subSection} style={{borderTop: 'none', marginTop: 0, paddingTop: 0}}>
+                        <div className={`${styles.subSection} ${styles.subSectionFirst}`}>
                             <h3 className={styles.subTitle}>Description</h3>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -204,9 +204,9 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                         </div>
                         <div className={styles.subSection}>
                             <h3 className={styles.subTitle}>Tags</h3>
-                            <div className={styles.fieldGroup}>
+                            <div className={styles.stack}>
                                 {Array.isArray(content.about?.tags) && content.about.tags.map((tag: string, index: number) => (
-                                    <div key={index} className={styles.listItem} style={{marginBottom: '0.5rem'}}>
+                                    <div key={index} className={`${styles.listItem} ${styles.listItemRow}`}>
                                         <input
                                             className={styles.input}
                                             value={tag}
@@ -217,8 +217,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                             }}
                                         />
                                         <button
-                                            className={styles.refreshBtn}
-                                            style={{padding: '0.5rem', color: '#ef4444'}}
+                                            className={styles.removeBtn}
                                             onClick={() => {
                                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                 const newTags = content.about.tags.filter((_: any, i: number) => i !== index);
@@ -230,7 +229,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                     </div>
                                 ))}
                                 <button
-                                    className={styles.refreshBtn}
+                                    className={styles.addBtn}
                                     onClick={() => {
                                         const newTags = [...(content.about?.tags || []), 'Nouveau tag'];
                                         updateField(['about', 'tags'], newTags);
@@ -247,16 +246,8 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                 {
                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     Array.isArray(content.about?.contactInfo) && content.about.contactInfo.map((info: any, index: number) => (
-                                        <div key={index} className={styles.listItem}
-                                             style={{flexDirection: 'column', gap: '0.5rem'}}>
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                width: '100%'
-                                            }}>
-                                                <span className={styles.label}
-                                                      style={{color: '#4f46e5'}}>{info.sub}</span>
-                                            </div>
+                                        <div key={index} className={styles.listItem}>
+                                            <span className={styles.itemTitle}>{info.sub}</span>
                                             {renderInput('Label', ['about', 'contactInfo', index.toString(), 'label'])}
                                             {renderInput('Sous-titre', ['about', 'contactInfo', index.toString(), 'sub'])}
                                             {renderInput('Icône (Lucide)', ['about', 'contactInfo', index.toString(), 'icon'])}
@@ -275,28 +266,15 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                         </div>
                         {renderTextarea('Sous-titre', ['services', 'subtitle'])}
                         <div className={styles.subSection}>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginBottom: '1rem'
-                            }}>
-                                <h3 className={styles.subTitle} style={{margin: 0}}>Prestations</h3>
-                            </div>
+                            <h3 className={styles.subTitle}>Prestations</h3>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 Array.isArray(content.services?.items) && content.services.items.map((item: any, index: number) => (
-                                    <div key={index} className={styles.listItem} style={{flexDirection: 'column'}}>
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            width: '100%',
-                                            marginBottom: '1rem'
-                                        }}>
-                                            <h4 style={{margin: 0, color: '#4f46e5'}}>Service #{index + 1}</h4>
+                                    <div key={index} className={styles.listItem}>
+                                        <div className={styles.itemHead}>
+                                            <h4 className={styles.itemTitle}>Service #{index + 1}</h4>
                                             <button
-                                                className={styles.refreshBtn}
-                                                style={{padding: '0.3rem 0.6rem', color: '#ef4444', fontSize: '0.8rem'}}
+                                                className={styles.removeBtn}
                                                 onClick={() => {
                                                     if (confirm('Supprimer cette prestation ?')) {
                                                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -308,18 +286,15 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                                 Supprimer
                                             </button>
                                         </div>
-                                        <div className={styles.grid} style={{width: '100%'}}>
+                                        <div className={styles.grid}>
                                             {renderInput(`Titre`, ['services', 'items', index.toString(), 'title'])}
                                             {renderInput('Prix', ['services', 'items', index.toString(), 'price'])}
                                         </div>
-                                        <div style={{width: '100%', marginTop: '1rem'}}>
-                                            {renderTextarea('Description', ['services', 'items', index.toString(), 'subtitle'])}
-                                        </div>
-                                        <div style={{width: '100%', marginTop: '1rem'}}>
+                                        {renderTextarea('Description', ['services', 'items', index.toString(), 'subtitle'])}
+                                        <div className={styles.stack}>
                                             <label className={styles.label}>Inclusions</label>
                                             {Array.isArray(item.inclusions) && item.inclusions.map((inclusion: string, iIndex: number) => (
-                                                <div key={iIndex} className={styles.listItem}
-                                                     style={{marginBottom: '0.5rem', background: '#18181b'}}>
+                                                <div key={iIndex} className={`${styles.listItem} ${styles.listItemRow}`}>
                                                     <input
                                                         className={styles.input}
                                                         value={inclusion}
@@ -330,8 +305,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                                         }}
                                                     />
                                                     <button
-                                                        className={styles.refreshBtn}
-                                                        style={{padding: '0.5rem', color: '#ef4444'}}
+                                                        className={styles.removeBtn}
                                                         onClick={() => {
                                                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                             const newInclusions = item.inclusions.filter((_: any, i: number) => i !== iIndex);
@@ -343,8 +317,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                                 </div>
                                             ))}
                                             <button
-                                                className={styles.refreshBtn}
-                                                style={{fontSize: '0.8rem', padding: '0.4rem 0.8rem'}}
+                                                className={styles.addBtn}
                                                 onClick={() => {
                                                     const newInclusions = [...(item.inclusions || []), 'Nouvelle inclusion'];
                                                     updateField(['services', 'items', index.toString(), 'inclusions'], newInclusions);
@@ -356,7 +329,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                     </div>
                                 ))}
                             <button
-                                className={styles.refreshBtn}
+                                className={styles.addBtn}
                                 onClick={() => {
                                     const newItem = {
                                         icon: "Sparkles",
@@ -376,10 +349,10 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                         <div className={styles.subSection}>
                             <h3 className={styles.subTitle}>Options supplémentaires</h3>
                             {renderInput('Titre des options', ['services', 'extraOptions', 'title'])}
-                            <div className={styles.fieldGroup}>
+                            <div className={styles.stack}>
                                 <label className={styles.label}>Liste des options</label>
                                 {Array.isArray(content.services?.extraOptions?.items) && content.services.extraOptions.items.map((item: string, index: number) => (
-                                    <div key={index} className={styles.listItem} style={{marginBottom: '0.5rem'}}>
+                                    <div key={index} className={`${styles.listItem} ${styles.listItemRow}`}>
                                         <input
                                             className={styles.input}
                                             value={item}
@@ -390,8 +363,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                             }}
                                         />
                                         <button
-                                            className={styles.refreshBtn}
-                                            style={{padding: '0.5rem', color: '#ef4444'}}
+                                            className={styles.removeBtn}
                                             onClick={() => {
                                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                 const newItems = content.services.extraOptions.items.filter((_: any, i: number) => i !== index);
@@ -403,7 +375,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                     </div>
                                 ))}
                                 <button
-                                    className={styles.refreshBtn}
+                                    className={styles.addBtn}
                                     onClick={() => {
                                         const newItems = [...(content.services?.extraOptions?.items || []), ''];
                                         updateField(['services', 'extraOptions', 'items'], newItems);
@@ -433,28 +405,15 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             {renderInput('Titre (Highlight)', ['faq', 'title', 'highlight'])}
                         </div>
                         <div className={styles.subSection}>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginBottom: '1rem'
-                            }}>
-                                <h3 className={styles.subTitle} style={{margin: 0}}>Questions / Réponses</h3>
-                            </div>
+                            <h3 className={styles.subTitle}>Questions / Réponses</h3>
                             {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 Array.isArray(content.faq?.items) && content.faq.items.map((item: any, index: number) => (
-                                    <div key={index} className={styles.listItem} style={{flexDirection: 'column'}}>
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            width: '100%',
-                                            marginBottom: '1rem'
-                                        }}>
-                                            <h4 style={{margin: 0, color: '#4f46e5'}}>Question #{index + 1}</h4>
+                                    <div key={index} className={styles.listItem}>
+                                        <div className={styles.itemHead}>
+                                            <h4 className={styles.itemTitle}>Question #{index + 1}</h4>
                                             <button
-                                                className={styles.refreshBtn}
-                                                style={{padding: '0.3rem 0.6rem', color: '#ef4444', fontSize: '0.8rem'}}
+                                                className={styles.removeBtn}
                                                 onClick={() => {
                                                     if (confirm('Supprimer cette question ?')) {
                                                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -466,14 +425,12 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                                 Supprimer
                                             </button>
                                         </div>
-                                        <div style={{width: '100%'}}>
-                                            {renderInput(`Question`, ['faq', 'items', index.toString(), 'question'])}
-                                            {renderTextarea('Réponse', ['faq', 'items', index.toString(), 'answer'])}
-                                        </div>
+                                        {renderInput(`Question`, ['faq', 'items', index.toString(), 'question'])}
+                                        {renderTextarea('Réponse', ['faq', 'items', index.toString(), 'answer'])}
                                     </div>
                                 ))}
                             <button
-                                className={styles.refreshBtn}
+                                className={styles.addBtn}
                                 onClick={() => {
                                     const newItem = {
                                         question: "Nouvelle question",
@@ -492,16 +449,14 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                             {renderInput('Texte de déclenchement', ['faqForm', 'trigger'])}
                             {renderTextarea('Description', ['faqForm', 'description'])}
 
-                            <div className={styles.grid} style={{marginTop: '1rem'}}>
-                                <div className={styles.fieldGroup}>
-                                    <h4 className={styles.label} style={{color: '#4f46e5', marginBottom: '1rem'}}>Modale
-                                        de succès</h4>
+                            <div className={styles.grid}>
+                                <div className={styles.listItem}>
+                                    <h4 className={styles.itemTitle}>Modale de succès</h4>
                                     {renderInput('Titre (Succès)', ['faqForm', 'modal', 'success', 'title'])}
                                     {renderTextarea('Message (Succès)', ['faqForm', 'modal', 'success', 'text'])}
                                 </div>
-                                <div className={styles.fieldGroup}>
-                                    <h4 className={styles.label} style={{color: '#ef4444', marginBottom: '1rem'}}>Modale
-                                        d&apos;erreur</h4>
+                                <div className={styles.listItem}>
+                                    <h4 className={styles.itemTitle}>Modale d&apos;erreur</h4>
                                     {renderInput('Titre (Erreur)', ['faqForm', 'modal', 'error', 'title'])}
                                     {renderTextarea('Message (Erreur)', ['faqForm', 'modal', 'error', 'text'])}
                                 </div>
@@ -535,10 +490,8 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                 {
                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     Array.isArray(content.prestationForm?.steps) && content.prestationForm.steps.map((step: any, index: number) => (
-                                        <div key={index} className={styles.listItem}
-                                             style={{flexDirection: 'column', gap: '0.5rem'}}>
-                                        <span className={styles.label}
-                                              style={{color: '#4f46e5'}}>Étape {step.number}</span>
+                                        <div key={index} className={styles.listItem}>
+                                            <span className={styles.itemTitle}>Étape {step.number}</span>
                                             {renderInput('Libellé', ['prestationForm', 'steps', index.toString(), 'label'])}
                                         </div>
                                     ))}
@@ -558,7 +511,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                 {renderInput('Téléphone', ['prestationForm', 'fields', 'phone'])}
                             </div>
                             {renderTextarea('Notes / Options', ['prestationForm', 'fields', 'notes'])}
-                            <div className={styles.grid} style={{marginTop: '1rem'}}>
+                            <div className={styles.grid}>
                                 {renderInput('Placeholder Lieu', ['prestationForm', 'placeholders', 'location'])}
                                 {renderInput('Placeholder Notes', ['prestationForm', 'placeholders', 'notes'])}
                             </div>
@@ -573,10 +526,9 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                                 {renderInput('Bouton Envoyer (RDV)', ['prestationForm', 'buttons', 'sendAppointment'])}
                                 {renderInput('Bouton Recommencer', ['prestationForm', 'buttons', 'reset'])}
                             </div>
-                            <div className={styles.grid} style={{marginTop: '1.5rem'}}>
-                                <div className={styles.fieldGroup}>
-                                    <h4 className={styles.label} style={{color: '#4f46e5', marginBottom: '1rem'}}>Succès
-                                        de l&apos;envoi</h4>
+                            <div className={styles.grid}>
+                                <div className={styles.listItem}>
+                                    <h4 className={styles.itemTitle}>Succès de l&apos;envoi</h4>
                                     {renderInput('Titre', ['prestationForm', 'success', 'title'])}
                                     {renderTextarea('Texte (Prestation)', ['prestationForm', 'success', 'textPrestation'])}
                                     {renderTextarea('Texte (Rendez-vous)', ['prestationForm', 'success', 'textAppointment'])}
@@ -594,16 +546,14 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                     </div>
                 )}
             </div>
-            <div className={styles.header}>
-                <div className={styles.buttonGroup}>
-                    <button
-                        onClick={handleSave}
-                        disabled={saving || refreshing}
-                        className={styles.saveBtn}
-                    >
-                        {saving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
-                    </button>
-                </div>
+            <div className={styles.footerBar}>
+                <button
+                    onClick={handleSave}
+                    disabled={saving || refreshing}
+                    className={styles.saveBtn}
+                >
+                    {saving ? 'Sauvegarde…' : 'Enregistrer les modifications'}
+                </button>
             </div>
 
         </div>

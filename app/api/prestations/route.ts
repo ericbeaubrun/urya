@@ -3,26 +3,32 @@ import {supabaseAdmin} from '@/lib/supabase_client';
 import {Resend} from "resend"
 import {clientEmailTemplate} from "@/app/emails/userEmail";
 import {adminEmailTemplate} from "@/app/emails/adminEmail";
+import {enforceRateLimit} from "@/lib/rate-limit";
+import {isValidEmail, normalizeField, MAX_LONG_FIELD} from "@/lib/validation";
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(req: NextRequest) {
 
+    const limited = enforceRateLimit(req, "prestations", {
+        limit: 5,
+        windowMs: 60 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     try {
         const body = await req.json();
 
-        const {
-            nom,
-            mail,
-            tel,
-            date_debut,
-            date_fin,
-            heure_debut,
-            heure_fin,
-            type,
-            lieu,
-            notes
-        } = body;
+        const nom = normalizeField(body?.nom);
+        const mail = normalizeField(body?.mail);
+        const tel = normalizeField(body?.tel);
+        const date_debut = normalizeField(body?.date_debut);
+        const date_fin = normalizeField(body?.date_fin);
+        const heure_debut = normalizeField(body?.heure_debut);
+        const heure_fin = normalizeField(body?.heure_fin);
+        const type = normalizeField(body?.type);
+        const lieu = normalizeField(body?.lieu);
+        const notes = normalizeField(body?.notes, MAX_LONG_FIELD);
 
         if (!nom || !mail || !date_debut) {
             return NextResponse.json(
@@ -31,8 +37,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(mail)) {
+        if (!isValidEmail(mail)) {
             return NextResponse.json(
                 {error: 'Format d\'email invalide.'},
                 {status: 400}
@@ -120,11 +125,9 @@ export async function POST(req: NextRequest) {
             notes: notes || null
         };
 
-        const {data: prestation, error: prestationError} = await supabaseAdmin()
+        const {error: prestationError} = await supabaseAdmin()
             .from('prestations')
-            .insert(prestationData)
-            .select()
-            .single();
+            .insert(prestationData);
 
         if (prestationError) {
             console.error('Erreur lors de la création de la prestation:', prestationError);
@@ -135,13 +138,16 @@ export async function POST(req: NextRequest) {
         }
 
 
-        const userHtml = clientEmailTemplate(body)
-        const adminHtml = adminEmailTemplate(body)
-        // console.log(userHtml);
-        // console.log(adminHtml);
+        // On repart des champs normalisés, jamais du body brut.
+        const record = {
+            nom, mail, tel, date_debut, date_fin,
+            heure_debut, heure_fin, type, lieu, notes
+        };
+
+        const userHtml = clientEmailTemplate(record)
+        const adminHtml = adminEmailTemplate(record)
 
         await resend.emails.send({
-            // from: "onboarding@resend.dev",
             from: process.env.RESEND_MAIL_ADDRESS!,
             to: mail,
             subject: userHtml.subject,
@@ -149,7 +155,6 @@ export async function POST(req: NextRequest) {
         })
 
         await resend.emails.send({
-            // from: "onboarding@resend.dev",
             from: process.env.RESEND_MAIL_ADDRESS!,
             to: process.env.ADMIN_EMAIL!,
             subject: adminHtml.subject,

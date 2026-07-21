@@ -1,39 +1,32 @@
 import {auth, signOut} from "@/auth";
-import Link from "next/link";
+import {redirect} from "next/navigation";
 import styles from "./AdminPage.module.css";
+import "./admin-theme.css";
+import AdminNav from "./AdminNav";
 import React from "react";
 
 export default async function AdminLayout({children}: { children: React.ReactNode }) {
     const session = await auth();
 
     if (!session) {
-        // redirect("/login")
+        redirect("/login");
     }
 
+    const logout = (
+        <form
+            action={async () => {
+                "use server";
+                await signOut({redirectTo: "/"});
+            }}
+        >
+            <button type="submit" className={styles.logoutButton}>Déconnexion</button>
+        </form>
+    );
+
     return (
-        <div>
-            <div className={styles.header}>
-                <div className={styles.userInfo}>
-                    <strong>{session?.user?.email}</strong>
-                </div>
-                <nav className={styles.nav}>
-                    <Link href="/admin/prestations/ajouter">Ajouter une prestation</Link>
-                    <Link href="/admin/prestations/futures">Prestations à venir</Link>
-                    <Link href="/admin/prestations/passees">Prestations passées</Link>
-                    <Link href="/admin/prestations/toutes">Toutes les prestations</Link>
-                    <Link href="/admin/prestations/calendrier">Calendrier</Link>
-                    <Link href="/admin/content">Editer le Contenu</Link>
-                    <form
-                        action={async () => {
-                            "use server";
-                            await signOut({redirectTo: "/"});
-                        }}
-                    >
-                        <button type="submit" className={styles.logoutButton}>Déconnexion</button>
-                    </form>
-                </nav>
-            </div>
-            <main>{children}</main>
+        <div className="adminShell">
+            <AdminNav email={session?.user?.email} logout={logout}/>
+            <main className={styles.main}>{children}</main>
         </div>
     );
 }

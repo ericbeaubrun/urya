@@ -1,8 +1,10 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { verifyAdminCredentials } from "./lib/auth-helpers";
+import { authConfig } from "./auth.config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
     providers: [
         Credentials({
             credentials: {
@@ -31,19 +33,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         })
     ],
-    pages: {
-        signIn: "/login",
-    },
-    callbacks: {
-        authorized({ auth, request: { nextUrl } }) {
-            const isLoggedIn = !!auth?.user;
-            const isOnAdmin = nextUrl.pathname.startsWith("/admin");
-
-            if (isOnAdmin) {
-                return isLoggedIn;
-            }
-
-            return true;
-        },
-    },
 });

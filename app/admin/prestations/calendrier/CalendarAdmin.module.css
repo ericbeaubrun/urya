@@ -1,0 +1,42 @@
+/* Le calendrier public est conçu pour une page pleine hauteur avec la nav
+   du site : on le recadre pour l'espace de travail de l'admin. */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.head p {
+    font-size: 0.85rem;
+    color: var(--adm-dim);
+}
+
+/* Sélecteurs doublés : ces règles s'ajoutent aux classes de
+   CalendarPage.module.css (conservées pour le thème FullCalendar) et
+   doivent gagner quel que soit l'ordre des feuilles de style. */
+.wrapper.wrapper {
+    padding: 0;
+    background: transparent;
+}
+
+.card.card {
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-lg);
+    padding: 1rem;
+    max-width: none;
+}
+
+@media (max-width: 720px) {
+    .card.card {
+        padding: 0.6rem;
+    }
+}

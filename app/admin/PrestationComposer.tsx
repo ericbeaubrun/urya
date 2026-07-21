@@ -5,12 +5,15 @@ import styles from "./PrestationEdit.module.css";
 import {Client, PrestationFormData} from "./DataTypes";
 import {addPrestation, addClient} from "../actions/prestations";
 
+type Feedback = { type: "ok" | "error"; message: string } | null;
+
 export default function PrestationComposer({clients, onCreatedAction,}: {
     clients: Client[];
     onCreatedAction: () => void;
 }) {
     const [loading, setLoading] = useState(false);
     const [showNewClient, setShowNewClient] = useState(false);
+    const [feedback, setFeedback] = useState<Feedback>(null);
 
     const [formData, setFormData] = useState<PrestationFormData>({
         id_client: "",
@@ -34,7 +37,7 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
         e.preventDefault();
 
         if (!formData.date_debut) {
-            alert("La date de début est obligatoire");
+            setFeedback({type: "error", message: "La date de début est obligatoire."});
             return;
         }
 
@@ -46,11 +49,11 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
         setLoading(false);
 
         if (!result.success) {
-            alert("Erreur: " + result.error);
+            setFeedback({type: "error", message: "Erreur : " + result.error});
             return;
         }
 
-        alert("Prestation ajoutée !");
+        setFeedback({type: "ok", message: "Prestation ajoutée."});
         setFormData({
             id_client: "",
             statut: "en_attente",
@@ -67,8 +70,10 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
     }
 
     async function handleAddClient() {
-        if (!newClient.nom || !newClient.mail)
-            return alert("Nom + email obligatoires");
+        if (!newClient.nom || !newClient.mail) {
+            setFeedback({type: "error", message: "Nom et email du client sont obligatoires."});
+            return;
+        }
 
         setLoading(true);
         const result = await addClient(
@@ -79,11 +84,11 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
         setLoading(false);
 
         if (!result.success) {
-            alert("Erreur: " + result.error);
+            setFeedback({type: "error", message: "Erreur : " + result.error});
             return;
         }
 
-        alert("Client ajouté !");
+        setFeedback({type: "ok", message: "Client ajouté."});
         const added = result.data?.[0];
 
         if (added) {
@@ -97,13 +102,26 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
 
     return (
         <div className={styles.formContainer}>
-            <h2>Ajouter une nouvelle prestation</h2>
+            <div className={styles.formHeader}>
+                <h2>Nouvelle prestation</h2>
+                <p>Les champs marqués d&apos;une astérisque sont obligatoires.</p>
+            </div>
 
             <form onSubmit={handleSubmit} className={styles.form}>
 
+                {feedback && (
+                    <div
+                        className={`${styles.feedback} ${feedback.type === "ok" ? styles.feedbackOk : styles.feedbackError}`}
+                        role="status"
+                    >
+                        {feedback.message}
+                    </div>
+                )}
+
                 <div className={styles.formGroup}>
-                    <label>Date de début *</label>
+                    <label htmlFor="date_debut">Date de début *</label>
                     <input
+                        id="date_debut"
                         type="date"
                         value={formData.date_debut}
                         onChange={(e) =>
@@ -117,8 +135,9 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>Date de fin</label>
+                    <label htmlFor="date_fin">Date de fin</label>
                     <input
+                        id="date_fin"
                         type="date"
                         value={formData.date_fin || ""}
                         onChange={(e) =>
@@ -130,39 +149,40 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     />
                 </div>
 
-                <div className={styles.row}>
-                    <div className={styles.formGroup}>
-                        <label>Heure début</label>
-                        <input
-                            type="time"
-                            value={formData.heure_debut}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    heure_debut: e.target.value,
-                                })
-                            }
-                        />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                        <label>Heure fin</label>
-                        <input
-                            type="time"
-                            value={formData.heure_fin}
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    heure_fin: e.target.value,
-                                })
-                            }
-                        />
-                    </div>
+                <div className={styles.formGroup}>
+                    <label htmlFor="heure_debut">Heure de début</label>
+                    <input
+                        id="heure_debut"
+                        type="time"
+                        value={formData.heure_debut}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                heure_debut: e.target.value,
+                            })
+                        }
+                    />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>Type de prestation</label>
+                    <label htmlFor="heure_fin">Heure de fin</label>
                     <input
+                        id="heure_fin"
+                        type="time"
+                        value={formData.heure_fin}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                heure_fin: e.target.value,
+                            })
+                        }
+                    />
+                </div>
+
+                <div className={styles.formGroup}>
+                    <label htmlFor="type">Type de prestation</label>
+                    <input
+                        id="type"
                         type="text"
                         value={formData.type}
                         onChange={(e) =>
@@ -171,15 +191,16 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                                 type: e.target.value,
                             })
                         }
-                        placeholder="Ex: Mariage, Anniversaire..."
+                        placeholder="Mariage, anniversaire…"
                     />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>Lieu</label>
+                    <label htmlFor="lieu">Lieu</label>
                     <input
+                        id="lieu"
                         type="text"
-                        placeholder="Ex: Salle des fêtes, Paris..."
+                        placeholder="Salle des fêtes, Paris…"
                         value={formData.lieu}
                         onChange={(e) =>
                             setFormData({
@@ -190,10 +211,11 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     />
                 </div>
 
-                <div className={styles.formGroup}>
-                    <label>Client</label>
+                <div className={`${styles.formGroup} ${styles.full}`}>
+                    <label htmlFor="client">Client</label>
                     <div className={styles.clientRow}>
                         <select
+                            id="client"
                             value={formData.id_client}
                             onChange={(e) =>
                                 setFormData({
@@ -215,7 +237,7 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                             onClick={() => setShowNewClient(!showNewClient)}
                             className={styles.newClientBtn}
                         >
-                            {showNewClient ? "Annuler" : "➕ Nouveau"}
+                            {showNewClient ? "Annuler" : "Nouveau client"}
                         </button>
                     </div>
 
@@ -254,16 +276,17 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                                     })
                                 }
                             />
-                            <button type="button" onClick={handleAddClient}>
-                                ➕ Ajouter le client
+                            <button type="button" onClick={handleAddClient} disabled={loading}>
+                                Ajouter le client
                             </button>
                         </div>
                     )}
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>Statut</label>
+                    <label htmlFor="statut">Statut</label>
                     <select
+                        id="statut"
                         value={formData.statut}
                         onChange={(e) =>
                             setFormData({
@@ -279,9 +302,10 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     </select>
                 </div>
 
-                <div className={styles.formGroup}>
-                    <label>Notes</label>
+                <div className={`${styles.formGroup} ${styles.full}`}>
+                    <label htmlFor="notes">Notes</label>
                     <textarea
+                        id="notes"
                         rows={3}
                         placeholder="Notes supplémentaires…"
                         value={formData.notes}
@@ -294,9 +318,11 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                     ></textarea>
                 </div>
 
-                <button type="submit" disabled={loading} className={styles.submitBtn}>
-                    {loading ? "⏳" : "➕ Ajouter"}
-                </button>
+                <div className={styles.footer}>
+                    <button type="submit" disabled={loading} className={styles.submitBtn}>
+                        {loading ? "Enregistrement…" : "Ajouter la prestation"}
+                    </button>
+                </div>
             </form>
         </div>
     );

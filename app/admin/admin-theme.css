@@ -1,0 +1,135 @@
+/* Design tokens et base commune à tout le back-office.
+   Portés par .adminShell (posé sur le layout admin) pour ne jamais
+   déborder sur le site public. */
+
+.adminShell {
+    --adm-bg: #0a0a0c;
+    --adm-surface: #121216;
+    --adm-surface-2: #17171d;
+    --adm-surface-3: #1e1e26;
+
+    --adm-border: rgba(255, 255, 255, 0.08);
+    --adm-border-strong: rgba(255, 255, 255, 0.16);
+
+    --adm-text: #f4f4f5;
+    --adm-muted: #a1a1aa;
+    --adm-dim: #71717a;
+
+    --adm-primary: #8b5cf6;
+    --adm-primary-soft: rgba(139, 92, 246, 0.14);
+    --adm-primary-hover: #7c3aed;
+
+    --adm-success: #22c55e;
+    --adm-success-soft: rgba(34, 197, 94, 0.14);
+    --adm-danger: #ef4444;
+    --adm-danger-soft: rgba(239, 68, 68, 0.14);
+    --adm-warning: #f59e0b;
+    --adm-warning-soft: rgba(245, 158, 11, 0.14);
+
+    --adm-radius-sm: 6px;
+    --adm-radius: 10px;
+    --adm-radius-lg: 14px;
+
+    --adm-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --adm-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+    --adm-transition: 0.15s ease;
+
+    --adm-max: 1100px;
+
+    background: var(--adm-bg);
+    color: var(--adm-text);
+    min-height: 100vh;
+    font-family: var(--font-main);
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+/* Le site public impose des titres Impact très grands : on neutralise
+   cet héritage dans l'admin où la lisibilité prime. */
+.adminShell h1,
+.adminShell h2,
+.adminShell h3,
+.adminShell h4 {
+    font-family: var(--font-main);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin: 0;
+    color: var(--adm-text);
+}
+
+.adminShell h1 {
+    font-size: 1.35rem;
+}
+
+.adminShell h2 {
+    font-size: 1.05rem;
+}
+
+.adminShell h3 {
+    font-size: 0.95rem;
+}
+
+.adminShell p {
+    margin: 0;
+}
+
+.adminShell input,
+.adminShell select,
+.adminShell textarea,
+.adminShell button {
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.adminShell input,
+.adminShell select,
+.adminShell textarea {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    background: var(--adm-bg);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+    color: var(--adm-text);
+    transition: border-color var(--adm-transition), box-shadow var(--adm-transition);
+}
+
+.adminShell input:hover,
+.adminShell select:hover,
+.adminShell textarea:hover {
+    border-color: var(--adm-border-strong);
+}
+
+.adminShell input:focus,
+.adminShell select:focus,
+.adminShell textarea:focus {
+    outline: none;
+    border-color: var(--adm-primary);
+    box-shadow: 0 0 0 3px var(--adm-primary-soft);
+}
+
+.adminShell input::placeholder,
+.adminShell textarea::placeholder {
+    color: var(--adm-dim);
+}
+
+.adminShell select option {
+    background: var(--adm-surface-2);
+    color: var(--adm-text);
+}
+
+.adminShell textarea {
+    resize: vertical;
+    min-height: 88px;
+}
+
+.adminShell ::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.adminShell ::-webkit-scrollbar-thumb {
+    background: var(--adm-surface-3);
+    border-radius: 999px;
+}

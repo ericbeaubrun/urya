@@ -1,24 +1,27 @@
 'use server';
 
-import {updateSiteContent as updateInDB} from '@/lib/content';
+import {updateSiteContent as updateInDB, type SiteContent} from '@/lib/content';
+import {requireAdmin} from '@/lib/require-admin';
 import {revalidateTag} from 'next/cache';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function saveAndRefreshContent(newContent: any) {
+export async function saveAndRefreshContent(newContent: SiteContent) {
     try {
+        await requireAdmin();
+
         const {error} = await updateInDB(newContent);
-        if (error) throw error;
+        if (error) throw new Error(error.message);
 
         revalidateTag('site-content', 'max');
 
         return {success: true, message: 'Contenu sauvegardé et cache rafraîchi !'};
-    }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    catch (error: any) {
+    } catch (error) {
         console.error('Erreur lors de la sauvegarde du contenu:', error);
+
+        const detail = error instanceof Error ? error.message : 'Erreur inconnue';
+
         return {
             success: false,
-            message: "Erreur suivante durant la sauvegarde : " + error.message || 'Erreur inconnue lors de la sauvegarde.'
+            message: `Erreur durant la sauvegarde : ${detail}`,
         };
     }
 }
