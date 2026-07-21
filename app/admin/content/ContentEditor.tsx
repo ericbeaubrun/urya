@@ -97,6 +97,7 @@ export default function ContentEditor({initialContent}: { initialContent: any })
         {id: 'faq', label: 'Questions'},
         {id: 'prestation', label: 'Formulaire'},
         {id: 'footer', label: 'Pied de page'},
+        {id: 'legal', label: 'Légal'},
     ];
 
     return (
@@ -544,6 +545,52 @@ export default function ContentEditor({initialContent}: { initialContent: any })
                         {renderInput('Copyright', ['footer', 'copyright'])}
                         {renderInput('Signature / Date', ['footer', 'signature'])}
                     </div>
+                )}
+
+                {activeTab === 'legal' && (
+                    <>
+                        <p className={styles.helpText}>
+                            Ces informations alimentent les pages « Mentions légales » et « Politique de
+                            confidentialité ». Tout champ laissé vide s&apos;affiche en <code>*********</code> sur le
+                            site : le site reste fonctionnel, mais ces mentions sont obligatoires (article 6 de la
+                            LCEN) et doivent être complétées avant la mise en ligne définitive.
+                        </p>
+
+                        <div className={`${styles.subSection} ${styles.subSectionFirst}`}>
+                            <h3 className={styles.subTitle}>Éditeur du site</h3>
+                            <div className={styles.grid}>
+                                {renderInput('Nom / Raison sociale', ['legal', 'editor', 'name'])}
+                                {renderInput('Forme juridique (ex. Entrepreneur individuel)', ['legal', 'editor', 'legalForm'])}
+                                {renderInput('Capital social (sociétés uniquement)', ['legal', 'editor', 'capital'])}
+                                {renderInput('Adresse du siège', ['legal', 'editor', 'address'])}
+                                {renderInput('N° SIRET (14 chiffres)', ['legal', 'editor', 'siret'])}
+                                {renderInput('Immatriculation RCS (sociétés uniquement)', ['legal', 'editor', 'rcs'])}
+                                {renderInput('N° TVA intracommunautaire (vide si franchise en base)', ['legal', 'editor', 'vatNumber'])}
+                                {renderInput('Email de contact public', ['legal', 'editor', 'email'])}
+                                {renderInput('Téléphone (facultatif)', ['legal', 'editor', 'phone'])}
+                                {renderInput('Directeur de la publication', ['legal', 'publicationDirector'])}
+                            </div>
+                        </div>
+
+                        <div className={styles.subSection}>
+                            <h3 className={styles.subTitle}>Site & hébergeur</h3>
+                            <div className={styles.grid}>
+                                {renderInput('Nom du site', ['legal', 'siteName'])}
+                                {renderInput('URL du site (ex. https://www.djurya.fr)', ['legal', 'siteUrl'])}
+                                {renderInput('Hébergeur', ['legal', 'host', 'name'])}
+                                {renderInput('Adresse de l\'hébergeur', ['legal', 'host', 'address'])}
+                                {renderInput('Site web de l\'hébergeur', ['legal', 'host', 'website'])}
+                            </div>
+                        </div>
+
+                        <div className={styles.subSection}>
+                            <h3 className={styles.subTitle}>Données personnelles</h3>
+                            <div className={styles.grid}>
+                                {renderInput('Durée de conservation des demandes', ['legal', 'dataRetention'])}
+                                {renderInput('Date de dernière mise à jour (ex. 21 juillet 2026)', ['legal', 'lastUpdate'])}
+                            </div>
+                        </div>
+                    </>
                 )}
             </div>
             <div className={styles.footerBar}>

@@ -1,42 +1,107 @@
-/* Le calendrier public est conçu pour une page pleine hauteur avec la nav
-   du site : on le recadre pour l'espace de travail de l'admin. */
+/* Le calendrier public est pensé pour le thème sombre du site : on le
+   recadre et on le repasse en clair pour l'espace de travail admin.
+   Sélecteurs doublés (.card.card) : ces règles complètent celles de
+   CalendarPage.module.css — conservées pour la structure FullCalendar —
+   et doivent gagner quel que soit l'ordre des feuilles de style. */
+
 .page {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 0.75rem;
 }
 
 .head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.75rem;
     flex-wrap: wrap;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--adm-border);
 }
 
 .head p {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     color: var(--adm-dim);
 }
 
-/* Sélecteurs doublés : ces règles s'ajoutent aux classes de
-   CalendarPage.module.css (conservées pour le thème FullCalendar) et
-   doivent gagner quel que soit l'ordre des feuilles de style. */
 .wrapper.wrapper {
     padding: 0;
     background: transparent;
 }
 
 .card.card {
-    background: var(--adm-surface);
-    border: 1px solid var(--adm-border);
-    border-radius: var(--adm-radius-lg);
-    padding: 1rem;
+    /* Redéfinition locale des tokens du site consommés par le calendrier. */
+    --color-bg-card: var(--adm-surface);
+    --color-border: var(--adm-border);
+    --color-text-main: var(--adm-text);
+    --color-text-muted: var(--adm-muted);
+    --color-text-dim: var(--adm-dim);
+    --color-primary: var(--adm-primary);
+    --color-primary-light: var(--adm-primary-text);
+    --color-border-primary: var(--adm-border-strong);
+
     max-width: none;
+    padding: 0.75rem;
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+.card.card::after {
+    display: none;
+}
+
+.card.card :global(.fc) {
+    --fc-border-color: var(--adm-border);
+    --fc-today-bg-color: var(--adm-primary-soft);
+    font-size: 0.82rem;
+}
+
+.card.card :global(.fc-toolbar-title) {
+    font-size: 0.95rem !important;
+}
+
+.card.card :global(.fc-button) {
+    background-color: var(--adm-surface) !important;
+    border: 1px solid var(--adm-border-strong) !important;
+    color: var(--adm-muted) !important;
+    border-radius: var(--adm-radius-sm) !important;
+    padding: 0.25rem 0.6rem !important;
+    font-size: 0.78rem !important;
+}
+
+.card.card :global(.fc-button:hover),
+.card.card :global(.fc-button-active) {
+    background-color: var(--adm-primary-soft) !important;
+    border-color: var(--adm-primary) !important;
+    color: var(--adm-primary-text) !important;
+}
+
+.card.card :global(.fc-daygrid-event) {
+    background-color: var(--adm-primary-soft) !important;
+    border: 1px solid var(--adm-border-strong) !important;
+    border-left: 3px solid var(--adm-primary) !important;
+    border-radius: var(--adm-radius-sm) !important;
+    color: var(--adm-text);
+}
+
+.card.card :global(.fc-day-today) {
+    background-color: var(--adm-primary-soft) !important;
+}
+
+.card.card :global(.fc-day-today .fc-daygrid-day-number) {
+    background-color: var(--adm-primary);
+    border-radius: var(--adm-radius-sm);
+    color: #fff;
+}
+
+.card.card :global(.past-event) {
+    opacity: 0.55;
+    filter: grayscale(1);
 }
 
 @media (max-width: 720px) {
     .card.card {
-        padding: 0.6rem;
+        padding: 0.5rem;
     }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Link as ScrollLink } from 'react-scroll';
 import styles from './Footer.module.css';
 
@@ -52,6 +53,13 @@ export default function Footer() {
                                 {item.label}
                             </ScrollLink>
                         ))}
+
+                        <Link href="/mentions-legales" className={styles.navLink}>
+                            Mentions légales
+                        </Link>
+                        <Link href="/politique-de-confidentialite" className={styles.navLink}>
+                            Confidentialité
+                        </Link>
                     </nav>
 
                     <div className={styles.socials}>

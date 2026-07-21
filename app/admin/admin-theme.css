@@ -1,48 +1,54 @@
 /* Design tokens et base commune à tout le back-office.
    Portés par .adminShell (posé sur le layout admin) pour ne jamais
-   déborder sur le site public. */
+   déborder sur le site public, qui reste en thème sombre. */
 
 .adminShell {
-    --adm-bg: #0a0a0c;
-    --adm-surface: #121216;
-    --adm-surface-2: #17171d;
-    --adm-surface-3: #1e1e26;
+    --adm-bg: #f6f7f9;
+    --adm-surface: #ffffff;
+    --adm-surface-2: #f4f4f5;
+    --adm-surface-3: #e9e9ec;
 
-    --adm-border: rgba(255, 255, 255, 0.08);
-    --adm-border-strong: rgba(255, 255, 255, 0.16);
+    --adm-border: #e2e2e6;
+    --adm-border-strong: #c9c9d0;
 
-    --adm-text: #f4f4f5;
-    --adm-muted: #a1a1aa;
-    --adm-dim: #71717a;
+    --adm-text: #18181b;
+    --adm-muted: #52525b;
+    --adm-dim: #8a8a94;
 
-    --adm-primary: #8b5cf6;
-    --adm-primary-soft: rgba(139, 92, 246, 0.14);
-    --adm-primary-hover: #7c3aed;
+    --adm-primary: #5b47d6;
+    --adm-primary-hover: #4c3ac0;
+    --adm-primary-soft: #eeebfb;
+    --adm-primary-text: #4c3ac0;
 
-    --adm-success: #22c55e;
-    --adm-success-soft: rgba(34, 197, 94, 0.14);
-    --adm-danger: #ef4444;
-    --adm-danger-soft: rgba(239, 68, 68, 0.14);
-    --adm-warning: #f59e0b;
-    --adm-warning-soft: rgba(245, 158, 11, 0.14);
+    --adm-success: #16a34a;
+    --adm-success-soft: #e7f6ec;
+    --adm-success-text: #15803d;
 
-    --adm-radius-sm: 6px;
-    --adm-radius: 10px;
-    --adm-radius-lg: 14px;
+    --adm-danger: #dc2626;
+    --adm-danger-soft: #fdeaea;
+    --adm-danger-text: #b91c1c;
 
-    --adm-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --adm-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+    --adm-warning: #d97706;
+    --adm-warning-soft: #fdf1e0;
+    --adm-warning-text: #b45309;
 
-    --adm-transition: 0.15s ease;
+    /* Angles nets : le back-office assume un rendu "outil". */
+    --adm-radius-sm: 2px;
+    --adm-radius: 3px;
+    --adm-radius-lg: 4px;
 
-    --adm-max: 1100px;
+    --adm-shadow: 0 1px 2px rgba(16, 16, 20, 0.05);
+
+    --adm-transition: 0.12s ease;
+
+    --adm-max: 1180px;
 
     background: var(--adm-bg);
     color: var(--adm-text);
     min-height: 100vh;
     font-family: var(--font-main);
-    font-size: 15px;
-    line-height: 1.55;
+    font-size: 14px;
+    line-height: 1.45;
 }
 
 /* Le site public impose des titres Impact très grands : on neutralise
@@ -54,21 +60,21 @@
     font-family: var(--font-main);
     font-weight: 600;
     letter-spacing: -0.01em;
-    line-height: 1.3;
+    line-height: 1.25;
     margin: 0;
     color: var(--adm-text);
 }
 
 .adminShell h1 {
-    font-size: 1.35rem;
+    font-size: 1.15rem;
 }
 
 .adminShell h2 {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
 }
 
 .adminShell h3 {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .adminShell p {
@@ -80,16 +86,16 @@
 .adminShell textarea,
 .adminShell button {
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.855rem;
 }
 
 .adminShell input,
 .adminShell select,
 .adminShell textarea {
     width: 100%;
-    padding: 0.55rem 0.7rem;
-    background: var(--adm-bg);
-    border: 1px solid var(--adm-border);
+    padding: 0.35rem 0.5rem;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border-strong);
     border-radius: var(--adm-radius-sm);
     color: var(--adm-text);
     transition: border-color var(--adm-transition), box-shadow var(--adm-transition);
@@ -98,7 +104,7 @@
 .adminShell input:hover,
 .adminShell select:hover,
 .adminShell textarea:hover {
-    border-color: var(--adm-border-strong);
+    border-color: var(--adm-dim);
 }
 
 .adminShell input:focus,
@@ -106,7 +112,7 @@
 .adminShell textarea:focus {
     outline: none;
     border-color: var(--adm-primary);
-    box-shadow: 0 0 0 3px var(--adm-primary-soft);
+    box-shadow: 0 0 0 2px var(--adm-primary-soft);
 }
 
 .adminShell input::placeholder,
@@ -114,14 +120,9 @@
     color: var(--adm-dim);
 }
 
-.adminShell select option {
-    background: var(--adm-surface-2);
-    color: var(--adm-text);
-}
-
 .adminShell textarea {
     resize: vertical;
-    min-height: 88px;
+    min-height: 68px;
 }
 
 .adminShell ::-webkit-scrollbar {
@@ -131,5 +132,5 @@
 
 .adminShell ::-webkit-scrollbar-thumb {
     background: var(--adm-surface-3);
-    border-radius: 999px;
+    border-radius: 0;
 }

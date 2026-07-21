@@ -1,6 +1,7 @@
 "use client";
 
 import {useState, useEffect, useRef} from "react";
+import Link from "next/link";
 import {CheckCircle, Calendar, X, Clock} from 'lucide-react';
 import {motion, AnimatePresence} from "framer-motion";
 import styles from "./PrestationForm.module.css";
@@ -816,7 +817,10 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                     </div>
 
                                     <p className={styles.privacyNote}>
-                                        {prestationForm.privacyNote}
+                                        {prestationForm.privacyNote}{' '}
+                                        <Link href="/politique-de-confidentialite" target="_blank">
+                                            Politique de confidentialité
+                                        </Link>.
                                     </p>
 
                                     <div className={styles.navGroup}>

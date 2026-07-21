@@ -210,6 +210,22 @@
 
 }
 
+.privacyNotice {
+    margin-top: var(--space-3);
+    font-size: var(--fs-xs);
+    color: var(--color-text-deep);
+    text-align: center;
+}
+
+.privacyNotice a {
+    color: var(--color-text-dim);
+    text-decoration: underline;
+}
+
+.privacyNotice a:hover {
+    color: var(--color-text-main);
+}
+
 .cta:hover {
     box-shadow: 0 6px 30px rgba(139, 92, 246, 0.4);
     transform: translateY(-1px);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
 import styles from './FAQ.module.css';
@@ -143,6 +144,13 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         </>
                                     )}
                                 </button>
+
+                                <p className={styles.privacyNotice}>
+                                    Les informations transmises servent uniquement à traiter votre demande. Voir la{' '}
+                                    <Link href="/politique-de-confidentialite" target="_blank">
+                                        politique de confidentialité
+                                    </Link>.
+                                </p>
                             </form>
                         </div>
                     </motion.div>
