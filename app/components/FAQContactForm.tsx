@@ -52,7 +52,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
         }
     };
 
-    const renderDescription = (text: string) => {
+    const renderDescription = (text?: string) => {
         if (!text) return "";
         const parts = text.split('**');
         return parts.map((part, i) => 

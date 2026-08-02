@@ -4,6 +4,7 @@ import {useState} from "react";
 import styles from "./PrestationEdit.module.css";
 import {Client, PrestationFormData} from "./DataTypes";
 import {addPrestation, addClient} from "../actions/prestations";
+import {PRESTATION_STATUTS, PRESTATION_STATUT_LABELS} from "@/lib/prestation-types";
 
 type Feedback = { type: "ok" | "error"; message: string } | null;
 
@@ -295,10 +296,11 @@ export default function PrestationComposer({clients, onCreatedAction,}: {
                             })
                         }
                     >
-                        <option value="en_attente">En attente</option>
-                        <option value="confirmee">Confirmée</option>
-                        <option value="annulee">Annulée</option>
-                        <option value="terminee">Terminée</option>
+                        {PRESTATION_STATUTS.map((statut) => (
+                            <option key={statut} value={statut}>
+                                {PRESTATION_STATUT_LABELS[statut]}
+                            </option>
+                        ))}
                     </select>
                 </div>
 

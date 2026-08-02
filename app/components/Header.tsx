@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
 import { useContent } from '@/app/ContentContext';
+import { usableNavItems } from '@/lib/site-content';
 
 interface NavigationProps {
     onContactClick?: () => void;
@@ -31,7 +32,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
 
     if (!navigation) return null;
 
-    const navItems = Array.isArray(navigation.items) ? navigation.items : [];
+    const navItems = usableNavItems(navigation.items);
 
     const handleNav = () => {
         setMenuOpen(false);
@@ -61,8 +62,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
 
                     <ul className={styles.desktopMenu}>
                         {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            navItems.map((item: any) => (
+                            navItems.map((item) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}
@@ -121,8 +121,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                     </button>
                     <ul className={styles.mobileMenuList}>
                         {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            navItems.map((item: any) => (
+                            navItems.map((item) => (
                             <li key={item.to}>
                                 <ScrollLink
                                     to={item.to}

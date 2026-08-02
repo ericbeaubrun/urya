@@ -3,6 +3,7 @@
 import {motion} from 'framer-motion';
 import {Phone, Mail, Instagram, MapPin, type LucideIcon} from 'lucide-react';
 import styles from './About.module.css';
+import LazyVideo from './LazyVideo';
 import {ANIMATION_ONCE} from "@/app/config";
 
 import {useContent} from '@/app/ContentContext';
@@ -75,13 +76,9 @@ export default function About() {
                         variants={itemVariants}
                     >
                         <div className={styles.videoContainer}>
-                            <video
+                            <LazyVideo
                                 src="/about.mp4"
-                                poster="https://images.pexels.com/photos/2390369/pexels-photo-2390369.jpeg?auto=compress&cs=tinysrgb&w=800"
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
+                                poster="/about_poster.webp"
                                 className={styles.video}
                             />
                             <div className={styles.videoRing}/>
@@ -105,8 +102,7 @@ export default function About() {
                             variants={itemVariants}
                         >
                             {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                description.map((para: any, i: number) => (
+                                description.map((para, i) => (
                                     <p key={i}>{renderDescription(para)}</p>
                                 ))}
                         </motion.div>
@@ -115,8 +111,7 @@ export default function About() {
                             className={styles.tagsContainer}
                         >
                             {
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                tags.map((tag: any) => (
+                                tags.map((tag) => (
                                     <motion.span
                                         key={tag}
                                         className={styles.tag}

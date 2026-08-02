@@ -12,18 +12,14 @@ import {
 
 import {Prestation, Client} from "./DataTypes";
 import PrestationForm from "./PrestationComposer";
+import {PRESTATION_STATUT_LABELS} from "@/lib/prestation-types";
 
 function formatDate(dateStr: string) {
     const d = new Date(dateStr);
     return d.toLocaleDateString("fr-FR", {day: "2-digit", month: "short", year: "numeric"});
 }
 
-const STATUT_LABELS: Record<string, string> = {
-    en_attente: "En attente",
-    confirmee: "Confirmée",
-    annulee: "Annulée",
-    terminee: "Terminée",
-};
+const STATUT_LABELS: Record<string, string> = PRESTATION_STATUT_LABELS;
 
 const STATUT_BADGES: Record<string, string> = {
     en_attente: styles.badgeEnAttente,

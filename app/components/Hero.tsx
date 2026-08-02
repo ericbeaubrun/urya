@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
 import styles from './Hero.module.css';
+import LazyVideo from './LazyVideo';
 import {ANIMATION_ONCE} from "@/app/config";
 
 import { useContent } from '@/app/ContentContext';
@@ -41,12 +42,10 @@ export default function Hero({ onContactClick }: HeroProps) {
     return (
         <section id="hero" className={styles.heroSection}>
             <div className={styles.bgContainer}>
-                <video
+                <LazyVideo
                     src="/hero_background.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
+                    poster="/hero_poster.webp"
+                    strategy="onLoad"
                     className={styles.bgImage}
                 />
                 <div className={styles.bgOverlay} />
@@ -107,7 +106,7 @@ export default function Hero({ onContactClick }: HeroProps) {
                 </motion.div>
 
                 <motion.div className={styles.statsGrid} variants={itemVariants}>
-                    {stats.map((stat: { label: string; value: string }, idx: number) => (
+                    {stats.map((stat, idx) => (
                         <div key={idx} className={styles.statCard}>
                             <div className={styles.statValue}>{stat.value}</div>
                             <div className={styles.statLabel}>{stat.label}</div>

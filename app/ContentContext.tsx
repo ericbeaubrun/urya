@@ -1,13 +1,11 @@
 'use client';
 
 import React, { createContext, useContext } from 'react';
+import type { SiteContent } from '@/lib/site-content';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ContentContext = createContext<any>(undefined);
+const ContentContext = createContext<SiteContent | undefined>(undefined);
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ContentProvider({ content, children }: { content: any; children: React.ReactNode }) {
+export function ContentProvider({ content, children }: { content: SiteContent; children: React.ReactNode }) {
   return (
     <ContentContext.Provider value={content}>
       {children}
@@ -15,7 +13,7 @@ export function ContentProvider({ content, children }: { content: any; children:
   );
 }
 
-export function useContent() {
+export function useContent(): SiteContent {
   const context = useContext(ContentContext);
   if (context === undefined) {
     throw new Error('useContent must be used within a ContentProvider');

@@ -1,17 +1,12 @@
 import {getSiteContent} from "@/lib/content";
 import ContentEditor from "./ContentEditor";
-import {auth} from "@/auth";
 import {redirect} from "next/navigation";
 import {refreshSiteContent} from "@/app/actions/content";
 import styles from "./ContentEditor.module.css";
 
+// L'accès est contrôlé en amont : `proxy.ts` filtre /admin/*, puis
+// `app/admin/layout.tsx` revérifie la session avant de rendre quoi que ce soit.
 export default async function ContentAdminPage() {
-    const session = await auth();
-
-    if (!session) {
-        redirect("/login");
-    }
-
     const content = await getSiteContent();
 
     if (!content) {

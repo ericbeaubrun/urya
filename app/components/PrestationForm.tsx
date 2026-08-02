@@ -9,6 +9,7 @@ import CalendarPicker from "./CalendarPicker";
 import TimePicker from "./TimePicker";
 import {ANIMATION_ONCE, EXAMPLE_MAIL, EXAMPLE_NAME, EXAMPLE_PHONE} from "@/app/config";
 import {useContent} from "@/app/ContentContext";
+import {PRESTATION_TYPES, PRESTATION_TYPE_LABELS, type PrestationType} from "@/lib/prestation-types";
 
 interface PrestationFormData {
     nom: string;
@@ -43,7 +44,7 @@ const itemVariants = {
     }
 };
 
-export default function PrestationForm({initialDate}: { initialDate?: string }) {
+export default function PrestationForm() {
     const {prestationForm} = useContent();
     const sectionRef = useRef<HTMLDivElement>(null);
     const [formData, setFormData] = useState<PrestationFormData>({
@@ -60,8 +61,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
     });
 
     const [step, setStep] = useState(1);
-    // Le setter n'est pas utilisé : le mode est fixé à l'initialisation.
-    const [viewMode] = useState<"prestation" | "appointment">("prestation");
+    const [viewMode, setViewMode] = useState<"prestation" | "appointment">("prestation");
     const [appointmentData, setAppointmentData] = useState({
         contact: "",
         name: "",
@@ -81,16 +81,6 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
         active: false,
         field: null
     });
-
-    useEffect(() => {
-        if (initialDate) {
-            setFormData((prev) => ({
-                ...prev,
-                date_debut: initialDate,
-                date_fin: initialDate,
-            }));
-        }
-    }, [initialDate]);
 
     useEffect(() => {
         const lockScroll = () => {
@@ -216,19 +206,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
         }
     };
 
-    const TYPE_LABEL_TO_VALUE: Record<string, string> = {
-        "Mariage": "mariage",
-        "Anniversaire": "anniversaire",
-        "Soirée privée": "soiree_privee",
-        "Évènement": "evenement_corporate",
-        "Club": "club",
-        "Festival": "festival",
-        "Concert": "concert",
-        "Séminaire": "seminaire",
-        "Autre": "autre",
-    };
-
-    const ALLOWED_TYPES = [...Object.values(TYPE_LABEL_TO_VALUE), ""];
+    const ALLOWED_TYPES: string[] = [...PRESTATION_TYPES, ""];
     const trim = (v: string) => (v ?? "").trim();
     const stripTags = (v: string) => trim(v).replace(/<[^>]*>/g, "");
     const normalizeEmail = (v: string) => stripTags(v).toLowerCase();
@@ -239,10 +217,8 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
     };
     const normalizeType = (v: string) => (ALLOWED_TYPES.includes(v) ? v : "autre");
 
-    const getTypeLabelFromValue = (value: string) => {
-        const entry = Object.entries(TYPE_LABEL_TO_VALUE).find(([, v]) => v === value);
-        return entry ? entry[0] : value;
-    };
+    const getTypeLabelFromValue = (value: string) =>
+        PRESTATION_TYPE_LABELS[value as PrestationType] ?? value;
 
     const toISODate = (v: string) => {
         if (!v) return "";
@@ -422,6 +398,17 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
         return clean.length > max ? `${clean.slice(0, max)}…` : clean;
     }
 
+    // Les erreurs et messages sont partagés par les deux modes : on les purge
+    // au changement pour ne pas afficher l'erreur d'un formulaire dans l'autre.
+    const switchViewMode = (mode: "prestation" | "appointment") => {
+        if (mode === viewMode) return;
+
+        setViewMode(mode);
+        setErrors([]);
+        setErrorFields([]);
+        setMessage("");
+    };
+
     const handleAppointmentChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
@@ -514,7 +501,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
         setErrorFields([]);
     };
 
-    const renderSubtitle = (text: string) => {
+    const renderSubtitle = (text?: string) => {
         if (!text) return "";
         const parts = text.split('**');
         return parts.map((part, i) =>
@@ -544,6 +531,29 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                         }
                     </motion.p>
                 </div>
+
+                {!isSuccess && (
+                    <motion.div className={styles.toggleContainer} variants={itemVariants} role="tablist">
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={viewMode === 'prestation'}
+                            className={`${styles.toggleBtn} ${viewMode === 'prestation' ? styles.toggleBtnActive : ""}`}
+                            onClick={() => switchViewMode('prestation')}
+                        >
+                            {prestationForm.toggles?.prestation || "Demander une prestation"}
+                        </button>
+                        <button
+                            type="button"
+                            role="tab"
+                            aria-selected={viewMode === 'appointment'}
+                            className={`${styles.toggleBtn} ${viewMode === 'appointment' ? styles.toggleBtnActive : ""}`}
+                            onClick={() => switchViewMode('appointment')}
+                        >
+                            {prestationForm.toggles?.appointment || "Prendre rendez-vous"}
+                        </button>
+                    </motion.div>
+                )}
 
                 <motion.div className={styles.card} variants={itemVariants}>
                     {isSuccess ? (
@@ -633,8 +643,7 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                         <>
                             <div className={styles.stepIndicator}>
                                 {
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    steps.map((s: any, i: number) => (
+                                    steps.map((s, i) => (
                                         <div key={i}
                                              className={`${styles.stepItem} ${step >= (i + 1) ? styles.active : ""}`}>
                                             <span className={styles.stepNumber}>{s.number}</span>
@@ -718,8 +727,10 @@ export default function PrestationForm({initialDate}: { initialDate?: string }) 
                                         <select name="type" value={formData.type} onChange={handleChange}
                                                 className={`${styles.select} ${errorFields.includes("type") ? styles.selectError : ""}`}>
                                             <option value="">Sélectionnez...</option>
-                                            {Object.entries(TYPE_LABEL_TO_VALUE).map(([label, value]) => (
-                                                <option key={value} value={value}>{label}</option>
+                                            {PRESTATION_TYPES.map((value) => (
+                                                <option key={value} value={value}>
+                                                    {PRESTATION_TYPE_LABELS[value]}
+                                                </option>
                                             ))}
                                         </select>
                                     </div>

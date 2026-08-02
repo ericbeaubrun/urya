@@ -2,7 +2,10 @@ import {NextRequest, NextResponse} from "next/server";
 import {Resend} from "resend";
 import {appointmentEmailTemplate, appointmentConfirmationEmailTemplate} from "@/app/emails/appointmentEmail";
 import {enforceRateLimit} from "@/lib/rate-limit";
-import {isValidEmail, normalizeField, MAX_LONG_FIELD} from "@/lib/validation";
+import {isValidEmail, isOneOf, normalizeField, MAX_LONG_FIELD} from "@/lib/validation";
+
+/** Doit rester aligné sur les boutons du sélecteur dans PrestationForm. */
+const APPOINTMENT_TYPES = ["tel", "visio", "physique"] as const;
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
@@ -23,6 +26,10 @@ export async function POST(req: NextRequest) {
 
         if (!name || !contact || !availability) {
             return NextResponse.json({error: "Champs manquants"}, {status: 400});
+        }
+
+        if (type && !isOneOf(type, APPOINTMENT_TYPES)) {
+            return NextResponse.json({error: "Type de rendez-vous inconnu."}, {status: 400});
         }
 
         const record = {name, contact, availability, type};

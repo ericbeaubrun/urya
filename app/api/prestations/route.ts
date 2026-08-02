@@ -4,7 +4,15 @@ import {Resend} from "resend"
 import {clientEmailTemplate} from "@/app/emails/userEmail";
 import {adminEmailTemplate} from "@/app/emails/adminEmail";
 import {enforceRateLimit} from "@/lib/rate-limit";
-import {isValidEmail, normalizeField, MAX_LONG_FIELD} from "@/lib/validation";
+import {
+    isValidEmail,
+    isValidDate,
+    isValidTime,
+    isOneOf,
+    normalizeField,
+    MAX_LONG_FIELD
+} from "@/lib/validation";
+import {PRESTATION_TYPES} from "@/lib/prestation-types";
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
@@ -40,6 +48,50 @@ export async function POST(req: NextRequest) {
         if (!isValidEmail(mail)) {
             return NextResponse.json(
                 {error: 'Format d\'email invalide.'},
+                {status: 400}
+            );
+        }
+
+        // Sans ces contrôles, une valeur malformée n'était détectée que par
+        // Postgres, qui renvoyait alors une 500 générique côté visiteur.
+        if (!isValidDate(date_debut)) {
+            return NextResponse.json(
+                {error: 'Format de date de début invalide (attendu : AAAA-MM-JJ).'},
+                {status: 400}
+            );
+        }
+
+        if (date_fin && !isValidDate(date_fin)) {
+            return NextResponse.json(
+                {error: 'Format de date de fin invalide (attendu : AAAA-MM-JJ).'},
+                {status: 400}
+            );
+        }
+
+        if (date_fin && date_fin < date_debut) {
+            return NextResponse.json(
+                {error: 'La date de fin ne peut pas précéder la date de début.'},
+                {status: 400}
+            );
+        }
+
+        if (heure_debut && !isValidTime(heure_debut)) {
+            return NextResponse.json(
+                {error: 'Format d\'heure de début invalide (attendu : HH:MM).'},
+                {status: 400}
+            );
+        }
+
+        if (heure_fin && !isValidTime(heure_fin)) {
+            return NextResponse.json(
+                {error: 'Format d\'heure de fin invalide (attendu : HH:MM).'},
+                {status: 400}
+            );
+        }
+
+        if (type && !isOneOf(type, PRESTATION_TYPES)) {
+            return NextResponse.json(
+                {error: 'Type de prestation inconnu.'},
                 {status: 400}
             );
         }

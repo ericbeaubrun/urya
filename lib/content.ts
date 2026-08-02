@@ -2,8 +2,9 @@ import {supabase_client, supabaseAdmin} from "@/lib/supabase_client";
 
 import {unstable_cache} from 'next/cache';
 
-/** Contenu éditorial du site, structure libre pilotée par l'éditeur admin. */
-export type SiteContent = Record<string, unknown>;
+export type {SiteContent} from "@/lib/site-content";
+
+import type {SiteContent} from "@/lib/site-content";
 
 async function fetchSiteContent(): Promise<SiteContent | null> {
     try {
@@ -25,7 +26,12 @@ async function fetchSiteContent(): Promise<SiteContent | null> {
     }
 }
 
-export const getSiteContent = unstable_cache(
+/**
+ * Le `throw` est volontaire : `unstable_cache` mémorise la valeur retournée,
+ * donc renvoyer `null` ici gèlerait une panne Supabase passagère dans le cache
+ * jusqu'à la prochaine revalidation. Lever une erreur laisse le cache vide.
+ */
+const getCachedSiteContent = unstable_cache(
     async () => {
         const content = await fetchSiteContent();
 
@@ -40,6 +46,19 @@ export const getSiteContent = unstable_cache(
         tags: ['site-content'],
     }
 );
+
+/**
+ * Point d'entrée des pages. Absorbe l'erreur du cache et renvoie `null` pour
+ * que l'appelant puisse afficher une page de maintenance plutôt qu'un 500.
+ */
+export async function getSiteContent(): Promise<SiteContent | null> {
+    try {
+        return await getCachedSiteContent();
+    } catch (err) {
+        console.error('[content] Contenu indisponible:', err);
+        return null;
+    }
+}
 
 
 export async function updateSiteContent(content: SiteContent) {

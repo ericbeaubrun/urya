@@ -89,11 +89,15 @@ export const LEGAL_DEFAULTS: LegalContent = {
  * Fusionne le contenu éditable (`content.legal`) avec les valeurs par défaut.
  * Une chaîne vide côté admin l'emporte : c'est le signal « pas encore rempli ».
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function resolveLegal(raw: any): LegalContent {
-    const legal = raw && typeof raw === 'object' ? raw : {};
-    const editor = legal.editor && typeof legal.editor === 'object' ? legal.editor : {};
-    const host = legal.host && typeof legal.host === 'object' ? legal.host : {};
+export function resolveLegal(raw: unknown): LegalContent {
+    // Le contenu vient d'une colonne JSON : on ne suppose rien de sa forme et
+    // chaque niveau est vérifié avant d'être lu.
+    const asRecord = (value: unknown): Record<string, unknown> =>
+        value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
+
+    const legal = asRecord(raw);
+    const editor = asRecord(legal.editor);
+    const host = asRecord(legal.host);
 
     const pick = (value: unknown, fallback: string) =>
         typeof value === 'string' ? value.trim() : fallback;
@@ -129,8 +133,7 @@ export async function getLegalContent(): Promise<LegalContent> {
     try {
         const { getSiteContent } = await import('@/lib/content');
         const content = await getSiteContent();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return resolveLegal((content as any)?.legal);
+        return resolveLegal(content?.legal);
     } catch (err) {
         console.error('[legal] Contenu indisponible, valeurs par défaut utilisées:', err);
         return resolveLegal(null);

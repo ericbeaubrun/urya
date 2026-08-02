@@ -10,23 +10,22 @@ import {supabase_client} from "@/lib/supabase_client";
 import {FILTER_PRESTATION_CALENDAR} from "@/app/config";
 import type {CalendarRow} from "@/app/admin/DataTypes";
 import styles from "./CalendarPicker.module.css";
+import {PRESTATION_TYPE_LABELS, type PrestationType} from "@/lib/prestation-types";
+
+/**
+ * Libellés du calendrier public. Identiques au référentiel partagé, à
+ * l'exception de `autre` : « Autre » convient dans un menu déroulant, mais pas
+ * comme titre d'événement visible par les visiteurs.
+ */
+const CALENDAR_TYPE_LABELS: Record<PrestationType, string> = {
+    ...PRESTATION_TYPE_LABELS,
+    autre: "Évènement spécial",
+};
 
 interface CalendarPickerProps {
     onDateSelect: (dateStr: string) => void;
     initialDate?: string;
 }
-
-const TYPE_LABEL_TO_VALUE: Record<string, string> = {
-    mariage: "Mariage",
-    anniversaire: "Anniversaire",
-    soiree_privee: "Soirée privée",
-    evenement_corporate: "Évènement",
-    club: "Club",
-    festival: "Festival",
-    concert: "Concert",
-    seminaire: "Séminaire",
-    autre: "Évènement spécial",
-};
 
 export default function CalendarPicker({onDateSelect, initialDate}: CalendarPickerProps) {
     const [events, setEvents] = useState<EventInput[]>([]);
@@ -69,7 +68,9 @@ export default function CalendarPicker({onDateSelect, initialDate}: CalendarPick
                 : rows;
 
             const formattedEvents: EventInput[] = visibleRows.map((ev) => {
-                const mappedLabel = ev?.type ? (TYPE_LABEL_TO_VALUE[ev.type] ?? ev.type) : undefined;
+                const mappedLabel = ev?.type
+                    ? (CALENDAR_TYPE_LABELS[ev.type as PrestationType] ?? ev.type)
+                    : undefined;
                 const title = mappedLabel ?? "Prestation";
 
                 const eventData: EventInput = {

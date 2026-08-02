@@ -4,6 +4,8 @@ import {supabaseAdmin} from "@/lib/supabase_client";
 import {requireAdmin as verifyAdmin} from "@/lib/require-admin";
 import {revalidatePath} from "next/cache";
 import type {Client, Prestation} from "@/app/admin/DataTypes";
+import {isValidDate, isValidTime, isOneOf, isValidEmail} from "@/lib/validation";
+import {PRESTATION_TYPES, PRESTATION_STATUTS} from "@/lib/prestation-types";
 
 /**
  * Colonnes qu'un administrateur est autorisé à modifier sur une prestation.
@@ -55,6 +57,43 @@ function pickAllowedFields<K extends string>(
     return cleaned;
 }
 
+/**
+ * Contrôle les formats avant l'appel à Supabase. Sans cela, une date ou un type
+ * malformé n'est rejeté que par Postgres, avec un message brut peu exploitable
+ * remonté tel quel dans l'interface d'administration.
+ */
+function assertValidPrestationFields(fields: Partial<Record<string, string | null>>) {
+    const {date_debut, date_fin, heure_debut, heure_fin, type, statut} = fields;
+
+    if (date_debut != null && !isValidDate(date_debut)) {
+        throw new Error("Date de début invalide (attendu : AAAA-MM-JJ).");
+    }
+
+    if (date_fin != null && !isValidDate(date_fin)) {
+        throw new Error("Date de fin invalide (attendu : AAAA-MM-JJ).");
+    }
+
+    if (date_debut != null && date_fin != null && date_fin < date_debut) {
+        throw new Error("La date de fin ne peut pas précéder la date de début.");
+    }
+
+    if (heure_debut != null && !isValidTime(heure_debut)) {
+        throw new Error("Heure de début invalide (attendu : HH:MM).");
+    }
+
+    if (heure_fin != null && !isValidTime(heure_fin)) {
+        throw new Error("Heure de fin invalide (attendu : HH:MM).");
+    }
+
+    if (type != null && !isOneOf(type, PRESTATION_TYPES)) {
+        throw new Error("Type de prestation inconnu.");
+    }
+
+    if (statut != null && !isOneOf(statut, PRESTATION_STATUTS)) {
+        throw new Error("Statut de prestation inconnu.");
+    }
+}
+
 function errorResult(error: unknown) {
     return {
         success: false as const,
@@ -85,6 +124,14 @@ export async function addClient(nom: string, mail: string, tel?: string | null) 
     try {
         await verifyAdmin();
 
+        if (!nom?.trim()) {
+            throw new Error("Le nom du client est obligatoire.");
+        }
+
+        if (!isValidEmail(mail)) {
+            throw new Error("Format d'email invalide.");
+        }
+
         const {data, error} = await supabaseAdmin()
             .from("clients")
             .insert([{nom, mail, tel: tel || null}])
@@ -113,6 +160,10 @@ export async function updateClient(id: string, clientData: ClientInput) {
             throw new Error("Aucun champ modifiable fourni.");
         }
 
+        if (cleaned.mail != null && !isValidEmail(cleaned.mail)) {
+            throw new Error("Format d'email invalide.");
+        }
+
         const {data, error} = await supabaseAdmin()
             .from("clients")
             .update(cleaned)
@@ -138,6 +189,11 @@ export async function addPrestation(prestationData: PrestationInput & { date_deb
         await verifyAdmin();
 
         const cleaned = pickAllowedFields(prestationData, PRESTATION_UPDATABLE_FIELDS);
+        assertValidPrestationFields(cleaned);
+
+        if (!cleaned.date_debut) {
+            throw new Error("La date de début est obligatoire.");
+        }
 
         const {data, error} = await supabaseAdmin()
             .from("prestations")
@@ -191,6 +247,8 @@ export async function updatePrestation(id: string, prestationData: PrestationInp
         if (Object.keys(cleaned).length === 0) {
             throw new Error("Aucun champ modifiable fourni.");
         }
+
+        assertValidPrestationFields(cleaned);
 
         const {data, error} = await supabaseAdmin()
             .from("prestations")

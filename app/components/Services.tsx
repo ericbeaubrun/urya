@@ -2,14 +2,14 @@
 
 import {motion} from 'framer-motion';
 import {Heart, Sparkles, PartyPopper, CalendarDays, Check, ArrowRight} from 'lucide-react';
+import type {LucideIcon} from 'lucide-react';
 import {Link as ScrollLink} from 'react-scroll';
 import styles from './Services.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
 import {useContent} from '@/app/ContentContext';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, LucideIcon> = {
     Heart,
     PartyPopper,
     Sparkles,
@@ -76,9 +76,8 @@ export default function Services() {
                 {/* 4 Cards Grid */}
                 <div className={styles.grid}>
                     {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        items.map((service: any, idx: number) => {
-                            const Icon = ICON_MAP[service.icon] || Sparkles;
+                        items.map((service, idx) => {
+                            const Icon = (service.icon && ICON_MAP[service.icon]) || Sparkles;
                             const inclusions = Array.isArray(service.inclusions) ? service.inclusions : [];
 
                             return (
@@ -93,6 +92,8 @@ export default function Services() {
                                             src={service.image}
                                             alt={service.title}
                                             className={styles.image}
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                         <div className={styles.imageOverlay}/>
 
