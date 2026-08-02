@@ -6,11 +6,14 @@ import { Link as ScrollLink } from 'react-scroll';
 import styles from './Footer.module.css';
 
 import { useContent } from '@/app/ContentContext';
+import { usableNavItems, usableSocials } from '@/lib/site-content';
+import { LANDING_PAGES } from '@/lib/landing-pages';
+import { CITY_PAGES } from '@/lib/city-pages';
 
 const ICON_MAP: Record<string, string> = {
-    Instagram: '/insta.png',
-    TikTok: '/tiktok.png',
-    Youtube: '/youtube.png'
+    Instagram: '/insta.webp',
+    TikTok: '/tiktok.webp',
+    Youtube: '/youtube.webp'
 };
 
 export default function Footer() {
@@ -18,8 +21,8 @@ export default function Footer() {
 
     if (!footer || !navigation) return null;
 
-    const navItems = Array.isArray(navigation.items) ? navigation.items : [];
-    const socials = Array.isArray(footer.socials) ? footer.socials : [];
+    const navItems = usableNavItems(navigation.items);
+    const socials = usableSocials(footer.socials);
 
     return (
         <footer className={styles.footer}>
@@ -39,8 +42,7 @@ export default function Footer() {
 
                     <nav className={styles.nav}>
                         {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            navItems.map((item: any) => (
+                            navItems.map((item) => (
                             <ScrollLink
                                 key={item.to}
                                 to={item.to}
@@ -64,8 +66,7 @@ export default function Footer() {
 
                     <div className={styles.socials}>
                         {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            socials.map((social: any) => {
+                            socials.map((social) => {
                             const iconSrc = ICON_MAP[social.platform];
                             return (
                                 <a
@@ -92,6 +93,39 @@ export default function Footer() {
                         })}
                     </div>
                 </div>
+
+                {/* Maillage interne. Sans lien depuis l'accueil, les pages de
+                    prestation resteraient orphelines : le sitemap les fait
+                    découvrir, il ne leur transmet aucune autorité. */}
+                <nav className={styles.prestationsRow} aria-label="Prestations">
+                    <span className={styles.prestationsLabel}>Prestations</span>
+                    <div className={styles.prestationsLinks}>
+                        {LANDING_PAGES.map((page) => (
+                            <Link
+                                key={page.slug}
+                                href={`/${page.slug}`}
+                                className={styles.prestationLink}
+                            >
+                                {page.navLabel}
+                            </Link>
+                        ))}
+                    </div>
+                </nav>
+
+                <nav className={styles.prestationsRow} aria-label="Zones d'intervention">
+                    <span className={styles.prestationsLabel}>Zones</span>
+                    <div className={styles.prestationsLinks}>
+                        {CITY_PAGES.map((page) => (
+                            <Link
+                                key={page.slug}
+                                href={`/${page.slug}`}
+                                className={styles.prestationLink}
+                            >
+                                {page.navLabel}
+                            </Link>
+                        ))}
+                    </div>
+                </nav>
 
                 <div className={styles.bottomRow}>
                     <span>&copy; {new Date().getFullYear()} {footer.copyright}</span>

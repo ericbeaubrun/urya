@@ -1,0 +1,309 @@
+.page {
+    position: relative;
+    min-height: 100vh;
+    background: var(--color-bg);
+    padding: calc(var(--space-24) + var(--space-8)) 0 var(--space-24);
+}
+
+/* Halo repris du hero, pour que la page ne paraisse pas détachée du site. */
+.page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(60rem, 100%);
+    height: 30rem;
+    background: radial-gradient(ellipse at top, rgba(139, 92, 246, 0.18), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--section-padding-x);
+}
+
+@media (min-width: 1024px) {
+    .container {
+        padding: 0 var(--section-padding-x-lg);
+    }
+}
+
+/* --- Fil d'Ariane --- */
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-8);
+    font-family: var(--font-secondary);
+}
+
+.breadcrumb a:hover {
+    color: var(--color-primary-light);
+}
+
+.breadcrumbCurrent {
+    color: var(--color-text-muted);
+}
+
+/* --- En-tête --- */
+
+.eyebrow {
+    display: inline-block;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-primary-light);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-secondary);
+}
+
+.title {
+    font-size: var(--fs-4xl);
+    margin-bottom: var(--space-6);
+    max-width: 24ch;
+}
+
+@media (min-width: 768px) {
+    .title {
+        font-size: var(--fs-6xl);
+    }
+}
+
+.intro p {
+    font-size: var(--fs-lg);
+    color: var(--color-text-muted);
+    max-width: 65ch;
+}
+
+/* --- Sections --- */
+
+.section {
+    margin-top: var(--space-16);
+}
+
+.sectionTitle {
+    font-size: var(--fs-2xl);
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+}
+
+@media (min-width: 768px) {
+    .sectionTitle {
+        font-size: var(--fs-3xl);
+    }
+}
+
+.section p {
+    color: var(--color-text-muted);
+    max-width: 70ch;
+}
+
+.bullets {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.bullet {
+    position: relative;
+    padding-left: var(--space-6);
+    color: var(--color-text-muted);
+    max-width: 70ch;
+}
+
+.bullet::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+}
+
+.strong {
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+/* Communes couvertes : purement typographique, ce ne sont pas des liens. */
+.tagList {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.tag {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    background: var(--glass-bg);
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    font-family: var(--font-secondary);
+}
+
+/* --- FAQ --- */
+
+.faqList {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+/* `details` natif plutôt qu'un accordéon JS : le contenu reste dans le HTML
+   initial, condition pour que le balisage FAQPage soit accepté. */
+.faqItem {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+}
+
+.faqItem[open] {
+    border-color: var(--color-border-primary);
+}
+
+.faqQuestion {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text-main);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    font-family: var(--font-secondary);
+}
+
+.faqQuestion::-webkit-details-marker {
+    display: none;
+}
+
+.faqQuestion::after {
+    content: '+';
+    color: var(--color-primary-light);
+    font-size: var(--fs-xl);
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.faqItem[open] .faqQuestion::after {
+    content: '−';
+}
+
+.faqAnswer {
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+}
+
+/* --- Appel à l'action --- */
+
+.cta {
+    margin-top: var(--space-16);
+    padding: var(--space-10);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-primary);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(139, 92, 246, 0.02));
+    text-align: center;
+}
+
+.ctaTitle {
+    font-size: var(--fs-2xl);
+    font-family: var(--font-secondary);
+    margin-bottom: var(--space-3);
+}
+
+.ctaText {
+    color: var(--color-text-muted);
+    max-width: 50ch;
+    margin: 0 auto var(--space-6);
+}
+
+.ctaButton {
+    display: inline-block;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-dark));
+    color: var(--color-text-main);
+    font-weight: 600;
+    font-family: var(--font-secondary);
+}
+
+.ctaButton:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* --- Maillage interne --- */
+
+.related {
+    margin-top: var(--space-16);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-border);
+}
+
+.relatedTitle {
+    font-size: var(--fs-lg);
+    font-family: var(--font-secondary);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+}
+
+.relatedGrid {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .relatedGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.relatedCard {
+    display: block;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text-main);
+    font-family: var(--font-secondary);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+}
+
+.relatedCard:hover {
+    border-color: var(--color-border-primary);
+    color: var(--color-primary-light);
+}
+
+.backHome {
+    display: inline-block;
+    margin-top: var(--space-12);
+    color: var(--color-text-dim);
+    font-size: var(--fs-sm);
+}
+
+.backHome:hover {
+    color: var(--color-primary-light);
+}

@@ -4,11 +4,26 @@ import LegalShell from '@/app/legal/LegalShell';
 import LegalValue from '@/app/legal/LegalValue';
 import { getLegalContent } from '@/app/legal/legal.config';
 import styles from '@/app/legal/Legal.module.css';
+import JsonLd from '@/app/components/JsonLd';
+import {SITE_URL} from '@/app/site-url';
+import {legalPageJsonLd} from '@/lib/structured-data';
+
+const PATH = '/mentions-legales';
+const TITLE = 'Mentions légales';
+const DESCRIPTION =
+    'Mentions légales du site DJ URYA : éditeur, hébergeur, propriété intellectuelle et responsabilité.';
 
 export const metadata: Metadata = {
-    title: 'Mentions légales – DJ URYA',
-    description: 'Mentions légales du site DJ URYA : éditeur, hébergeur, propriété intellectuelle et responsabilité.',
+    title: TITLE,
+    description: DESCRIPTION,
+    alternates: { canonical: PATH },
     robots: { index: true, follow: true },
+    openGraph: {
+        type: 'article',
+        url: PATH,
+        title: TITLE,
+        description: DESCRIPTION,
+    },
 };
 
 // Rendu à la demande : les informations légales sont éditées depuis l'admin et
@@ -20,6 +35,7 @@ export default async function MentionsLegalesPage() {
 
     return (
         <LegalShell title="Mentions légales" lastUpdate={lastUpdate}>
+            <JsonLd data={legalPageJsonLd(SITE_URL, PATH, {name: TITLE, description: DESCRIPTION})}/>
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>1. Éditeur du site</h2>
                 <div className={`${styles.card} ${styles.definitions}`}>

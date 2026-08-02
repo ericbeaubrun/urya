@@ -69,8 +69,7 @@ export default function Gallery() {
                     className={styles.grid}
                 >
                     {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        images.map((img: any, idx : number) => (
+                        images.map((img, idx) => (
                             <motion.div
                                 key={idx}
                                 className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}
@@ -78,9 +77,13 @@ export default function Gallery() {
                             >
                                 <img
                                     src={img.src}
-                                    alt={img.alt}
+                                    // `alt` est saisi depuis l'admin et souvent
+                                    // laissé vide : sans repli, l'image sort du
+                                    // périmètre de Google Images.
+                                    alt={img.alt?.trim() || `DJ URYA en prestation – photo ${idx + 1}`}
                                     className={styles.image}
                                     loading="lazy"
+                                    decoding="async"
                                 />
                             </motion.div>
                         ))}

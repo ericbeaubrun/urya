@@ -102,6 +102,49 @@
 }
 
 /* COPYRIGHT ROW */
+/* PRESTATIONS (maillage interne) */
+.prestationsRow {
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+@media (min-width: 768px) {
+    .prestationsRow {
+        flex-direction: row;
+        align-items: baseline;
+        gap: var(--space-6);
+    }
+}
+
+.prestationsLabel {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-deep);
+    flex-shrink: 0;
+}
+
+.prestationsLinks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-5);
+}
+
+.prestationLink {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+}
+
+.prestationLink:hover {
+    color: var(--color-primary-light);
+}
+
 .bottomRow {
     margin-top: var(--space-8);
     padding-top: var(--space-6);

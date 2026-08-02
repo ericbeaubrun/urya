@@ -4,11 +4,26 @@ import LegalShell from '@/app/legal/LegalShell';
 import LegalValue from '@/app/legal/LegalValue';
 import { getLegalContent } from '@/app/legal/legal.config';
 import styles from '@/app/legal/Legal.module.css';
+import JsonLd from '@/app/components/JsonLd';
+import {SITE_URL} from '@/app/site-url';
+import {legalPageJsonLd} from '@/lib/structured-data';
+
+const PATH = '/politique-de-confidentialite';
+const TITLE = 'Politique de confidentialité';
+const DESCRIPTION =
+    'Traitement des données personnelles collectées sur le site DJ URYA : finalités, durées de conservation et droits RGPD.';
 
 export const metadata: Metadata = {
-    title: 'Politique de confidentialité – DJ URYA',
-    description: 'Traitement des données personnelles collectées sur le site DJ URYA : finalités, durées de conservation et droits RGPD.',
+    title: TITLE,
+    description: DESCRIPTION,
+    alternates: { canonical: PATH },
     robots: { index: true, follow: true },
+    openGraph: {
+        type: 'article',
+        url: PATH,
+        title: TITLE,
+        description: DESCRIPTION,
+    },
 };
 
 // Rendu à la demande : les informations légales sont éditées depuis l'admin et
@@ -24,6 +39,7 @@ export default async function PolitiqueConfidentialitePage() {
 
     return (
         <LegalShell title="Politique de confidentialité" lastUpdate={lastUpdate}>
+            <JsonLd data={legalPageJsonLd(SITE_URL, PATH, {name: TITLE, description: DESCRIPTION})}/>
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>1. Responsable du traitement</h2>
                 <p>
