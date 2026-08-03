@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { Link as ScrollLink } from 'react-scroll';
 import styles from './Footer.module.css';
@@ -78,11 +77,17 @@ export default function Footer() {
                                     aria-label={social.platform}
                                 >
                                     {iconSrc ? (
-                                        <Image
+                                        // `next/image` serait facturé une
+                                        // transformation par icône sur Vercel,
+                                        // pour des WebP de moins de 2 Ko déjà
+                                        // servis à leur taille d'affichage.
+                                        <img
                                             src={iconSrc}
                                             alt={social.platform}
                                             width={24}
                                             height={24}
+                                            loading="lazy"
+                                            decoding="async"
                                             className={styles.socialImg}
                                         />
                                     ) : (

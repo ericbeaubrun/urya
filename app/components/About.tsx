@@ -77,8 +77,8 @@ export default function About() {
                     >
                         <div className={styles.videoContainer}>
                             <LazyVideo
-                                src="/about.mp4"
-                                poster="/about_poster.webp"
+                                src="/media/about.cf498287.mp4"
+                                poster="/media/about_poster.a6b75b0f.webp"
                                 className={styles.video}
                             />
                             <div className={styles.videoRing}/>

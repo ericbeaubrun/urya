@@ -58,12 +58,32 @@ const securityHeaders = [
         }]),
 ];
 
+// Les fichiers de `public/media` portent un hash de contenu dans leur nom : une
+// nouvelle version = un nouveau nom, donc l'URL ne peut jamais désigner autre
+// chose. C'est ce qui rend `immutable` sûr — le navigateur ne revalidera
+// jamais, pas même sur rechargement forcé.
+const immutableCache = "public, max-age=31536000, immutable";
+
+// Les images de `public/` sont référencées depuis le contenu éditable (admin),
+// sans hash : leur nom peut être réutilisé pour un visuel différent. On garde
+// donc une revalidation quotidienne, avec service du cache périmé pendant que
+// la nouvelle version se télécharge en arrière-plan.
+const staticCache = "public, max-age=86400, stale-while-revalidate=604800";
+
 const nextConfig: NextConfig = {
     async headers() {
         return [
             {
                 source: "/:path*",
                 headers: securityHeaders,
+            },
+            {
+                source: "/media/:path*",
+                headers: [{key: "Cache-Control", value: immutableCache}],
+            },
+            {
+                source: "/:path*.(webp|png|svg|ico)",
+                headers: [{key: "Cache-Control", value: staticCache}],
             },
         ];
     },

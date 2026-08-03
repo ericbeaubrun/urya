@@ -43,8 +43,8 @@ export default function Hero({ onContactClick }: HeroProps) {
         <section id="hero" className={styles.heroSection}>
             <div className={styles.bgContainer}>
                 <LazyVideo
-                    src="/hero_background.mp4"
-                    poster="/hero_poster.webp"
+                    src="/media/hero_background.25ccf007.mp4"
+                    poster="/media/hero_poster.6c921240.webp"
                     strategy="onLoad"
                     className={styles.bgImage}
                 />
