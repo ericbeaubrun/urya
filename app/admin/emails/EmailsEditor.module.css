@@ -1,0 +1,211 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.pageHead h1 {
+    margin: 0 0 0.2rem;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--adm-text);
+}
+
+.pageHead p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--adm-dim);
+}
+
+.tabs {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.tab {
+    padding: 0.34rem 0.7rem;
+    border-radius: var(--adm-radius-sm);
+    background: transparent;
+    border: none;
+    color: var(--adm-muted);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--adm-transition), color var(--adm-transition);
+}
+
+.tab:hover {
+    background: var(--adm-surface-2);
+    color: var(--adm-text);
+}
+
+.tabActive {
+    background: var(--adm-primary-soft);
+    color: var(--adm-primary-text);
+    font-weight: 600;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 1.15rem;
+    align-items: start;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+}
+
+.panelTitle {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--adm-text);
+}
+
+.hint {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--adm-dim);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+}
+
+.field label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--adm-muted);
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    background: var(--adm-surface-2);
+    color: var(--adm-text);
+    border: 1px solid var(--adm-border-strong);
+    border-radius: var(--adm-radius-sm);
+    font-size: 0.84rem;
+    font-family: inherit;
+}
+
+.field textarea {
+    min-height: 320px;
+    resize: vertical;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    line-height: 1.55;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: var(--adm-primary);
+}
+
+.actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.actions button {
+    padding: 0.4rem 0.75rem;
+    background: var(--adm-surface-2);
+    color: var(--adm-text);
+    border: 1px solid var(--adm-border-strong);
+    border-radius: var(--adm-radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--adm-transition);
+}
+
+.actions button:hover:not(:disabled) {
+    border-color: var(--adm-primary);
+}
+
+.actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.saveBtn {
+    background: var(--adm-primary) !important;
+    color: #fff !important;
+    border-color: var(--adm-primary) !important;
+}
+
+.variables {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.variable {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    width: 100%;
+    padding: 0.35rem 0.5rem;
+    background: var(--adm-surface-2);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: var(--adm-transition);
+}
+
+.variable:hover {
+    border-color: var(--adm-primary);
+}
+
+.variableCode {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.76rem;
+    color: var(--adm-primary-text);
+}
+
+.variableLabel {
+    font-size: 0.72rem;
+    color: var(--adm-dim);
+}
+
+.status {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--adm-muted);
+}
+
+.statusError {
+    color: var(--adm-danger-text);
+}
+
+.preview {
+    width: 100%;
+    min-height: 520px;
+    background: #0b0b0e;
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-sm);
+}
+
+@media (max-width: 940px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

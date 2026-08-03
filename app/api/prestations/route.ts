@@ -196,8 +196,8 @@ export async function POST(req: NextRequest) {
             heure_debut, heure_fin, type, lieu, notes
         };
 
-        const userHtml = clientEmailTemplate(record)
-        const adminHtml = adminEmailTemplate(record)
+        const userHtml = await clientEmailTemplate(record)
+        const adminHtml = await adminEmailTemplate(record)
 
         await resend.emails.send({
             from: process.env.RESEND_MAIL_ADDRESS!,

@@ -5,19 +5,27 @@ import {usePathname} from "next/navigation";
 import {useState} from "react";
 import styles from "./AdminPage.module.css";
 
+// La gestion des prestations est regroupée derrière une entrée unique : le
+// détail (Ajouter / À venir / Passées / Toutes) vit dans la sous-navigation de
+// `app/admin/prestations/layout.tsx`.
 const links = [
-    {href: "/admin/prestations/ajouter", label: "Ajouter"},
-    {href: "/admin/prestations/futures", label: "À venir"},
-    {href: "/admin/prestations/passees", label: "Passées"},
-    {href: "/admin/prestations/toutes", label: "Toutes"},
+    {href: "/admin/prestations/futures", label: "Prestations", match: "/admin/prestations"},
     {href: "/admin/prestations/calendrier", label: "Calendrier"},
     {href: "/admin/content", label: "Contenu"},
+    {href: "/admin/emails", label: "E-mails"},
     {href: "/admin/statistiques", label: "Statistiques"},
 ];
 
 export default function AdminNav({email, logout}: { email?: string | null; logout: React.ReactNode }) {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
+
+    function isActive(link: { href: string; match?: string }) {
+        if (!link.match) return pathname === link.href;
+        // Le calendrier vit sous /admin/prestations mais garde sa propre entrée.
+        const exact = links.some(l => l !== link && l.href === pathname);
+        return !exact && pathname.startsWith(link.match);
+    }
 
     return (
         <header className={styles.header}>
@@ -43,7 +51,7 @@ export default function AdminNav({email, logout}: { email?: string | null; logou
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={pathname === link.href ? `${styles.link} ${styles.linkActive}` : styles.link}
+                                className={isActive(link) ? `${styles.link} ${styles.linkActive}` : styles.link}
                                 onClick={() => setOpen(false)}
                             >
                                 {link.label}

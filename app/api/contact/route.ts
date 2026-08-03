@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({error: "Format d'email invalide."}, {status: 400});
         }
 
-        const emailTemplate = contactEmailTemplate({nom, email, message});
+        const emailTemplate = await contactEmailTemplate({nom, email, message});
 
         await resend.emails.send({
             from: process.env.RESEND_MAIL_ADDRESS!,

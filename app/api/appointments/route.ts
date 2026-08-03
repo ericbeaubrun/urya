@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         }
 
         const record = {name, contact, availability, type};
-        const emailTemplate = appointmentEmailTemplate(record);
+        const emailTemplate = await appointmentEmailTemplate(record);
 
         await resend.emails.send({
             from: process.env.RESEND_MAIL_ADDRESS!,
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         // choisit le destinataire d'un envoi.
         if (isValidEmail(contact)) {
             try {
-                const confirmationTemplate = appointmentConfirmationEmailTemplate(record);
+                const confirmationTemplate = await appointmentConfirmationEmailTemplate(record);
                 await resend.emails.send({
                     from: process.env.RESEND_MAIL_ADDRESS!,
                     to: contact,
