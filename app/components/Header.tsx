@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
+import { track } from '@/lib/analytics';
 import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
@@ -90,6 +91,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         smooth={true}
                         offset={240}
                         duration={800}
+                        onClick={() => track("cta_click", {source: "header"})}
                         className={styles.ctaButton}
                         activeClass={styles.activeCta}
                         style={{ cursor: 'pointer' }}
@@ -148,7 +150,10 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         smooth={true}
                         offset={-80}
                         duration={800}
-                        onClick={handleNav}
+                        onClick={() => {
+                            track("cta_click", {source: "header_mobile"});
+                            handleNav();
+                        }}
                         className={styles.mobileCtaButton}
                         activeClass={styles.activeCtaMobile}
                         style={{ cursor: 'pointer' }}

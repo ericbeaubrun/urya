@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
+import { track } from '@/lib/analytics';
 import styles from './Hero.module.css';
 import LazyVideo from './LazyVideo';
 import {ANIMATION_ONCE} from "@/app/config";
@@ -87,6 +88,7 @@ export default function Hero({ onContactClick }: HeroProps) {
                         smooth={true}
                         offset={-80}
                         duration={800}
+                        onClick={() => track("cta_click", {source: "hero"})}
                         className={styles.primaryBtn}
                         style={{ cursor: 'pointer' }}
                     >

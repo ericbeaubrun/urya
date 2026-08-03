@@ -141,12 +141,33 @@ export default async function PolitiqueConfidentialitePage() {
             </section>
 
             <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>5. Cookies</h2>
+                <h2 className={styles.sectionTitle}>5. Cookies et mesure d&apos;audience</h2>
                 <p>
-                    Ce site n&apos;utilise aucun cookie publicitaire ni aucun outil de mesure d&apos;audience. Seuls des
+                    Ce site n&apos;utilise aucun cookie publicitaire et ne pratique aucun suivi entre sites. Seuls des
                     cookies strictement nécessaires au fonctionnement du site sont déposés, pour maintenir la session
                     d&apos;authentification de l&apos;espace d&apos;administration réservé à l&apos;éditeur. Ces cookies
                     sont exemptés de consentement au sens de l&apos;article 82 de la loi Informatique et Libertés.
+                </p>
+                <p>
+                    Le site emploie par ailleurs un outil de mesure d&apos;audience développé en interne, destiné à la
+                    seule amélioration du site. Cet outil ne dépose aucun cookie et n&apos;inscrit aucune information
+                    dans votre terminal. Il n&apos;utilise ni identifiant de visiteur, ni empreinte de navigateur : il
+                    ne permet donc pas de vous reconnaître d&apos;une page à l&apos;autre ni d&apos;une visite à
+                    l&apos;autre.
+                </p>
+                <p>
+                    Les informations enregistrées sont exclusivement : la page consultée, le nom de domaine du site
+                    d&apos;où provient la visite, le type d&apos;appareil (mobile ou ordinateur), et la nature des
+                    actions effectuées sur les formulaires (étape atteinte, champ ayant provoqué une erreur, envoi
+                    d&apos;une demande). Le contenu que vous saisissez dans les formulaires n&apos;est jamais transmis
+                    à cet outil. Votre adresse IP n&apos;est ni enregistrée ni conservée.
+                </p>
+                <p>
+                    Ces données sont hébergées au sein de l&apos;Union européenne, ne sont transmises à aucun tiers et
+                    ne font l&apos;objet d&apos;aucun transfert hors de l&apos;Union européenne. Elles sont conservées
+                    25 mois au maximum, puis supprimées. Ce traitement, strictement limité à la production de
+                    statistiques anonymes, relève de l&apos;intérêt légitime de l&apos;éditeur et bénéficie de
+                    l&apos;exemption de consentement prévue pour la mesure d&apos;audience.
                 </p>
             </section>
 

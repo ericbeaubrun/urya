@@ -8,6 +8,7 @@ import FAQContactForm from './FAQContactForm';
 import {ANIMATION_ONCE} from "@/app/config";
 
 import {useContent} from '@/app/ContentContext';
+import {track} from '@/lib/analytics';
 
 const containerVariants = {
     hidden: {opacity: 0},
@@ -40,8 +41,15 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
 
     const items = Array.isArray(faq.items) ? faq.items : [];
 
-    const toggleItem = (index: number) => {
-        setOpenIndex(openIndex === index ? null : index);
+    const toggleItem = (index: number, question?: string) => {
+        const opening = openIndex !== index;
+        setOpenIndex(opening ? index : null);
+
+        // Seule l'ouverture est un signal d'intention ; la refermeture n'apprend
+        // rien et doublerait le compte de chaque question consultée.
+        if (opening && question) {
+            track("faq_open", {question});
+        }
     };
 
     return (
@@ -71,7 +79,7 @@ export default function FAQ({isContactFormOpen, setIsContactFormOpen}: FAQProps)
                                 >
                                     <button
                                         className={styles.trigger}
-                                        onClick={() => toggleItem(idx)}
+                                        onClick={() => toggleItem(idx, item.question)}
                                         aria-expanded={isOpen}
                                     >
                                         <span className={styles.question}>{item.question}</span>

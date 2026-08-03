@@ -1,0 +1,239 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--adm-text);
+    margin: 0;
+}
+
+.periods {
+    display: flex;
+    gap: 6px;
+}
+
+.period {
+    padding: 6px 12px;
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--adm-muted);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    transition: var(--adm-transition);
+}
+
+.period:hover {
+    border-color: var(--adm-border-strong);
+    color: var(--adm-text);
+}
+
+.periodActive {
+    background: var(--adm-primary-soft);
+    border-color: var(--adm-primary);
+    color: var(--adm-primary-text);
+    font-weight: 600;
+}
+
+.notice {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: var(--adm-radius);
+    background: var(--adm-warning-soft);
+    color: var(--adm-warning-text);
+    border: 1px solid var(--adm-warning);
+}
+
+.error {
+    background: var(--adm-danger-soft);
+    color: var(--adm-danger-text);
+    border-color: var(--adm-danger);
+}
+
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.kpi {
+    padding: 16px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+.kpiValue {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--adm-text);
+    line-height: 1.1;
+}
+
+.kpiLabel {
+    margin-top: 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--adm-dim);
+}
+
+.card {
+    padding: 16px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    box-shadow: var(--adm-shadow);
+}
+
+.cardTitle {
+    margin: 0 0 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--adm-text);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+}
+
+/* Courbe de fréquentation : des barres verticales alignées sur la ligne de base. */
+.chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 140px;
+    overflow-x: auto;
+}
+
+.bar {
+    flex: 1 1 0;
+    min-width: 4px;
+    background: var(--adm-primary);
+    border-radius: var(--adm-radius-sm) var(--adm-radius-sm) 0 0;
+    /* Un jour à zéro doit rester visible, sinon la courbe semble trouée. */
+    min-height: 2px;
+    opacity: 0.85;
+}
+
+.bar:hover {
+    opacity: 1;
+}
+
+.chartAxis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--adm-dim);
+}
+
+/* Listes de répartition : libellé, barre proportionnelle, valeur. */
+.rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--adm-text);
+}
+
+.rowLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rowValue {
+    font-variant-numeric: tabular-nums;
+    color: var(--adm-muted);
+}
+
+.rowTrack {
+    grid-column: 1 / -1;
+    height: 4px;
+    background: var(--adm-bg);
+    border-radius: var(--adm-radius-sm);
+    overflow: hidden;
+}
+
+.rowFill {
+    height: 100%;
+    background: var(--adm-primary);
+    opacity: 0.6;
+}
+
+.empty {
+    font-size: 13px;
+    color: var(--adm-dim);
+    font-style: italic;
+}
+
+/* Entonnoir : la largeur porte la part restante, la couleur reste constante. */
+.funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.funnelStep {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.funnelHead {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--adm-text);
+}
+
+.funnelShare {
+    font-variant-numeric: tabular-nums;
+    color: var(--adm-muted);
+}
+
+.funnelTrack {
+    height: 22px;
+    background: var(--adm-bg);
+    border-radius: var(--adm-radius-sm);
+    overflow: hidden;
+}
+
+.funnelFill {
+    height: 100%;
+    background: var(--adm-primary);
+    opacity: 0.75;
+}
+
+.funnelFillSuccess {
+    background: var(--adm-success);
+}
+
+.footnote {
+    font-size: 12px;
+    color: var(--adm-dim);
+    line-height: 1.6;
+}

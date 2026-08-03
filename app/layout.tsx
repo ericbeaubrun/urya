@@ -1,6 +1,7 @@
 import type {Metadata, Viewport} from "next";
 import './globals.css';
 import {SITE_URL} from './site-url';
+import PageViewTracker from './components/PageViewTracker';
 import {
     BRAND,
     DEFAULT_DESCRIPTION,
@@ -90,6 +91,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="fr">
         <body>
+        <PageViewTracker/>
         {children}
         </body>
         </html>

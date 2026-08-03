@@ -12,6 +12,7 @@ const links = [
     {href: "/admin/prestations/toutes", label: "Toutes"},
     {href: "/admin/prestations/calendrier", label: "Calendrier"},
     {href: "/admin/content", label: "Contenu"},
+    {href: "/admin/statistiques", label: "Statistiques"},
 ];
 
 export default function AdminNav({email, logout}: { email?: string | null; logout: React.ReactNode }) {

@@ -10,6 +10,7 @@ import TimePicker from "./TimePicker";
 import {ANIMATION_ONCE, EXAMPLE_MAIL, EXAMPLE_NAME, EXAMPLE_PHONE} from "@/app/config";
 import {useContent} from "@/app/ContentContext";
 import {PRESTATION_TYPES, PRESTATION_TYPE_LABELS, type PrestationType} from "@/lib/prestation-types";
+import {track} from "@/lib/analytics";
 
 interface PrestationFormData {
     nom: string;
@@ -82,6 +83,80 @@ export default function PrestationForm() {
         field: null
     });
 
+    // Mesure d'audience. Ces trois références portent un état qui ne doit
+    // jamais provoquer de rendu : elles ne servent qu'à ne pas compter deux
+    // fois le même jalon.
+    const trackedViewRef = useRef(false);
+    const trackedStartRef = useRef(false);
+    const trackedExitRef = useRef(false);
+    // L'étape et le succès sont lus depuis un écouteur d'événement posé une
+    // seule fois : sans copie dans une référence, il ne verrait que leurs
+    // valeurs au premier rendu.
+    const stepRef = useRef(step);
+    const successRef = useRef(isSuccess);
+    stepRef.current = step;
+    successRef.current = isSuccess;
+
+    /** Marque le début de saisie, au premier champ renseigné quel qu'il soit. */
+    const trackFormStart = () => {
+        if (trackedStartRef.current) return;
+        trackedStartRef.current = true;
+        track("form_step", {step: "1"});
+    };
+
+    /**
+     * Signale les champs refusés par la validation.
+     *
+     * Seul le NOM du champ part : sa valeur est une saisie du visiteur, donc
+     * potentiellement une donnée personnelle, qui n'a rien à faire dans une
+     * mesure d'audience anonyme.
+     */
+    const trackErrorFields = (fields: string[]) => {
+        for (const field of fields) {
+            track("form_error", {field});
+        }
+    };
+
+    // Sommet de l'entonnoir : le formulaire est réellement arrivé sous les yeux
+    // du visiteur, ce qui est une base de comparaison bien plus honnête que le
+    // nombre de pages vues.
+    useEffect(() => {
+        const element = sectionRef.current;
+        if (!element) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting) || trackedViewRef.current) return;
+                trackedViewRef.current = true;
+                track("form_view");
+                observer.disconnect();
+            },
+            {threshold: 0.25}
+        );
+
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, []);
+
+    // Abandon : formulaire entamé, jamais envoyé, et le visiteur s'en va.
+    //
+    // L'écoute porte sur `visibilitychange` et non `beforeunload` : ce dernier
+    // n'est pas déclenché de façon fiable sur mobile, où l'onglet est le plus
+    // souvent mis en arrière-plan puis détruit sans préavis. C'est précisément
+    // le cas majoritaire ici.
+    useEffect(() => {
+        const onHidden = () => {
+            if (document.visibilityState !== "hidden") return;
+            if (successRef.current || !trackedStartRef.current || trackedExitRef.current) return;
+
+            trackedExitRef.current = true;
+            track("form_abandon", {step: String(stepRef.current)});
+        };
+
+        document.addEventListener("visibilitychange", onHidden);
+        return () => document.removeEventListener("visibilitychange", onHidden);
+    }, []);
+
     useEffect(() => {
         const lockScroll = () => {
             document.body.style.setProperty("overflow", "hidden", "important");
@@ -141,6 +216,7 @@ export default function PrestationForm() {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const {name, value} = e.target;
+        trackFormStart();
         setFormData((prev) => ({...prev, [name]: value}));
         // Effacer l'erreur du champ quand l'utilisateur commence à taper
         if (errorFields.includes(name)) {
@@ -149,6 +225,7 @@ export default function PrestationForm() {
     };
 
     const handleDateSelect = (dateStr: string) => {
+        trackFormStart();
         setFormData((prev) => ({
             ...prev,
             date_debut: dateStr,
@@ -178,6 +255,7 @@ export default function PrestationForm() {
     };
 
     const handleTimeSelect = (timeStr: string) => {
+        trackFormStart();
         if (showTimePicker.field) {
             const field = showTimePicker.field;
             setFormData(prev => ({...prev, [field]: timeStr}));
@@ -323,6 +401,7 @@ export default function PrestationForm() {
             if (dateErrors.length) {
                 setErrors(dateErrors);
                 setErrorFields(dateErrorFields);
+                trackErrorFields(dateErrorFields);
                 return;
             }
         }
@@ -333,9 +412,14 @@ export default function PrestationForm() {
             if (requiredErrors.length) {
                 setErrors(requiredErrors);
                 setErrorFields(requiredErrorFields);
+                trackErrorFields(requiredErrorFields);
                 return;
             }
         }
+
+        // L'étape franchie est la suivante : c'est elle que l'entonnoir compte.
+        // L'étape 1 est marquée à la première saisie, pas ici.
+        track("form_step", {step: String(step + 1)});
         setStep((s) => s + 1);
     };
 
@@ -357,6 +441,7 @@ export default function PrestationForm() {
             if (errors.length) {
                 setErrors(errors);
                 setErrorFields(errorFields);
+                trackErrorFields(errorFields);
                 return;
             }
 
@@ -368,6 +453,10 @@ export default function PrestationForm() {
 
             const data = await res.json();
             if (res.ok) {
+                // Le type de prestation est une catégorie fermée
+                // (`PRESTATION_TYPES`), pas une saisie libre : le consigner ne
+                // rend personne identifiable.
+                track("booking_submit", {type: clean.type || "non précisé"});
                 setIsSuccess(true);
                 setFormData({
                     nom: "",
@@ -413,6 +502,7 @@ export default function PrestationForm() {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const {name, value} = e.target;
+        trackFormStart();
         setAppointmentData((prev) => ({...prev, [name]: value}));
         if (errorFields.includes(name)) {
             setErrorFields(prev => prev.filter(f => f !== name));
@@ -444,6 +534,7 @@ export default function PrestationForm() {
         if (errs.length > 0) {
             setErrors(errs);
             setErrorFields(errFields);
+            trackErrorFields(errFields);
             setIsSubmitting(false);
             return;
         }
@@ -456,6 +547,7 @@ export default function PrestationForm() {
             });
 
             if (res.ok) {
+                track("appointment_submit", {type: appointmentData.type});
                 setIsSuccess(true);
                 setAppointmentData({
                     contact: "",
