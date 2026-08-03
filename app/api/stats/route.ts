@@ -5,6 +5,7 @@ import {SITE_URL} from "@/app/site-url";
 import {
     isAnalyticsEventName,
     isDevice,
+    isTrackablePath,
     sanitizePath,
     sanitizeProps,
     sanitizeReferrerHost,
@@ -80,11 +81,19 @@ export async function POST(req: NextRequest) {
             return ACCEPTED;
         }
 
+        // Écarté ici aussi, et pas seulement côté client : l'endpoint est
+        // public, et une page d'administration ouverte dans un onglet resté
+        // chargé avant ce correctif continuerait sinon d'émettre.
+        const path = sanitizePath(body?.path);
+        if (!isTrackablePath(path)) {
+            return ACCEPTED;
+        }
+
         const {error} = await supabaseAdmin()
             .from("analytics_events")
             .insert({
                 name,
-                path: sanitizePath(body?.path),
+                path,
                 referrer_host: sanitizeReferrerHost(body?.referrer, SELF_HOST),
                 device: isDevice(body?.device) ? body.device : null,
                 props: sanitizeProps(name, body?.props),

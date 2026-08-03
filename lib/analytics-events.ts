@@ -124,6 +124,24 @@ export function sanitizePath(value: unknown): string | null {
 }
 
 /**
+ * Chemins exclus de la mesure : ils ne relèvent pas de l'audience du site.
+ *
+ * L'administration et l'écran de connexion sont fréquentés par l'exploitant,
+ * pas par des visiteurs. Les y compter fausse tout : les pages vues, mais
+ * surtout le taux de conversion, calculé sur un dénominateur gonflé par des
+ * consultations internes.
+ */
+const UNTRACKED_PREFIXES = ["/admin", "/login"];
+
+export function isTrackablePath(path: string | null | undefined): boolean {
+    if (!path) return false;
+
+    return !UNTRACKED_PREFIXES.some(
+        prefix => path === prefix || path.startsWith(`${prefix}/`)
+    );
+}
+
+/**
  * Réduit un référent à son seul nom d'hôte.
  *
  * Une URL de référent complète peut contenir la requête tapée par le visiteur,

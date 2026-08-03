@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest";
 import {
     isAnalyticsEventName,
     isDevice,
+    isTrackablePath,
     MAX_PROP_LENGTH,
     sanitizePath,
     sanitizeProps,
@@ -100,6 +101,33 @@ describe("sanitizeReferrerHost", () => {
         expect(sanitizeReferrerHost("pas une url")).toBeNull();
         expect(sanitizeReferrerHost("")).toBeNull();
         expect(sanitizeReferrerHost(undefined)).toBeNull();
+    });
+});
+
+describe("isTrackablePath", () => {
+    it("écarte l'administration et la connexion", () => {
+        expect(isTrackablePath("/admin")).toBe(false);
+        expect(isTrackablePath("/admin/statistiques")).toBe(false);
+        expect(isTrackablePath("/admin/prestations/futures")).toBe(false);
+        expect(isTrackablePath("/login")).toBe(false);
+    });
+
+    it("conserve les pages publiques", () => {
+        expect(isTrackablePath("/")).toBe(true);
+        expect(isTrackablePath("/dj-mariage-seine-et-marne")).toBe(true);
+        expect(isTrackablePath("/mentions-legales")).toBe(true);
+    });
+
+    it("ne se laisse pas berner par un préfixe partiel", () => {
+        // Une page publique dont le chemin commence par les mêmes lettres doit
+        // rester comptée.
+        expect(isTrackablePath("/administration-de-preuve")).toBe(true);
+        expect(isTrackablePath("/logins")).toBe(true);
+    });
+
+    it("écarte un chemin absent", () => {
+        expect(isTrackablePath(null)).toBe(false);
+        expect(isTrackablePath(undefined)).toBe(false);
     });
 });
 

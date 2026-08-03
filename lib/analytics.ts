@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    isTrackablePath,
     type AnalyticsEventName,
     type AnalyticsProps,
 } from "./analytics-events";
@@ -44,9 +45,15 @@ export function track<N extends AnalyticsEventName>(
     // fausseraient durablement les moyennes.
     if (process.env.NODE_ENV !== "production") return;
 
+    // L'administration n'est pas de l'audience : on n'émet rien depuis ces
+    // pages. La route d'ingestion refait ce contrôle, une balise pouvant être
+    // forgée.
+    const path = window.location.pathname;
+    if (!isTrackablePath(path)) return;
+
     const payload = JSON.stringify({
         name,
-        path: window.location.pathname,
+        path,
         referrer: document.referrer || undefined,
         device: currentDevice(),
         props,
