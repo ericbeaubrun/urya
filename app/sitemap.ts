@@ -2,7 +2,14 @@ import type {MetadataRoute} from "next";
 import {SITE_URL} from "./site-url";
 import {getSiteContent} from "@/lib/content";
 import {LANDING_SLUGS} from "@/lib/landing-pages";
-import {CITY_SLUGS} from "@/lib/city-pages";
+import {AREA_PAGES} from "@/lib/area-pages";
+
+/**
+ * Priorité des pages de zone selon leur niveau. La page régionale est la tête
+ * de la hiérarchie et la seule à viser la requête large ; les villes, à trafic
+ * égal, convertissent moins bien qu'une requête de prestation.
+ */
+const AREA_PRIORITY = {region: 0.8, department: 0.75, city: 0.7} as const;
 
 /**
  * Les images de la galerie sont déclarées sur l'entrée d'accueil : c'est la
@@ -44,13 +51,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: "monthly" as const,
             priority: 0.8,
         })),
-        // Priorité inférieure aux pages de prestation : à trafic égal, une
-        // requête « dj mariage » convertit mieux qu'une requête ville seule.
-        ...CITY_SLUGS.map((slug) => ({
-            url: `${SITE_URL}/${slug}`,
+        ...AREA_PAGES.map((page) => ({
+            url: `${SITE_URL}/${page.slug}`,
             lastModified,
             changeFrequency: "monthly" as const,
-            priority: 0.7,
+            priority: AREA_PRIORITY[page.level],
         })),
         {
             url: `${SITE_URL}/mentions-legales`,

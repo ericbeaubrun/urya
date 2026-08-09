@@ -3,11 +3,11 @@ import {notFound} from 'next/navigation';
 import JsonLd from '@/app/components/JsonLd';
 import {SITE_URL} from '@/app/site-url';
 import {LANDING_PAGES, findLandingPage} from '@/lib/landing-pages';
-import {CITY_PAGES, findCityPage} from '@/lib/city-pages';
-import {cityPageJsonLd, landingPageJsonLd} from '@/lib/structured-data';
+import {AREA_PAGES, findAreaPage} from '@/lib/area-pages';
+import {areaPageJsonLd, landingPageJsonLd} from '@/lib/structured-data';
 import {KEYWORDS, OG_IMAGE} from '@/lib/seo';
 import PrestationLanding from '@/app/landing/PrestationLanding';
-import CityLanding from '@/app/landing/CityLanding';
+import AreaLanding from '@/app/landing/AreaLanding';
 import styles from '@/app/landing/Landing.module.css';
 
 /**
@@ -18,7 +18,12 @@ import styles from '@/app/landing/Landing.module.css';
  * Les deux familles — type de prestation et zone d'intervention — partagent ce
  * segment parce que Next n'autorise qu'un seul segment dynamique par niveau.
  * Leurs slugs ne peuvent pas entrer en collision : les uns nomment une
- * prestation, les autres une ville.
+ * prestation, les autres un territoire.
+ *
+ * Les trois niveaux de zone (région, département, ville) vivent eux aussi à
+ * plat plutôt que sous `/dj-ile-de-france/dj-essonne/…` : une URL courte se
+ * partage mieux, et la hiérarchie est déjà portée par le fil d'Ariane et le
+ * maillage, qui sont les signaux que Google lit réellement.
  *
  * Le segment ne met pas en danger les routes existantes : un segment statique
  * (`/admin`, `/login`…) l'emporte toujours sur un segment dynamique de même
@@ -29,14 +34,14 @@ import styles from '@/app/landing/Landing.module.css';
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-    return [...LANDING_PAGES, ...CITY_PAGES].map((page) => ({slug: page.slug}));
+    return [...LANDING_PAGES, ...AREA_PAGES].map((page) => ({slug: page.slug}));
 }
 
 export async function generateMetadata(
     {params}: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
     const {slug} = await params;
-    const page = findLandingPage(slug) ?? findCityPage(slug);
+    const page = findLandingPage(slug) ?? findAreaPage(slug);
 
     if (!page) return {};
 
@@ -70,9 +75,9 @@ export default async function LandingPageRoute(
     const {slug} = await params;
 
     const prestation = findLandingPage(slug);
-    const city = prestation ? undefined : findCityPage(slug);
+    const area = prestation ? undefined : findAreaPage(slug);
 
-    if (!prestation && !city) notFound();
+    if (!prestation && !area) notFound();
 
     return (
         <div className={styles.page}>
@@ -83,8 +88,8 @@ export default async function LandingPageRoute(
                 </>
             ) : (
                 <>
-                    <JsonLd data={cityPageJsonLd(SITE_URL, city!)}/>
-                    <CityLanding page={city!}/>
+                    <JsonLd data={areaPageJsonLd(SITE_URL, area!)}/>
+                    <AreaLanding page={area!}/>
                 </>
             )}
         </div>

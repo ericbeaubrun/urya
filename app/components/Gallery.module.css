@@ -21,15 +21,6 @@
     margin-bottom: var(--space-20);
 }
 
-.sectionTitle {
-}
-
-
-@media (min-width: 768px) {
-    .sectionTitle {
-        font-size: var(--fs-5xl);
-    }
-}
 
 .textGradient {
     background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
@@ -39,11 +30,11 @@
 }
 
 .sectionSubtitle {
-    font-size: var(--fs-lg);
+    font-size: var(--fs-lead);
     color: var(--color-text-muted);
-    max-width: 36rem;
+    max-width: var(--measure);
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .label {
@@ -59,13 +50,17 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-    auto-rows: 180px;
+    gap: var(--space-3);
+    /* `auto-rows` n'existe pas : la propriété s'appelle `grid-auto-rows`, et
+       la déclaration était donc ignorée. Les vignettes prenaient la hauteur de
+       leur contenu au lieu de la hauteur de rangée voulue. */
+    grid-auto-rows: 135px;
 }
 
 @media (min-width: 768px) {
     .grid {
         grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 170px;
     }
 }
 
@@ -78,8 +73,20 @@
     position: relative;
     border-radius: var(--radius-md);
     background-color: var(--color-bg-card);
-    cursor: pointer;
-    /*overflow: hidden;*/
+    border: none;
+    padding: 0;
+    cursor: zoom-in;
+    /* Pas d'`overflow: hidden` : c'est ce débordement qui fait tout l'effet du
+       survol. L'image zoomée dépasse de sa tuile et passe par-dessus ses
+       voisines, au lieu d'être rognée au ras des bords. */
+    z-index: 0;
+}
+
+/* Sans quoi la vignette survolée passerait sous celles qui la suivent dans le
+   flux : à `z-index` égal, c'est l'ordre du document qui tranche. */
+.imageCard:hover,
+.imageCard:focus-visible {
+    z-index: 1;
 }
 
 .image {
@@ -90,7 +97,12 @@
     transition: transform 0.4s ease;
 }
 
-.imageCard:hover .image {
+/* SURVOL
+   Zoom léger et voile violet. Les états `:focus-visible` accompagnent chaque
+   règle : la vignette est un bouton, et la navigation au clavier a besoin du
+   même repère depuis la disparition de la mention « cliquez pour agrandir ». */
+.imageCard:hover .image,
+.imageCard:focus-visible .image {
     transform: scale(1.025);
 }
 
@@ -102,20 +114,69 @@
     pointer-events: none;
 }
 
-.imageCard:hover .hoverOverlay {
+.imageCard:hover .hoverOverlay,
+.imageCard:focus-visible .hoverOverlay {
     background-color: rgba(139, 92, 246, 0.08);
 }
 
-.neonBorder {
-    position: absolute;
-    inset: 0;
-    border: 1px solid transparent;
-    border-radius: var(--radius-md);
-    transition: var(--transition-base);
-    pointer-events: none;
+@media (prefers-reduced-motion: reduce) {
+    .image,
+    .hoverOverlay {
+        transition: none;
+    }
+
+    .imageCard:hover .image,
+    .imageCard:focus-visible .image {
+        transform: none;
+    }
 }
 
-.imageCard:hover .neonBorder {
-    border-color: rgba(167, 139, 250, 0.4);
-    box-shadow: inset 0 0 15px rgba(139, 92, 246, 0.15);
+/* VISIONNEUSE
+   La vignette est volontairement petite : c'est l'agrandissement qui sert de
+   vue réelle de la photo. */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    /* Au-dessus du tiroir de navigation (100) et de la barre fixe (60). */
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    background-color: rgba(8, 8, 10, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    cursor: zoom-out;
+}
+
+.lightboxImage {
+    max-width: min(100%, 1200px);
+    /* Le viewport moins la place du bouton de fermeture et des marges. */
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.9);
+}
+
+.lightboxClose {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text-main);
+    cursor: pointer;
+}
+
+.lightboxClose:hover {
+    background-color: rgba(255, 255, 255, 0.18);
 }

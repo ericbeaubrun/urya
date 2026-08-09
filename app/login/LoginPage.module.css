@@ -1,93 +1,193 @@
-.pageContainer {
+/* Écran de connexion : même langage visuel que le back-office (voir
+   app/admin/admin-theme.css). La classe `adminShell` est posée sur la page pour
+   hériter des tokens et des styles de champs, sans toucher au thème sombre du
+   site public. */
+
+.page {
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: var(--color-bg-deep);
-    padding: var(--space-6);
+    justify-content: center;
+    padding: 2rem 1rem 4rem;
 }
 
-.formContainer {
-    background-color: var(--color-bg-card);
-    padding: var(--space-10);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-xl);
+.card {
+    position: relative;
+    overflow: hidden;
     width: 100%;
-    max-width: 400px;
+    max-width: 340px;
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius-lg);
+    box-shadow: var(--adm-shadow);
+    padding: 1.5rem 1.4rem 1.4rem;
+}
+
+/* Barre de progression indéterminée, collée au bord haut de la carte : c'est
+   le signal principal que la requête est partie. */
+.progress {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: var(--adm-primary-soft);
+    overflow: hidden;
+}
+
+.progress::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 40%;
+    background: var(--adm-primary);
+    animation: slide 1.05s ease-in-out infinite;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(350%);
+    }
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.15rem;
+}
+
+.brandMark {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--adm-radius-sm);
+    background: var(--adm-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.brandText {
+    font-size: 0.86rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 .title {
-    margin-bottom: var(--space-8);
-    text-align: center;
-    font-family: var(--font-display);
-    font-size: var(--fs-3xl);
-    color: var(--color-text-main);
+    margin-bottom: 0.15rem;
 }
 
-.formGroup {
-    margin-bottom: var(--space-5);
+.subtitle {
+    margin-bottom: 1.15rem;
+    font-size: 0.78rem;
+    color: var(--adm-dim);
+}
+
+.field {
+    margin-bottom: 0.8rem;
 }
 
 .label {
     display: block;
-    margin-bottom: var(--space-2);
+    margin-bottom: 0.25rem;
+    font-size: 0.76rem;
     font-weight: 500;
-    font-size: var(--fs-sm);
-    color: var(--color-text-dim);
+    color: var(--adm-muted);
 }
 
-.input {
+.error {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+    padding: 0.4rem 0.55rem;
+    background: var(--adm-danger-soft);
+    border: 1px solid var(--adm-danger);
+    border-radius: var(--adm-radius-sm);
+    color: var(--adm-danger-text);
+    font-size: 0.78rem;
+}
+
+.submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
     width: 100%;
-    padding: var(--space-3) var(--space-4);
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--fs-base);
-    color: var(--color-text-main);
-    transition: var(--transition-fast);
-}
-
-.input:focus {
-    outline: none;
-    border-color: var(--color-border-primary);
-}
-
-.errorMessage {
-    padding: var(--space-3);
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--space-5);
-    text-align: center;
-    font-size: var(--fs-sm);
-}
-
-.submitButton {
-    width: 100%;
-    padding: var(--space-4);
-    background-color: var(--color-primary);
-    color: var(--color-text-main);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--fs-base);
+    padding: 0.45rem 0.6rem;
+    background: var(--adm-primary);
+    color: #fff;
+    border: 1px solid var(--adm-primary);
+    border-radius: var(--adm-radius-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-base);
+    transition: background var(--adm-transition), border-color var(--adm-transition);
 }
 
-.submitButton:hover {
-    background-color: var(--color-primary-light);
+.submit:hover:not(:disabled) {
+    background: var(--adm-primary-hover);
+    border-color: var(--adm-primary-hover);
 }
 
-.infoBox {
-    margin-top: var(--space-5);
-    padding: var(--space-4);
-    background-color: rgba(255, 255, 255, 0.01);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--fs-xs);
-    color: var(--color-text-dim);
-    line-height: 1.5;
+.submit:disabled {
+    cursor: progress;
+    background: var(--adm-primary-hover);
+    border-color: var(--adm-primary-hover);
+}
+
+.spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Le formulaire s'estompe pendant l'attente : l'état « en cours » reste lisible
+   même si la barre de progression sort du champ de vision. */
+.fieldsBusy {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+/* Annonce l'état « en cours » aux lecteurs d'écran, sans occuper de place. */
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.footer {
+    margin-top: 1.1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--adm-border);
+    font-size: 0.74rem;
+    color: var(--adm-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress::after,
+    .spinner {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+    }
+
+    .spinner {
+        border-top-color: rgba(255, 255, 255, 0.35);
+    }
 }

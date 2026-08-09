@@ -1,6 +1,15 @@
 import Link from "next/link";
 import {requireAdmin} from "@/lib/require-admin";
-import {getAnalyticsSummary, isPeriod, PERIODS, type Count, type Period} from "@/lib/analytics-query";
+import {
+    getAnalyticsSummary,
+    getDailySeries,
+    parsePeriod,
+    parseRange,
+    shiftDay,
+    today,
+    PERIODS,
+    type Count,
+} from "@/lib/analytics-query";
 import styles from "./Stats.module.css";
 
 // Les statistiques doivent refléter l'état de la base à l'instant du chargement.
@@ -54,36 +63,98 @@ function Breakdown({title, rows, empty, suffix}: {
     );
 }
 
+/**
+ * Histogramme horizontal sur un axe fixe : les cases vides comptent autant que
+ * les pleines, contrairement à un classement.
+ */
+function Distribution({title, rows, unit, every = 1}: {
+    title: string;
+    rows: Count[];
+    unit: string;
+    /** N'affiche qu'une étiquette sur `every`, pour ne pas surcharger l'axe. */
+    every?: number;
+}) {
+    const max = Math.max(...rows.map((r) => r.value), 1);
+
+    return (
+        <section className={styles.card}>
+            <h2 className={styles.cardTitle}>{title}</h2>
+            <div className={styles.dist}>
+                {rows.map((row, i) => (
+                    <div
+                        key={row.label}
+                        className={styles.distCol}
+                        title={`${row.label} — ${row.value} page(s) vue(s)`}
+                    >
+                        <div className={styles.distTrack}>
+                            <div
+                                className={styles.distFill}
+                                style={{height: `${(row.value / max) * 100}%`}}
+                            />
+                        </div>
+                        <span className={styles.distLabel}>
+                            {i % every === 0 ? row.label : ""}
+                        </span>
+                    </div>
+                ))}
+            </div>
+            <p className={styles.distUnit}>{unit}</p>
+        </section>
+    );
+}
+
 export default async function StatistiquesPage(
-    {searchParams}: { searchParams: Promise<{ periode?: string }> }
+    {searchParams}: { searchParams: Promise<{ periode?: string; jour?: string }> }
 ) {
     await requireAdmin();
 
-    const {periode} = await searchParams;
-    const period: Period = isPeriod(periode) ? (Number(periode) as Period) : 30;
+    const {periode, jour} = await searchParams;
+    // La période reste portée même quand une journée est sélectionnée : elle
+    // définit l'étendue du graphique de fréquentation, qui sert de sélecteur.
+    const period = parsePeriod(periode);
+    const range = parseRange(periode, jour);
+    const selectedDay = range.kind === "day" ? range.day : null;
+
+    const href = (params: { periode?: number; jour?: string }) => {
+        const query = new URLSearchParams({periode: String(params.periode ?? period)});
+        if (params.jour) query.set("jour", params.jour);
+
+        return `/admin/statistiques?${query}`;
+    };
 
     let summary;
+    let daily: Count[];
     try {
-        summary = await getAnalyticsSummary(period);
+        [summary, daily] = await Promise.all([
+            getAnalyticsSummary(range),
+            getDailySeries(period),
+        ]);
     } catch (e) {
         return (
             <div className={styles.page}>
                 <h1 className={styles.title}>Statistiques</h1>
                 <p className={`${styles.notice} ${styles.error}`}>
                     {e instanceof Error ? e.message : "Erreur inattendue."}
-                    {" "}Vérifiez que la table <code>analytics_events</code> existe
-                    (voir <code>scripts/create-analytics-events.sql</code>).
+                    {" "}Vérifiez que la table <code>analytics_events</code> existe et
+                    qu&apos;elle porte les colonnes <code>os</code> et <code>browser</code>
+                    {" "}(voir <code>scripts/create-analytics-events.sql</code> et
+                    {" "}<code>scripts/add-analytics-client-context.sql</code>).
                 </p>
             </div>
         );
     }
 
-    const maxDaily = Math.max(...summary.daily.map((d) => d.value), 1);
-    const firstDay = summary.daily[0]?.label;
-    const lastDay = summary.daily[summary.daily.length - 1]?.label;
+    const maxDaily = Math.max(...daily.map((d) => d.value), 1);
+    const firstDay = daily[0]?.label;
+    const lastDay = daily[daily.length - 1]?.label;
 
     const formatDay = (day?: string) =>
         day ? new Date(`${day}T00:00:00Z`).toLocaleDateString("fr-FR", {day: "numeric", month: "short"}) : "";
+
+    const formatFullDay = (day: string) =>
+        new Date(`${day}T00:00:00Z`).toLocaleDateString("fr-FR", {
+            weekday: "long", day: "numeric", month: "long", year: "numeric",
+        });
 
     return (
         <div className={styles.page}>
@@ -93,14 +164,42 @@ export default async function StatistiquesPage(
                     {PERIODS.map((p) => (
                         <Link
                             key={p}
-                            href={`/admin/statistiques?periode=${p}`}
-                            className={p === period ? `${styles.period} ${styles.periodActive}` : styles.period}
+                            href={href({periode: p})}
+                            className={
+                                !selectedDay && p === period
+                                    ? `${styles.period} ${styles.periodActive}`
+                                    : styles.period
+                            }
                         >
                             {p} jours
                         </Link>
                     ))}
+                    {/* Formulaire GET : le sélecteur natif du navigateur suffit,
+                        sans une ligne de JavaScript côté client. */}
+                    <form className={styles.dayForm} action="/admin/statistiques">
+                        <input type="hidden" name="periode" value={period}/>
+                        <input
+                            type="date"
+                            name="jour"
+                            className={styles.dayInput}
+                            defaultValue={selectedDay ?? ""}
+                            max={today()}
+                            min={shiftDay(today(), -760)}
+                            aria-label="Journée à détailler"
+                        />
+                        <button type="submit" className={styles.dayButton}>Voir</button>
+                    </form>
                 </nav>
             </div>
+
+            {selectedDay && (
+                <p className={styles.dayBanner}>
+                    Chiffres de la journée du <strong>{formatFullDay(selectedDay)}</strong>.
+                    <Link href={href({})} className={styles.reset}>
+                        Revenir aux {period} jours
+                    </Link>
+                </p>
+            )}
 
             {summary.truncated && (
                 <p className={styles.notice}>
@@ -117,14 +216,22 @@ export default async function StatistiquesPage(
             </div>
 
             <section className={styles.card}>
-                <h2 className={styles.cardTitle}>Fréquentation</h2>
+                <h2 className={styles.cardTitle}>
+                    Fréquentation <span className={styles.hint}>— cliquez une barre pour détailler la journée</span>
+                </h2>
                 <div className={styles.chart}>
-                    {summary.daily.map((day) => (
-                        <div
+                    {daily.map((day) => (
+                        <Link
                             key={day.label}
-                            className={styles.bar}
+                            href={href({jour: day.label})}
+                            className={
+                                day.label === selectedDay
+                                    ? `${styles.bar} ${styles.barActive}`
+                                    : styles.bar
+                            }
                             style={{height: `${(day.value / maxDaily) * 100}%`}}
                             title={`${formatDay(day.label)} — ${day.value} page(s) vue(s)`}
+                            aria-label={`${formatDay(day.label)} : ${day.value} page(s) vue(s)`}
                         />
                     ))}
                 </div>
@@ -137,7 +244,9 @@ export default async function StatistiquesPage(
             <section className={styles.card}>
                 <h2 className={styles.cardTitle}>Entonnoir de conversion</h2>
                 {summary.formViews === 0 ? (
-                    <p className={styles.empty}>Aucun formulaire vu sur la période.</p>
+                    <p className={styles.empty}>
+                        Aucun formulaire vu {selectedDay ? "ce jour-là" : "sur la période"}.
+                    </p>
                 ) : (
                     <div className={styles.funnel}>
                         {summary.funnel.map((step, i) => (
@@ -165,10 +274,26 @@ export default async function StatistiquesPage(
             </section>
 
             <div className={styles.grid}>
+                <Distribution
+                    title="Heures de fréquentation"
+                    rows={summary.hourly}
+                    unit="Pages vues par heure locale — indique quand publier et quand être joignable."
+                    every={3}
+                />
+                {summary.weekdays.length > 0 && (
+                    <Distribution
+                        title="Jours de la semaine"
+                        rows={summary.weekdays}
+                        unit="Pages vues cumulées par jour de la semaine sur la période."
+                    />
+                )}
+            </div>
+
+            <div className={styles.grid}>
                 <Breakdown
                     title="Pages les plus vues"
                     rows={summary.topPages}
-                    empty="Aucune page vue sur la période."
+                    empty="Aucune page vue."
                 />
                 <Breakdown
                     title="Sources de trafic"
@@ -176,14 +301,29 @@ export default async function StatistiquesPage(
                     empty="Aucune source enregistrée."
                 />
                 <Breakdown
-                    title="Appareils"
+                    title="Largeur d'écran"
                     rows={summary.devices}
-                    empty="Aucun appareil enregistré."
+                    empty="Aucun affichage enregistré."
+                />
+                <Breakdown
+                    title="Systèmes"
+                    rows={summary.systems}
+                    empty="Aucun système enregistré."
+                />
+                <Breakdown
+                    title="Navigateurs"
+                    rows={summary.browsers}
+                    empty="Aucun navigateur enregistré."
                 />
                 <Breakdown
                     title="Origine des clics vers le devis"
                     rows={summary.ctaSources}
                     empty="Aucun clic enregistré."
+                />
+                <Breakdown
+                    title="Contacts directs (appel, e-mail, Instagram)"
+                    rows={summary.contactClicks}
+                    empty="Aucun contact direct enregistré."
                 />
                 <Breakdown
                     title="Champs les plus en erreur"
@@ -200,9 +340,13 @@ export default async function StatistiquesPage(
             <p className={styles.footnote}>
                 Mesure interne, sans cookie ni identifiant de visiteur : les chiffres
                 comptent des pages vues et des actions, pas des personnes. Un même
-                visiteur revenu plusieurs fois est donc compté plusieurs fois. Aucune
-                donnée n&apos;est transmise à un tiers, et les événements sont purgés
-                au bout de 25 mois.
+                visiteur revenu plusieurs fois est donc compté plusieurs fois. La
+                largeur d&apos;écran est arrondie à trois paliers, le système et le
+                navigateur à leur seule famille — jamais leur version : de quoi
+                orienter le design, jamais de quoi reconnaître quelqu&apos;un. Les
+                journées sont découpées à l&apos;heure de Paris. Aucune donnée
+                n&apos;est transmise à un tiers, et les événements sont purgés au bout
+                de 25 mois.
             </p>
         </div>
     );

@@ -21,7 +21,65 @@
 
 .periods {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 6px;
+}
+
+/* Sélecteur de journée : formulaire GET, sans JavaScript. */
+.dayForm {
+    display: flex;
+    gap: 6px;
+    margin-left: 6px;
+}
+
+.dayInput {
+    padding: 5px 8px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--adm-text);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+}
+
+.dayInput:focus-visible {
+    outline: 2px solid var(--adm-primary);
+    outline-offset: 1px;
+}
+
+.dayButton {
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--adm-muted);
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: var(--adm-radius);
+    transition: var(--adm-transition);
+}
+
+.dayButton:hover {
+    border-color: var(--adm-border-strong);
+    color: var(--adm-text);
+}
+
+.dayBanner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--adm-primary-text);
+    background: var(--adm-primary-soft);
+    border: 1px solid var(--adm-primary);
+    border-radius: var(--adm-radius);
+}
+
+.reset {
+    color: inherit;
+    text-decoration: underline;
 }
 
 .period {
@@ -121,17 +179,26 @@
     overflow-x: auto;
 }
 
+/* Chaque barre est un lien vers le détail de sa journée. */
 .bar {
+    display: block;
     flex: 1 1 0;
     min-width: 4px;
     background: var(--adm-primary);
     border-radius: var(--adm-radius-sm) var(--adm-radius-sm) 0 0;
     /* Un jour à zéro doit rester visible, sinon la courbe semble trouée. */
     min-height: 2px;
-    opacity: 0.85;
+    opacity: 0.6;
+    transition: var(--adm-transition);
 }
 
-.bar:hover {
+.bar:hover,
+.bar:focus-visible {
+    opacity: 1;
+}
+
+.barActive {
+    background: var(--adm-success);
     opacity: 1;
 }
 
@@ -139,6 +206,63 @@
     display: flex;
     justify-content: space-between;
     margin-top: 6px;
+    font-size: 11px;
+    color: var(--adm-dim);
+}
+
+.hint {
+    font-weight: 400;
+    color: var(--adm-dim);
+}
+
+/* Répartition sur un axe fixe (heures, jours) : les zéros restent visibles. */
+.dist {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.distCol {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.distTrack {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 90px;
+}
+
+.distFill {
+    width: 100%;
+    min-height: 2px;
+    background: var(--adm-primary);
+    border-radius: var(--adm-radius-sm) var(--adm-radius-sm) 0 0;
+    opacity: 0.7;
+}
+
+.distCol:hover .distFill {
+    opacity: 1;
+}
+
+.distLabel {
+    font-size: 10px;
+    color: var(--adm-dim);
+    white-space: nowrap;
+    /* Les libellés du jour de semaine sont longs : on ne garde que l'initiale
+       lisible plutôt que de laisser la colonne s'élargir. */
+    overflow: hidden;
+    text-overflow: clip;
+    max-width: 100%;
+}
+
+.distUnit {
+    margin: 10px 0 0;
     font-size: 11px;
     color: var(--adm-dim);
 }

@@ -4,6 +4,7 @@ import {
     isTrackablePath,
     type AnalyticsEventName,
     type AnalyticsProps,
+    type Device,
 } from "./analytics-events";
 
 /**
@@ -23,12 +24,19 @@ import {
 const ENDPOINT = "/api/stats";
 
 /**
- * Le seuil correspond à la bascule de mise en page du site. On ne cherche pas
- * à identifier l'appareil, seulement à savoir si l'on regarde une expérience
- * mobile ou bureau.
+ * Les seuils sont ceux des points de bascule de la mise en page du site. On ne
+ * cherche pas à identifier l'appareil, seulement à savoir sur quelle largeur
+ * le site est réellement consulté — la seule mesure qui puisse trancher un
+ * arbitrage de design. La largeur exacte n'est jamais transmise : elle serait
+ * un élément d'empreinte, le palier ne l'est pas.
  */
-function currentDevice(): string {
-    return window.innerWidth < 768 ? "mobile" : "desktop";
+function currentDevice(): Device {
+    const width = window.innerWidth;
+
+    if (width < 768) return "mobile";
+    if (width < 1024) return "tablet";
+
+    return "desktop";
 }
 
 /**

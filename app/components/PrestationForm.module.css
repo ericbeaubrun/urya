@@ -56,14 +56,13 @@
     font-family: var(--font-secondary);
 }
 
+
+/* Le titre tient sur une ligne à toutes les largeurs : la taille suit la
+   fenêtre plutôt que de laisser le texte se replier. */
 .sectionTitle {
-
-}
-
-@media (min-width: 768px) {
-    .sectionTitle {
-        font-size: var(--fs-5xl);
-    }
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-size: clamp(1.5rem, 6.2vw, 3.25rem);
 }
 
 .textGradient {
@@ -75,9 +74,10 @@
 
 .sectionSubtitle {
     color: var(--color-text-muted);
-    margin-top: var(--space-4);
-    line-height: 1.6;
-    font-size: var(--fs-base);
+    margin: var(--space-4) auto 0;
+    max-width: var(--measure);
+    line-height: 1.7;
+    font-size: var(--fs-lead);
 }
 
 .toggleContainer {
@@ -122,14 +122,20 @@
 }
 
 .card {
-    background-color: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background-color: #15151a;
+    /* La bordure à 5 % d'opacité laissait la carte se fondre dans la
+       section : à 12 % le périmètre du formulaire se lit d'un coup d'œil. */
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-xl);
-    padding: var(--space-8);
+    padding: var(--space-10) var(--space-8);
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 520px;
+    /* Assez pour que la carte ne saute pas d'une étape à l'autre, mais plus
+       assez pour creuser un vide entre le dernier champ et le bouton : le
+       `margin-top: auto` du pied de carte repoussait l'action principale à
+       un écran de distance de la saisie. */
+    min-height: 24rem;
 }
 
 .card::before {
@@ -145,10 +151,19 @@
     pointer-events: none;
 }
 
+/* 32 px de marge intérieure de chaque côté, c'est un cinquième de la largeur
+   utile sur un téléphone de 320 px : c'est ce qui étranglait la grille des types
+   de prestation au point de la faire repasser sur une seule colonne. */
+@media (max-width: 560px) {
+    .card {
+        padding: var(--space-8) var(--space-5);
+    }
+}
+
 @media (min-width: 768px) {
     .card {
         padding: var(--space-12);
-        min-height: 600px;
+        min-height: 30rem;
     }
 }
 
@@ -157,8 +172,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-8);
-    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-10);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: var(--space-6);
     gap: var(--space-2);
     flex-shrink: 0;
@@ -221,20 +236,20 @@
 .formSection {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-8);
     flex: 1;
 }
 
 .field {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-3);
 }
 
 .fieldRow {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-4);
+    gap: var(--space-6);
 }
 
 @media (min-width: 500px) {
@@ -243,11 +258,13 @@
     }
 }
 
+/* `--color-text-dim` (#6b7280) sur la carte #111111 plafonne à 3,9:1, sous le
+   seuil de 4.5:1 — insuffisant pour un libellé de champ, qui plus est petit et
+   espacé. `--color-text-muted` monte à 7,7:1. */
 .fieldLabelText {
-    font-size: var(--fs-xs);
-    /*text-transform: uppercase;*/
-    letter-spacing: 0.05em;
-    color: var(--color-text-dim);
+    font-size: var(--fs-base);
+    letter-spacing: 0.02em;
+    color: var(--color-text-main);
     font-weight: 600;
     font-family: var(--font-secondary);
 }
@@ -256,26 +273,35 @@
     color: var(--color-primary-light);
 }
 
+/* La taille de police d'une saisie ne descend pas sous 16 px : en dessous,
+   Safari iOS zoome automatiquement à la prise de focus et recadre la page. */
 .input, .select, .textarea {
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-border);
+    /* 0.02 d'opacité sur un fond sombre ne dessine aucune zone de saisie :
+       rien ne distinguait le champ de la carte tant qu'il était vide. */
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: var(--radius-md);
-    padding: 0.875rem var(--space-4);
+    padding: var(--space-4) var(--space-5);
     color: var(--color-text-main);
-    font-size: var(--fs-sm);
+    font-size: var(--fs-base);
     transition: var(--transition-fast);
     appearance: none;
     font-family: var(--font-main);
 }
 
 .select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23b4bcc8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1.25rem;
     padding-right: 2.5rem;
     cursor: pointer;
+    /* La liste déroulée est dessinée par le système, hors de portée du CSS de la
+       page : sans cette déclaration, elle s'ouvre en clair au milieu d'un
+       formulaire sombre. `.select option` ne couvre que les navigateurs qui
+       acceptent de styler les options. */
+    color-scheme: dark;
 }
 
 .select option {
@@ -284,13 +310,15 @@
 }
 
 .input:hover, .select:hover, .textarea:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .input:focus, .select:focus, .textarea:focus {
     outline: none;
-    border-color: var(--color-border-primary) !important;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+    border-color: var(--color-primary) !important;
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
 }
 
 .input[type="date"], .input[type="time"] {
@@ -345,8 +373,8 @@
 }
 
 .recapContainer {
-    background-color: rgba(255, 255, 255, 0.01);
-    border: 1px solid var(--color-border);
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     max-height: 280px;
@@ -374,7 +402,7 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.875rem;
+    gap: var(--space-4);
 }
 
 .recapItem {
@@ -382,9 +410,9 @@
     justify-content: space-between;
     align-items: start;
     gap: var(--space-6);
-    font-size: var(--fs-sm);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-    padding-bottom: var(--space-2);
+    font-size: var(--fs-base);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: var(--space-3);
 }
 
 .recapItem:last-child {
@@ -393,21 +421,43 @@
 }
 
 .recapLabel {
-    color: var(--color-text-dim);
+    color: var(--color-text-muted);
     font-weight: 500;
-    flex-shrink: 0;
+    /* `flex-shrink: 0` réservait au libellé toute sa largeur intrinsèque et ne
+       laissait que le reste à la valeur. */
+    min-width: 0;
 }
 
 .recapValue {
     color: var(--color-text-main);
     text-align: right;
-    word-break: break-word;
+    min-width: 0;
+    /* `word-break: break-word` autorise la coupure à n'importe quel caractère :
+       la largeur minimale de la colonne tombait donc à une seule lettre. Avec un
+       libellé long en face, « samedi 22 août 2026 » se retrouvait dans 24 px et
+       descendait en colonne de lettres haute de 400 px. `overflow-wrap` ne coupe
+       qu'un mot réellement plus large que sa colonne. */
+    overflow-wrap: break-word;
+}
+
+/* En dessous, la ligne « libellé — valeur » n'a plus la place de tenir sur une
+   seule ligne : le libellé passe au-dessus de sa valeur. */
+@media (max-width: 560px) {
+    .recapItem {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-1);
+    }
+
+    .recapValue {
+        text-align: left;
+    }
 }
 
 .privacyNote {
-    margin-top: var(--space-4);
-    font-size: var(--fs-xs);
-    color: var(--color-text-dim);
+    margin-top: var(--space-6);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
     line-height: 1.4;
     font-style: italic;
     text-align: center;
@@ -433,60 +483,52 @@
     flex-shrink: 0;
 }
 
-.btnNext, .btnBack, .btnConfirm {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1px;
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-sm);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    transition: var(--transition-base);
-    border: none;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-    color: var(--color-text-main);
-    background-color: var(--color-primary);
+/* Les deux boutons ne tiennent pas côte à côte sur un téléphone. `.btn` porte
+   `white-space: nowrap` et une marge intérieure fixe : ils ne se réduisaient
+   donc pas, ils débordaient. Sur 360 px de large, « Précédent » + « Envoyer la
+   demande » réclamaient 401 px dans une carte qui en offrait 246, et le bouton
+   d'envoi finissait 99 px au-delà du bord de l'écran — rogné par l'`overflow:
+   hidden` de la section, donc invisible et hors d'atteinte. L'action finale du
+   formulaire était perdue. Empilés, les deux boutons occupent toute la largeur
+   et offrent une cible confortable. */
+@media (max-width: 560px) {
+    .navGroup {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-3);
+        padding-top: var(--space-6);
+    }
+
+    .navGroup > button {
+        width: 100%;
+        /* Annule le `margin-left: auto` de `.btnNext`/`.btnConfirm`, qui n'a de
+           sens qu'en rangée. */
+        margin-left: 0;
+    }
 }
 
 .btnNext, .btnConfirm {
+    composes: btn btnPrimary from global;
     margin-left: auto;
 }
 
-.btnBack, .btnBack {
-    background-color: var(--color-primary);
-    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+/* « Retour » était aussi voyant que « Suivant » : deux boutons pleins de la
+   même couleur, l'œil ne savait plus lequel était l'action attendue. Il repasse
+   en secondaire pour laisser l'action principale seule à ce niveau de contraste. */
+.btnBack {
+    composes: btn from global;
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    box-shadow: none;
 }
 
-.btnConfirm {
-    background-color: green;
-    box-shadow: 0 4px 20px rgb(27 129 27 / 0.2);
+.btnBack:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--color-text-main);
 }
 
-.btnConfirm:hover {
-    box-shadow: 0 6px 30px rgb(27 129 27 / 0.48);
-    transform: translateY(-1px);
-    background-color: #399139;
-}
-
-.btnBack:hover, .btnNext:hover {
-    box-shadow: 0 6px 30px rgba(139, 92, 246, 0.3);
-    transform: translateY(-1px);
-    background-color: var(--color-primary-light);
-}
-
-
-/*.btnBack:hover {*/
-/*    background-color: rgba(255, 255, 255, 0.06);*/
-/*    color: var(--color-text-main);*/
-/*}*/
-
-.btnConfirm:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
 
 .loaderGroup {
     display: flex;
@@ -571,7 +613,11 @@
     border-radius: var(--radius-xl);
     width: 100%;
     max-width: 60rem;
+    /* `vh` se mesure sur la fenêtre barre d'outils rétractée : sur mobile, la
+       modale dépassait donc la hauteur réellement visible tant que la barre
+       était déployée. `dvh` suit la fenêtre visible ; `vh` reste en repli. */
     max-height: 90vh;
+    max-height: 90dvh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -635,23 +681,24 @@
 /* DATE PICKER TRIGGER */
 .dateTrigger {
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-border);
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: var(--radius-md);
-    padding: 0.875rem var(--space-4);
+    padding: var(--space-4) var(--space-5);
     color: var(--color-text-main);
-    font-size: var(--fs-sm);
+    font-size: var(--fs-base);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-3);
     cursor: pointer;
     transition: var(--transition-fast);
     text-align: left;
 }
 
 .dateTrigger:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .dateTriggerActive {
@@ -660,11 +707,15 @@
 }
 
 .datePlaceholder {
-    color: var(--color-text-deep);
+    color: var(--color-text-dim);
 }
 
 .dateIcon {
     color: #fff;
+    /* Une date longue (« mercredi 30 septembre 2026 ») se replie sur deux lignes
+       sur mobile ; sans cela, elle écrasait au passage l'icône, seul repère
+       indiquant que le champ ouvre un sélecteur. */
+    flex-shrink: 0;
 }
 
 .appointmentTypeGrid {
@@ -674,17 +725,71 @@
     margin-top: var(--space-1);
 }
 
+/* CHOIX DU TYPE DE PRESTATION — deux commandes, une par gabarit
+ *
+ * Dès qu'il y a la place, les neuf types s'affichent en pastilles : toutes les
+ * options sont visibles d'un coup et se prennent d'un pouce, sans l'aller-retour
+ * qu'impose une liste déroulante.
+ *
+ * Sur un téléphone, cette même grille tombe à deux colonnes, donc cinq rangées :
+ * près de 300 px pour un champ qui n'est même pas obligatoire, et qui repoussait
+ * hors de l'écran la date et les coordonnées — les deux seules choses réellement
+ * demandées. Le sélecteur natif rend la même liste en une ligne, avec en prime la
+ * roulette système, plus confortable au pouce qu'une grille de petites cibles.
+ *
+ * Les deux sont rendues côté serveur et départagées ici : celle qui ne
+ * correspond pas au gabarit est en `display: none`, donc absente de l'arbre
+ * d'accessibilité comme de l'ordre de tabulation. */
+.typeSelect {
+    display: none;
+}
+
+.typeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    /* Toutes les pastilles à la même hauteur : sans cela, la rangée d'un libellé
+       replié sur deux lignes était plus haute que ses voisines. */
+    grid-auto-rows: 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
+}
+
+@media (max-width: 560px) {
+    .typeSelect {
+        display: block;
+    }
+
+    .typeGrid {
+        display: none;
+    }
+}
+
 .typeSelectBtn {
-    padding: 0.75rem var(--space-2);
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--color-border);
+    /* Centrage explicite : la pastille est étirée à la hauteur de sa rangée par
+       `grid-auto-rows`, le centrage par défaut d'un bouton ne s'applique plus. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /* Plancher recommandé pour une cible tactile, indépendamment du repli du
+       libellé et de la marge intérieure. */
+    min-height: 48px;
+    padding: var(--space-4) var(--space-3);
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: var(--radius-md);
-    color: var(--color-text-dim);
-    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
     font-weight: 600;
+    /* 1.7 hérité du corps de page donnait deux lignes très écartées dès qu'un
+       libellé se repliait. */
+    line-height: 1.3;
     cursor: pointer;
     transition: var(--transition-base);
     letter-spacing: 0.05em;
+    /* Filet de sécurité si un libellé plus long est ajouté un jour : il se
+       replie au lieu de sortir de sa pastille. */
+    overflow-wrap: break-word;
 }
 
 .typeSelectBtn:hover {

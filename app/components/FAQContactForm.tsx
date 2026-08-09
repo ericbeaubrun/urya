@@ -60,8 +60,15 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
         );
     };
 
+    // L'`id` sert de cible de défilement au bouton « Me contacter » du hero.
+    // Celui-ci visait auparavant la FAQ avec un décalage en dur, calé à la
+    // main sur le nombre de questions — or elles sont éditables depuis
+    // l'admin : en ajouter une suffisait à faire atterrir le bouton à côté.
     return (
-        <div className={`${styles.item} ${styles.contactFaqTrigger} ${isOpen ? styles.itemOpen : ''}`}>
+        <div
+            id="contact"
+            className={`${styles.item} ${styles.contactFaqTrigger} ${isOpen ? styles.itemOpen : ''}`}
+        >
             <button 
                 className={`${styles.trigger} `}
                 onClick={() => setIsOpen(!isOpen)}
@@ -97,6 +104,7 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         onChange={handleChange}
                                         placeholder={EXAMPLE_NAME}
                                         required
+                                        autoComplete="name"
                                         className={styles.input}
                                     />
                                 </div>
@@ -110,6 +118,8 @@ export default function FAQContactForm({ isOpen: propIsOpen, setIsOpen: propSetI
                                         onChange={handleChange}
                                         placeholder={EXAMPLE_MAIL}
                                         required
+                                        autoComplete="email"
+                                        inputMode="email"
                                         className={styles.input}
                                     />
                                 </div>

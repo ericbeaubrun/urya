@@ -4,7 +4,8 @@ import {usableSocials} from "@/lib/site-content";
 import {AREA_SERVED, BRAND, DEFAULT_DESCRIPTION, KEYWORDS, OG_IMAGE, schemaId} from "@/lib/seo";
 import {PRESTATION_TYPE_LABELS} from "@/lib/prestation-types";
 import type {LandingPage} from "@/lib/landing-pages";
-import type {CityPage} from "@/lib/city-pages";
+import type {AreaPage} from "@/lib/area-pages";
+import {areaAncestors, areaChildren} from "@/lib/area-pages";
 
 /**
  * Construction du JSON-LD du site.
@@ -124,12 +125,31 @@ function webpage(
  * que l'URL brute.
  */
 function breadcrumb(base: string, path: string, label: string) {
+    return breadcrumbTrail(base, path, [{name: label, path}]);
+}
+
+/**
+ * Variante à profondeur libre, pour les pages de zone : le fil va de la région
+ * au département puis à la ville. Sans cette hiérarchie déclarée, Google traite
+ * les pages départementales comme autant de pages de même niveau sans lien
+ * entre elles, et la page régionale ne reçoit rien de leur autorité.
+ */
+function breadcrumbTrail(
+    base: string,
+    path: string,
+    steps: { name: string; path: string }[]
+) {
     return {
         "@type": "BreadcrumbList",
         "@id": schemaId.breadcrumb(base, path),
         itemListElement: [
             {"@type": "ListItem", position: 1, name: "Accueil", item: `${base}/`},
-            {"@type": "ListItem", position: 2, name: label, item: `${base}${path}`},
+            ...steps.map((step, i) => ({
+                "@type": "ListItem",
+                position: i + 2,
+                name: step.name,
+                item: `${base}${step.path}`,
+            })),
         ],
     };
 }
@@ -331,16 +351,63 @@ export function landingPageJsonLd(base: string, page: LandingPage) {
 }
 
 /**
+ * Territoires déclarés par une page de zone.
+ *
+ * Le type schema.org suit le niveau réel : une région et un département sont
+ * des `AdministrativeArea`, une commune une `City`. Déclarer « Île-de-France »
+ * comme `City` serait faux, et un balisage faux vaut moins qu'un balisage
+ * absent.
+ *
+ * Sur une page départementale, les communes citées en clair ne sont pas
+ * reprises ici : `containedInPlace` les couvre déjà, et lister vingt `City`
+ * sous un département revient à répéter ce que la hiérarchie exprime.
+ */
+function areaServedFor(page: AreaPage) {
+    if (page.level === "region") {
+        return [
+            {"@type": "AdministrativeArea", name: page.name},
+            ...areaChildren(page).map((child) => ({
+                "@type": "AdministrativeArea",
+                name: child.name,
+                containedInPlace: {"@type": "AdministrativeArea", name: page.name},
+            })),
+        ];
+    }
+
+    const parent = areaAncestors(page).at(-1);
+    const containedInPlace = parent
+        ? {"@type": "AdministrativeArea", name: parent.name}
+        : undefined;
+
+    if (page.level === "department") {
+        return [compact({"@type": "AdministrativeArea", name: page.name, containedInPlace})];
+    }
+
+    return [
+        compact({"@type": "City", name: page.name, containedInPlace}),
+        // Les communes voisines sont annoncées en clair sur la page ; les
+        // omettre du balisage laisserait une partie du contenu sans équivalent
+        // structuré.
+        ...page.coverage.items.map((commune) => ({"@type": "City", name: commune})),
+    ];
+}
+
+/**
  * Graphe d'une page de zone d'intervention.
  *
  * Seule différence de fond avec une page de prestation : `areaServed` porte
- * ici une `City` précise au lieu du pays. C'est le seul endroit du balisage où
- * la dimension géographique est affirmée — le site n'a qu'un établissement, et
- * déclarer une `LocalBusiness` distincte par ville reviendrait à revendiquer
+ * ici un territoire précis au lieu du pays. C'est le seul endroit du balisage
+ * où la dimension géographique est affirmée — le site n'a qu'un établissement,
+ * et déclarer une `LocalBusiness` distincte par ville reviendrait à revendiquer
  * des points de vente qui n'existent pas.
  */
-export function cityPageJsonLd(base: string, page: CityPage) {
-    const url = `${base}/${page.slug}`;
+export function areaPageJsonLd(base: string, page: AreaPage) {
+    const path = `/${page.slug}`;
+    const url = `${base}${path}`;
+    const trail = [
+        ...areaAncestors(page).map((step) => ({name: step.navLabel, path: `/${step.slug}`})),
+        {name: page.navLabel, path},
+    ];
 
     return {
         "@context": "https://schema.org",
@@ -354,32 +421,19 @@ export function cityPageJsonLd(base: string, page: CityPage) {
                 inLanguage: "fr-FR",
                 isPartOf: {"@id": schemaId.website(base)},
                 about: {"@id": `${url}#service`},
-                breadcrumb: {"@id": schemaId.breadcrumb(base, `/${page.slug}`)},
+                breadcrumb: {"@id": schemaId.breadcrumb(base, path)},
                 primaryImageOfPage: `${base}${OG_IMAGE.url}`,
             },
-            breadcrumb(base, `/${page.slug}`, page.navLabel),
+            breadcrumbTrail(base, path, trail),
             {
                 "@type": "Service",
                 "@id": `${url}#service`,
-                name: `DJ à ${page.city}`,
+                name: `DJ ${page.inLabel}`,
                 serviceType: "Prestation DJ",
                 description: page.metaDescription,
                 provider: {"@id": schemaId.organization(base)},
                 url,
-                areaServed: [
-                    {
-                        "@type": "City",
-                        name: page.city,
-                        containedInPlace: {
-                            "@type": "AdministrativeArea",
-                            name: page.department,
-                        },
-                    },
-                    // Les communes voisines sont annoncées en clair sur la page ;
-                    // les omettre du balisage laisserait une partie du contenu
-                    // sans équivalent structuré.
-                    ...page.nearby.map((commune) => ({"@type": "City", name: commune})),
-                ],
+                areaServed: areaServedFor(page),
                 offers: {
                     "@type": "Offer",
                     availability: "https://schema.org/InStock",

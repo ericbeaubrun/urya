@@ -5,6 +5,8 @@ import {Phone, Mail, Instagram, MapPin, type LucideIcon} from 'lucide-react';
 import styles from './About.module.css';
 import LazyVideo from './LazyVideo';
 import {ANIMATION_ONCE} from "@/app/config";
+import {contactLink} from '@/lib/contact-links';
+import {track} from '@/lib/analytics';
 
 import {useContent} from '@/app/ContentContext';
 
@@ -57,7 +59,12 @@ export default function About() {
     if (!about) return null;
 
     const tags = Array.isArray(about.tags) ? about.tags : [];
-    const contactInfo = Array.isArray(about.contactInfo) ? about.contactInfo : [];
+    // Instagram et la localisation sont toujours saisissables depuis l'admin,
+    // mais ne sont plus affichés ici : la section ne garde que les moyens de
+    // contact directs.
+    const HIDDEN_CONTACT_ICONS = ["Instagram", "MapPin"];
+    const contactInfo = (Array.isArray(about.contactInfo) ? about.contactInfo : [])
+        .filter((item) => !HIDDEN_CONTACT_ICONS.includes(String(item.icon)));
     const description = Array.isArray(about.description) ? about.description : [];
 
     return (
@@ -131,14 +138,13 @@ export default function About() {
                         <motion.div
                             className={styles.gearGrid}
                         >
-                            {(contactInfo as ContactInfoItem[]).map(({icon: iconName, label, sub}) => {
+                            {(contactInfo as ContactInfoItem[]).map((item) => {
+                                const {icon: iconName, label, sub} = item;
                                 const Icon = (iconName && ICON_MAP[iconName]) || Phone;
-                                return (
-                                    <motion.div
-                                        key={label}
-                                        className={styles.gearCard}
-                                        variants={itemVariants}
-                                    >
+                                const link = contactLink(item);
+
+                                const body = (
+                                    <>
                                         <div className={styles.gearIconWrapper}>
                                             <Icon size={16} className={styles.gearIcon}/>
                                         </div>
@@ -146,7 +152,37 @@ export default function About() {
                                             <div className={styles.gearLabel}>{label}</div>
                                             <div className={styles.gearSub}>{sub}</div>
                                         </div>
-                                    </motion.div>
+                                    </>
+                                );
+
+                                // Une carte sans destination reste un bloc de
+                                // texte : en faire un lien inerte tromperait
+                                // sur ce qu'un clic va produire.
+                                if (!link) {
+                                    return (
+                                        <motion.div
+                                            key={label}
+                                            className={styles.gearCard}
+                                            variants={itemVariants}
+                                        >
+                                            {body}
+                                        </motion.div>
+                                    );
+                                }
+
+                                return (
+                                    <motion.a
+                                        key={label}
+                                        href={link.href}
+                                        className={`${styles.gearCard} ${styles.gearCardLink}`}
+                                        variants={itemVariants}
+                                        onClick={() => track("contact_click", {channel: link.channel})}
+                                        {...(link.external
+                                            ? {target: "_blank", rel: "noopener noreferrer"}
+                                            : {})}
+                                    >
+                                        {body}
+                                    </motion.a>
                                 );
                             })}
                         </motion.div>

@@ -111,29 +111,27 @@
 }
 
 .ctaButton {
+    composes: btn btnPrimary btnMd from global;
     display: none;
-    background-color: var(--color-primary);
-    color: var(--color-text-main);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-sm);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    transition: var(--transition-base);
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
 }
 
-@media (min-width: 1024px) {
+/* Dès la tablette, et non au seuil du menu de bureau : entre 768 et 1023 px,
+   le bouton était masqué alors que le formulaire se trouve tout en bas de la
+   page. Le seul chemin vers le devis passait par le menu burger. */
+@media (min-width: 768px) {
     .ctaButton {
-        display: block;
+        display: inline-flex;
     }
 }
 
-.ctaButton:hover {
-    box-shadow: 0 6px 30px rgba(139, 92, 246, 0.4);
-    transform: translateY(-1px);
-    background-color: var(--color-primary-light);
+/* Sous 1024 px, `.desktopMenu` est masqué : sans cette marge, l'espacement
+   automatique planterait le bouton au milieu de la barre, entre le logo et le
+   burger. */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .ctaButton {
+        margin-left: auto;
+        margin-right: var(--space-3);
+    }
 }
 
 /* MOBILE TOGGLE */
@@ -252,23 +250,7 @@
 }
 
 .mobileCtaButton {
+    composes: btn btnPrimary btnMd from global;
     width: 100%;
     margin-top: auto;
-    padding: var(--space-2) var(--space-4);
-    text-align: center;
-    background-color: var(--color-primary);
-    color: var(--color-text-main);
-    border-radius: var(--radius-sm);
-    font-size: var(--fs-md);
-    font-weight: 700;
-    text-decoration: none;
-    transition: var(--transition-base);
-    border: none;
-    cursor: pointer;
-}
-
-.mobileCtaButton:hover {
-    box-shadow: 0 6px 30px rgba(139, 92, 246, 0.4);
-    transform: translateY(-1px);
-    background-color: var(--color-primary-light);
 }

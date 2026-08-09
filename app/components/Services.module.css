@@ -10,13 +10,6 @@
     }
 }
 
-.bgOverlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 0%, rgba(139, 92, 246, 0.03) 50%, transparent 100%);
-    pointer-events: none;
-}
-
 .container {
     max-width: var(--container-max-width);
     margin: 0 auto;
@@ -38,14 +31,6 @@
     font-family: var(--font-secondary);
 }
 
-.sectionTitle {
-}
-
-@media (min-width: 768px) {
-    .sectionTitle {
-        font-size: var(--fs-5xl);
-    }
-}
 
 .textGradient {
     background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
@@ -57,11 +42,11 @@
 .sectionSubtitle {
     color: var(--color-text-muted);
     margin-top: var(--space-4);
-    max-width: 36rem;
+    max-width: var(--measure);
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.6;
-    font-size: var(--fs-base);
+    line-height: 1.7;
+    font-size: var(--fs-lead);
     /*text-align: justify;*/
 }
 
@@ -86,6 +71,7 @@
     border: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
+    container-type: inline-size;
 }
 
 /* HEADER CARD AVEC IMAGE */
@@ -192,7 +178,31 @@
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    /* `space-between` seul laisse le prix toucher le bouton dès que la carte
+       se resserre : le gap garantit un couloir minimal, le wrap sert de
+       soupape quand même ce couloir ne tient plus. */
+    gap: var(--space-4);
+    flex-wrap: wrap;
 }
+
+.priceBlock {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+/* Le pied de carte se serre pour deux raisons sans rapport : le mobile étroit,
+   et la grille à 3 colonnes qui rétrécit les cartes bien avant 1024 px. C'est
+   donc la largeur de la carte — pas celle de l'écran — qui doit décider, d'où
+   la requête de conteneur. Sous ce seuil, prix et CTA s'empilent et le bouton
+   prend toute la largeur plutôt que de rester orphelin à gauche. */
+@container (max-width: 290px) {
+    .cardFooter {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-3);
+    }
+}
+
 
 .priceLabel {
     font-size: 0.68rem;
@@ -212,34 +222,9 @@
 }
 
 .ctaLink {
-    background: rgba(139, 92, 246, 0.03);
-    border: 1px solid rgba(139, 92, 246, 0.1);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--color-primary-light);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0.4rem 0.75rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ctaLink:hover {
-    background-color: rgba(139, 92, 246, 0.1);
-    border-color: rgba(139, 92, 246, 0.3);
-    color: var(--color-primary-light);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
-    transform: translateY(-1px);
-}
-
-.arrowIcon {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ctaLink:hover .arrowIcon {
-    transform: translateX(3px);
+    composes: btn btnPrimary btnSm from global;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .extraOptionsContainer {

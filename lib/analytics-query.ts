@@ -1,5 +1,5 @@
 import {supabaseAdmin} from "@/lib/supabase_client";
-import type {AnalyticsEventName} from "@/lib/analytics-events";
+import {DEVICE_LABELS, isDevice, type AnalyticsEventName} from "@/lib/analytics-events";
 
 /**
  * Agrégation des statistiques d'audience pour l'admin.
@@ -18,8 +18,123 @@ const MAX_ROWS = 50_000;
 export const PERIODS = [7, 30, 90] as const;
 export type Period = (typeof PERIODS)[number];
 
+export const DEFAULT_PERIOD: Period = 30;
+
 export function isPeriod(value: unknown): value is Period {
     return PERIODS.includes(Number(value) as Period);
+}
+
+/* -------------------------------------------------------------------------
+ * Jours civils
+ *
+ * `occurred_at` est un instant UTC ; l'exploitant, lui, raisonne en journées
+ * françaises. Découper en UTC décalerait chaque soirée sur le lendemain (Paris
+ * est en avance d'une à deux heures), ce qui rend une sélection de jour et une
+ * répartition horaire tout simplement fausses.
+ * ---------------------------------------------------------------------- */
+
+const TIME_ZONE = "Europe/Paris";
+
+const PARIS_PARTS = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+});
+
+function parisParts(at: Date) {
+    const parts: Record<string, string> = {};
+    for (const part of PARIS_PARTS.formatToParts(at)) {
+        if (part.type !== "literal") parts[part.type] = part.value;
+    }
+
+    return {
+        day: `${parts.year}-${parts.month}-${parts.day}`,
+        hour: Number(parts.hour),
+        iso: `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`,
+    };
+}
+
+/** Décalage de Paris sur UTC à cet instant, changements d'heure compris. */
+function parisOffsetMs(at: Date): number {
+    return Date.parse(`${parisParts(at).iso}Z`) - at.getTime();
+}
+
+/**
+ * Instant UTC correspondant à minuit, heure de Paris, du jour donné.
+ *
+ * En deux passes : le décalage dépend de l'instant, et l'instant du décalage.
+ * La première approximation part du décalage en vigueur à la même heure UTC,
+ * la seconde le réévalue à l'instant candidat. Sans cette reprise, les deux
+ * journées de changement d'heure sont décalées d'une heure entière — c'est
+ * précisément à leur frontière que le calcul naïf se trompe.
+ */
+function parisMidnight(day: string): Date {
+    const naive = Date.parse(`${day}T00:00:00Z`);
+    const approx = naive - parisOffsetMs(new Date(naive));
+
+    return new Date(naive - parisOffsetMs(new Date(approx)));
+}
+
+/** Arithmétique sur un jour civil `AAAA-MM-JJ`, indépendante du fuseau. */
+export function shiftDay(day: string, delta: number): string {
+    const date = new Date(`${day}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + delta);
+
+    return date.toISOString().slice(0, 10);
+}
+
+/** Jour courant à Paris. */
+export function today(): string {
+    return parisParts(new Date()).day;
+}
+
+/**
+ * Valide un jour venu de l'URL. Le format ne suffit pas : `2026-02-31` le
+ * respecte sans exister, et un jour futur produirait un écran vide sans que
+ * l'on comprenne pourquoi.
+ */
+export function isDay(value: unknown): value is string {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+    const parsed = Date.parse(`${value}T00:00:00Z`);
+    if (Number.isNaN(parsed)) return false;
+
+    return new Date(parsed).toISOString().slice(0, 10) === value && value <= today();
+}
+
+/* ---------------------------------------------------------------------- */
+
+/** Fenêtre analysée : soit les N derniers jours, soit une seule journée. */
+export type Range =
+    | {kind: "period"; days: Period}
+    | {kind: "day"; day: string};
+
+/**
+ * Lit la fenêtre depuis les paramètres d'URL. `periode` reste porté même
+ * lorsqu'un jour est sélectionné : il détermine l'étendue du graphique de
+ * fréquentation, qui sert justement de sélecteur de jour.
+ */
+export function parseRange(periode: unknown, jour: unknown): Range {
+    if (isDay(jour)) return {kind: "day", day: jour};
+
+    return {kind: "period", days: isPeriod(periode) ? (Number(periode) as Period) : DEFAULT_PERIOD};
+}
+
+export function parsePeriod(periode: unknown): Period {
+    return isPeriod(periode) ? (Number(periode) as Period) : DEFAULT_PERIOD;
+}
+
+/** Bornes UTC `[from, to[` de la fenêtre, en jours civils français. */
+export function rangeBounds(range: Range): {from: Date; to: Date} {
+    const last = range.kind === "day" ? range.day : today();
+    const first = range.kind === "day" ? range.day : shiftDay(last, -(range.days - 1));
+
+    return {from: parisMidnight(first), to: parisMidnight(shiftDay(last, 1))};
 }
 
 interface EventRow {
@@ -28,7 +143,15 @@ interface EventRow {
     path: string | null;
     referrer_host: string | null;
     device: string | null;
+    os: string | null;
+    browser: string | null;
     props: Record<string, string> | null;
+}
+
+/** Ligne enrichie de son jour et de son heure locale, calculés une seule fois. */
+interface DatedRow extends EventRow {
+    day: string;
+    hour: number;
 }
 
 export interface Count {
@@ -51,11 +174,18 @@ export interface AnalyticsSummary {
     submissions: number;
     /** Envois rapportés aux vues du formulaire, en pourcentage. */
     conversionRate: number;
-    daily: Count[];
     topPages: Count[];
     referrers: Count[];
     devices: Count[];
+    systems: Count[];
+    browsers: Count[];
+    /** Pages vues par heure locale : 24 entrées, de « 00 h » à « 23 h ». */
+    hourly: Count[];
+    /** Pages vues par jour de la semaine, du lundi au dimanche. Vide sur une journée. */
+    weekdays: Count[];
     ctaSources: Count[];
+    /** Clics sur un contact direct, par canal. Conversions hors entonnoir. */
+    contactClicks: Count[];
     funnel: FunnelStep[];
     formErrors: Count[];
     faqQuestions: Count[];
@@ -77,40 +207,41 @@ function tally(values: (string | null | undefined)[], limit = 8): Count[] {
 }
 
 /**
- * Série journalière continue : les jours sans aucune visite doivent apparaître
- * à zéro, sinon la courbe se resserre et masque les creux.
+ * Répartition sur un axe fixe et ordonné (heures, jours de la semaine).
+ *
+ * Contrairement à `tally`, l'ordre est celui de l'axe et les cases vides sont
+ * conservées : une plage horaire sans visite est une information, pas un trou
+ * à refermer.
  */
-function dailySeries(rows: EventRow[], days: number): Count[] {
-    const counts = new Map<string, number>();
+function distribute(labels: readonly string[], indexes: number[]): Count[] {
+    const counts = new Array(labels.length).fill(0);
 
-    for (const row of rows) {
-        if (row.name !== "page_view") continue;
-        const day = row.occurred_at.slice(0, 10);
-        counts.set(day, (counts.get(day) ?? 0) + 1);
+    for (const index of indexes) {
+        if (index >= 0 && index < counts.length) counts[index]++;
     }
 
-    const series: Count[] = [];
-    const cursor = new Date();
-    cursor.setUTCHours(0, 0, 0, 0);
-    cursor.setUTCDate(cursor.getUTCDate() - (days - 1));
-
-    for (let i = 0; i < days; i++) {
-        const day = cursor.toISOString().slice(0, 10);
-        series.push({label: day, value: counts.get(day) ?? 0});
-        cursor.setUTCDate(cursor.getUTCDate() + 1);
-    }
-
-    return series;
+    return labels.map((label, i) => ({label, value: counts[i]}));
 }
 
-export async function getAnalyticsSummary(period: Period): Promise<AnalyticsSummary> {
-    const since = new Date();
-    since.setUTCDate(since.getUTCDate() - period);
+const HOUR_LABELS = Array.from({length: 24}, (_, h) => String(h).padStart(2, "0"));
+
+// Abrégés : sept libellés se partagent la largeur d'une carte, « Mercredi »
+// n'y tiendrait pas.
+const WEEKDAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"] as const;
+
+/** Index lundi = 0, pour coller à la semaine française. */
+function weekdayIndex(day: string): number {
+    return (new Date(`${day}T12:00:00Z`).getUTCDay() + 6) % 7;
+}
+
+async function fetchRows(range: Range, columns: string): Promise<{rows: DatedRow[]; truncated: boolean}> {
+    const {from, to} = rangeBounds(range);
 
     const {data, error} = await supabaseAdmin()
         .from("analytics_events")
-        .select("occurred_at, name, path, referrer_host, device, props")
-        .gte("occurred_at", since.toISOString())
+        .select(columns)
+        .gte("occurred_at", from.toISOString())
+        .lt("occurred_at", to.toISOString())
         .order("occurred_at", {ascending: true})
         .range(0, MAX_ROWS - 1);
 
@@ -118,10 +249,52 @@ export async function getAnalyticsSummary(period: Period): Promise<AnalyticsSumm
         throw new Error(`Lecture des statistiques impossible : ${error.message}`);
     }
 
-    const rows = (data ?? []) as EventRow[];
+    const raw = (data ?? []) as unknown as EventRow[];
+    const rows = raw.map((row) => {
+        const {day, hour} = parisParts(new Date(row.occurred_at));
+
+        return {...row, day, hour};
+    });
+
+    return {rows, truncated: rows.length >= MAX_ROWS};
+}
+
+/**
+ * Série journalière continue des pages vues sur la période.
+ *
+ * Lue séparément du reste : elle couvre toujours la période entière, y compris
+ * lorsqu'une seule journée est détaillée en dessous, puisque c'est elle qui
+ * sert de sélecteur de jour. Les jours sans aucune visite apparaissent à zéro,
+ * sinon la courbe se resserre et masque les creux.
+ */
+export async function getDailySeries(days: Period): Promise<Count[]> {
+    const {rows} = await fetchRows({kind: "period", days}, "occurred_at, name");
+
+    const counts = new Map<string, number>();
+    for (const row of rows) {
+        if (row.name !== "page_view") continue;
+        counts.set(row.day, (counts.get(row.day) ?? 0) + 1);
+    }
+
+    const last = today();
+
+    return Array.from({length: days}, (_, i) => {
+        const day = shiftDay(last, -(days - 1 - i));
+
+        return {label: day, value: counts.get(day) ?? 0};
+    });
+}
+
+export async function getAnalyticsSummary(range: Range): Promise<AnalyticsSummary> {
+    const {rows, truncated} = await fetchRows(
+        range,
+        "occurred_at, name, path, referrer_host, device, os, browser, props"
+    );
+
     const of = (name: AnalyticsEventName) => rows.filter((row) => row.name === name);
 
-    const pageViews = of("page_view").length;
+    const views = of("page_view");
+    const pageViews = views.length;
     const formViews = of("form_view").length;
     const bookings = of("booking_submit").length;
     const appointments = of("appointment_submit").length;
@@ -144,21 +317,29 @@ export async function getAnalyticsSummary(period: Period): Promise<AnalyticsSumm
     ];
 
     return {
-        truncated: rows.length >= MAX_ROWS,
+        truncated,
         pageViews,
         formViews,
         submissions,
         conversionRate: formViews ? Math.round((submissions / formViews) * 1000) / 10 : 0,
-        daily: dailySeries(rows, period),
-        topPages: tally(of("page_view").map((row) => row.path)),
+        topPages: tally(views.map((row) => row.path)),
         // Un référent absent, c'est un accès direct (favori, saisie, appli de
         // messagerie qui masque l'origine). Le distinguer d'une source connue
         // est justement l'information utile.
-        referrers: tally(
-            of("page_view").map((row) => row.referrer_host ?? "Accès direct")
+        referrers: tally(views.map((row) => row.referrer_host ?? "Accès direct")),
+        devices: tally(
+            views.map((row) => (isDevice(row.device) ? DEVICE_LABELS[row.device] : null))
         ),
-        devices: tally(of("page_view").map((row) => row.device)),
+        systems: tally(views.map((row) => row.os)),
+        browsers: tally(views.map((row) => row.browser)),
+        hourly: distribute(HOUR_LABELS, views.map((row) => row.hour)),
+        // Sur une seule journée, la répartition hebdomadaire n'aurait qu'une
+        // barre : elle n'a de sens que sur une période.
+        weekdays: range.kind === "period"
+            ? distribute(WEEKDAY_LABELS, views.map((row) => weekdayIndex(row.day)))
+            : [],
         ctaSources: tally(of("cta_click").map((row) => row.props?.source)),
+        contactClicks: tally(of("contact_click").map((row) => row.props?.channel)),
         funnel: rawFunnel.map((step) => ({
             ...step,
             share: funnelTop ? Math.round((step.value / funnelTop) * 1000) / 10 : 0,

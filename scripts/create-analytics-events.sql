@@ -17,7 +17,15 @@ create table if not exists public.analytics_events
     -- Hôte du référent uniquement ("google.com"), jamais le chemin : une URL
     -- de référent complète peut trahir une recherche nominative.
     referrer_host text,
+    -- Palier de largeur d'écran ("mobile", "tablet", "desktop"), jamais la
+    -- largeur exacte : un point de bascule de mise en page, pas une empreinte.
     device        text,
+    -- Familles de système et de navigateur ("Android", "Safari"), déduites du
+    -- User-Agent, qui n'est lui-même jamais stocké. Ni version, ni matériel :
+    -- ces étiquettes ne singularisent personne et servent à décider quoi
+    -- tester et quoi optimiser.
+    os            text,
+    browser       text,
     -- Propriétés d'événement, clés contraintes par l'allowlist.
     props         jsonb
 );

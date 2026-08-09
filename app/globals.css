@@ -7,13 +7,20 @@
     --color-accent: #f472b6; /* Pink accent if needed */
 
     /* Colors - Neutrals */
-    --color-bg: #0b0b0e;
-    --color-bg-deep: #08080a;
+    /* Fond unique sur tout le site : le même noir derrière chaque section, sans
+       bande alternée ni variante « profonde ». Le rythme vertical est porté par
+       les halos violets posés sur les jointures (voir plus bas), pas par des
+       changements de fond. Les trois alias restent définis : ils sont utilisés
+       un peu partout, et les faire pointer vers la même valeur évite de devoir
+       les traquer un à un. */
+    --color-bg: #0b0b0b;
+    --color-bg-deep: #0b0b0b;
+    --color-bg-alt: #0b0b0b;
     --color-bg-card: #111111;
     --color-text-main: #ffffff;
-    --color-text-muted: #9ca3af;
-    --color-text-dim: #6b7280;
-    --color-text-deep: #4b5563;
+    --color-text-muted: #b4bcc8;
+    --color-text-dim: #8b93a1;
+    --color-text-deep: #5b6472;
     --color-border: rgba(255, 255, 255, 0.05);
     --color-border-primary: rgba(139, 92, 246, 0.3);
 
@@ -23,6 +30,9 @@
     --font-display: "Verdana", "Geneva", sans-serif;
     --font-hero: "Impact", "Arial Black", "Arial Narrow Bold", sans-serif;
     --font-secondary: "Verdana", "Geneva", sans-serif;
+    /* Conservé comme alias de --font-main : le back-office s'en sert pour
+       rester sur la pile système quoi qu'il arrive aux polices du site. */
+    --font-system: var(--font-main);
 
     /* Font Sizes */
     --fs-xs: 0.75rem;
@@ -37,6 +47,18 @@
     --fs-6xl: 3.75rem;
     --fs-7xl: 4.5rem;
     --fs-8xl: 6rem;
+
+    /* Échelle fluide : l'interpolation remplace les paliers de media queries,
+       la taille suit la largeur de fenêtre en continu. */
+    --fs-hero: clamp(2.75rem, 1.4rem + 6.4vw, 6rem);
+    --fs-h2: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
+    --fs-h3: clamp(1.35rem, 1.15rem + 0.85vw, 1.875rem);
+    --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+    --fs-lead: clamp(1.0625rem, 0.95rem + 0.55vw, 1.3125rem);
+
+    /* Longueur de ligne confortable, indépendante de la taille de police. */
+    --measure: 62ch;
+    --measure-narrow: 46ch;
 
     /* Spacing Units */
     --space-1: 0.25rem;
@@ -75,6 +97,9 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    /* Ombre teintée : sur fond noir, une ombre noire ne se voit pas. C'est la
+       diffusion violette qui donne le relief. */
+    --shadow-lift: 0 18px 40px -20px rgba(139, 92, 246, 0.45), 0 4px 12px -6px rgba(0, 0, 0, 0.6);
 
     /* Transitions */
     --transition-fast: 0.2s ease;
@@ -103,8 +128,12 @@ body {
 }
 
 body {
-    line-height: 1.6;
+    font-size: var(--fs-body);
+    line-height: 1.7;
     -webkit-text-size-adjust: 100%;
+    /* Chiffres de largeur constante : les statistiques et les tarifs ne
+       tressautent plus d'un rendu à l'autre. */
+    font-variant-numeric: tabular-nums;
 }
 
 /* Typography Base */
@@ -118,44 +147,31 @@ h1, h2, h3, h4, h5, h6 {
 
 h1, h2 {
     font-family: var(--font-hero);
-    letter-spacing: 0em;
+    letter-spacing: 0;
     font-weight: 500;
     line-height: 1.1;
+    text-wrap: balance;
     color: var(--color-text-main);
 }
 
 h1 {
     margin-bottom: var(--space-6);
-    font-size: var(--fs-5xl);
+    font-size: var(--fs-hero);
 }
 
 h2 {
     margin-bottom: var(--space-4);
-    font-size: var(--fs-4xl);
+    font-size: var(--fs-h2);
 }
 
 h3 {
-    font-size: var(--fs-2xl);
+    font-size: var(--fs-h3);
     font-family: var(--font-secondary);
-}
-
-
-@media (min-width: 768px) {
-    h1 {
-        font-size: var(--fs-7xl);
-    }
-
-    h2 {
-        font-size: var(--fs-5xl);
-    }
-
-    h3 {
-        font-size: var(--fs-3xl);
-    }
 }
 
 p {
     margin-bottom: var(--space-4);
+    text-wrap: pretty;
 }
 
 a {
@@ -169,6 +185,125 @@ button {
     font-family: inherit;
     transition: var(--transition-fast);
     border: none;
+}
+
+/* ACCESSIBILITÉ
+   Aucun état de focus n'était défini : au clavier, on naviguait à l'aveugle.
+   `:focus-visible` ne se déclenche pas au clic souris, le rendu à la souris
+   est donc inchangé. */
+:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+/* Le site s'appuie beaucoup sur framer-motion et sur des transforms au survol.
+   Pour qui a demandé moins d'animation au niveau système, on neutralise le
+   mouvement sans faire disparaître le contenu : les éléments animés à
+   l'apparition doivent rester visibles. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* BOUTONS
+   « Réserver » est l'action unique du site : en-tête, hero et cartes de
+   prestation pointent tous vers le formulaire. Un seul style, décliné en trois
+   tailles selon l'emplacement, pour qu'il soit reconnaissable au premier coup
+   d'œil où qu'il apparaisse. */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    /* 48 px de haut : plancher recommandé pour une cible tactile. */
+    min-height: 48px;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    font-family: var(--font-secondary);
+    font-size: var(--fs-base);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-position var(--transition-base),
+                box-shadow var(--transition-base),
+                transform var(--transition-base);
+}
+
+/* Le dégradé est dimensionné à 200 % puis déplacé au survol : animer une
+   position de fond est composité par le GPU, là où animer les couleurs d'un
+   `linear-gradient` ne l'est pas. */
+.btnPrimary {
+    background-image: linear-gradient(
+        110deg,
+        #7c3aed 0%,
+        #a78bfa 50%,
+        #7c3aed 100%
+    );
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    color: #ffffff;
+    /* Le filet clair en haut simule une arête éclairée : c'est ce qui détache
+       le bouton du fond plat, plus que l'ombre portée. */
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                0 10px 30px -12px rgba(139, 92, 246, 0.9);
+}
+
+.btnPrimary:hover {
+    background-position: 0 0;
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                0 16px 40px -12px rgba(167, 139, 250, 0.95);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* TAILLES
+   Déclarées après `.btn` : à spécificité égale, c'est l'ordre du fichier qui
+   tranche, pas l'ordre des classes sur l'élément. */
+.btnSm {
+    min-height: 38px;
+    padding: 0 var(--space-4);
+    gap: var(--space-1);
+    font-size: var(--fs-sm);
+}
+
+.btnMd {
+    min-height: 44px;
+    padding: 0 var(--space-5);
+    font-size: var(--fs-sm);
+}
+
+.btnLg {
+    min-height: 58px;
+    padding: 0 var(--space-10);
+    font-size: var(--fs-lg);
+    letter-spacing: 0.02em;
 }
 
 img, video {
@@ -196,6 +331,84 @@ img, video {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+/* RYTHME VERTICAL
+   Le fond ne change plus d'une section à l'autre : ce sont des halos violets,
+   posés à cheval sur chaque jointure et alternés gauche/droite en descendant la
+   page, qui disent à l'œil où il en est dans le défilement.
+
+   Chaque halo est peint en deux moitiés — le bas de la section du dessus, le
+   haut de celle du dessous — avec les mêmes dimensions et le même centre : les
+   deux se raccordent en une seule ellipse posée sur la ligne de séparation.
+
+   Ce sont des `background-image` et non des éléments : ils passent sous tout le
+   contenu sans qu'on ait à créer de contexte d'empilement (les modales de la
+   FAQ et du formulaire en sortiraient cassées), et l'`overflow: hidden` des
+   sections les découpe proprement.
+
+   `nth-of-type` porte l'alternance sans rien câbler côté React : la section
+   « Avis » disparaît quand aucun témoignage n'est saisi, et le rythme se
+   recalcule tout seul. La portée est limitée à `main#top`, le back-office ayant
+   ses propres sections. */
+:root {
+    /* Rayons de l'ellipse : horizontal, puis vertical. */
+    --glow-size: clamp(16rem, 50vw, 38rem) clamp(9rem, 22vw, 18rem);
+    --glow-height: clamp(9rem, 22vw, 18rem);
+    --glow-stops:
+        rgba(139, 92, 246, 0.2) 0%,
+        rgba(139, 92, 246, 0.08) 40%,
+        /* On termine sur un violet transparent plutôt que sur `transparent`,
+           qui est un noir transparent et grise la fin du dégradé. */
+        rgba(139, 92, 246, 0) 72%;
+}
+
+main#top > section {
+    background-repeat: no-repeat;
+}
+
+main#top > section:nth-of-type(odd) {
+    background-image:
+        radial-gradient(var(--glow-size) at 0% 0%, var(--glow-stops)),
+        radial-gradient(var(--glow-size) at 100% 100%, var(--glow-stops));
+}
+
+main#top > section:nth-of-type(even) {
+    background-image:
+        radial-gradient(var(--glow-size) at 100% 0%, var(--glow-stops)),
+        radial-gradient(var(--glow-size) at 0% 100%, var(--glow-stops));
+}
+
+/* Le hero ouvre la page : rien au-dessus de lui à raccorder. Et comme son média
+   de fond et son fondu bas recouvrent toute la section, son demi-halo doit
+   passer par-dessus eux — sous le contenu, qui monte à z-index 10. */
+main#top > section:first-of-type {
+    background-image: none;
+}
+
+main#top > section:first-of-type::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: var(--glow-height);
+    background: radial-gradient(var(--glow-size) at 100% 100%, var(--glow-stops));
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* La jointure avec le pied de page obéit à la même règle, mais le footer est
+   hors de `main` : `:has` lui fait lire la parité de la dernière section pour
+   savoir de quel côté compléter le halo. */
+body:has(main#top > section:last-of-type:nth-of-type(odd)) footer {
+    background-image: radial-gradient(var(--glow-size) at 100% 0%, var(--glow-stops));
+    background-repeat: no-repeat;
+}
+
+body:has(main#top > section:last-of-type:nth-of-type(even)) footer {
+    background-image: radial-gradient(var(--glow-size) at 0% 0%, var(--glow-stops));
+    background-repeat: no-repeat;
 }
 
 .sectionTag {

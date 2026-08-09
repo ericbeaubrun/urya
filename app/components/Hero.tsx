@@ -2,18 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
-import { track } from '@/lib/analytics';
 import styles from './Hero.module.css';
+import BookingCta from './BookingCta';
 import LazyVideo from './LazyVideo';
-import {ANIMATION_ONCE} from "@/app/config";
+import {ANIMATION_ONCE, SCROLL_OFFSET} from "@/app/config";
 
 import { useContent } from '@/app/ContentContext';
 
-interface HeroProps {
-    onContactClick?: () => void;
-}
-
-export default function Hero({ onContactClick }: HeroProps) {
+export default function Hero() {
     const { hero } = useContent();
 
     if (!hero) return null;
@@ -61,13 +57,6 @@ export default function Hero({ onContactClick }: HeroProps) {
                 whileInView="visible"
                 viewport={{ once: ANIMATION_ONCE, amount: 0.1 }}
             >
-                <motion.div className={styles.tag} variants={itemVariants}>
-                    <span className={styles.tagPulse} />
-                    <span className={styles.tagText}>
-            {hero.status}
-          </span>
-                </motion.div>
-
                 <motion.h1 className={styles.title} variants={itemVariants}>
                     {hero.title?.line1}
                     <br />
@@ -83,28 +72,9 @@ export default function Hero({ onContactClick }: HeroProps) {
                 </motion.p>
 
                 <motion.div className={styles.ctaGroup} variants={itemVariants}>
-                    <ScrollLink
-                        to="devis"
-                        smooth={true}
-                        offset={-80}
-                        duration={800}
-                        onClick={() => track("cta_click", {source: "hero"})}
-                        className={styles.primaryBtn}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        {hero.ctas?.primary}
-                    </ScrollLink>
-                    <ScrollLink
-                        to="faq"
-                        smooth={true}
-                        offset={670}
-                        duration={800}
-                        onClick={onContactClick}
-                        className={styles.secondaryBtn}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        {hero.ctas?.secondary}
-                    </ScrollLink>
+                    <BookingCta source="hero" className={styles.primaryBtn}>
+                        Réserver
+                    </BookingCta>
                 </motion.div>
 
                 <motion.div className={styles.statsGrid} variants={itemVariants}>
@@ -119,8 +89,7 @@ export default function Hero({ onContactClick }: HeroProps) {
 
             <ScrollLink
                 to="about"
-                smooth={true}
-                duration={800}
+                offset={SCROLL_OFFSET}
                 className={styles.scrollIndicator}
                 aria-label="Découvrir la suite"
                 style={{ cursor: 'pointer' }}

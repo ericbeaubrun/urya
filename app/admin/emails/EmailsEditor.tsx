@@ -1,10 +1,9 @@
 'use client';
 
-import {useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import styles from './EmailsEditor.module.css';
-import {DEFAULT_TEST_EMAIL} from '@/app/config';
 import {EMAIL_TEMPLATES, unknownPlaceholders} from '@/lib/email-templates';
-import type {StoredEmailTemplate} from '@/lib/email-templates';
+import type {EmailTemplateDef, StoredEmailTemplate} from '@/lib/email-templates';
 import {
     previewEmailTemplateAction,
     saveEmailTemplateAction,
@@ -13,8 +12,22 @@ import {
 
 type Draft = { sujet: string; corps: string };
 
-export default function EmailsEditor({initial}: { initial: StoredEmailTemplate[] }) {
+/** Catégories dans l'ordre du catalogue, chacune avec ses modèles. */
+function groupByCategory(): [string, EmailTemplateDef[]][] {
+    const groups = new Map<string, EmailTemplateDef[]>();
+    for (const def of EMAIL_TEMPLATES) {
+        const list = groups.get(def.category);
+        if (list) list.push(def);
+        else groups.set(def.category, [def]);
+    }
+    return [...groups];
+}
+
+export default function EmailsEditor(
+    {initial, defaultTestEmail}: { initial: StoredEmailTemplate[]; defaultTestEmail: string }
+) {
     const [activeKey, setActiveKey] = useState(EMAIL_TEMPLATES[0].key);
+    const groups = useMemo(groupByCategory, []);
 
     const [drafts, setDrafts] = useState<Record<string, Draft>>(() =>
         Object.fromEntries(
@@ -31,16 +44,46 @@ export default function EmailsEditor({initial}: { initial: StoredEmailTemplate[]
     const [busy, setBusy] = useState(false);
     const [status, setStatus] = useState<{ text: string; error?: boolean } | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
-    const [testEmail, setTestEmail] = useState(DEFAULT_TEST_EMAIL);
+    const [previewError, setPreviewError] = useState<string | null>(null);
+    const [testEmail, setTestEmail] = useState(defaultTestEmail);
     const bodyRef = useRef<HTMLTextAreaElement>(null);
 
     const def = EMAIL_TEMPLATES.find(t => t.key === activeKey)!;
     const draft = drafts[activeKey];
     const unknown = unknownPlaceholders(def, draft.sujet, draft.corps);
 
+    // L'aperçu se recalcule tout seul après une courte pause de frappe ; le
+    // drapeau `cancelled` évite qu'une réponse tardive écrase une plus récente.
+    useEffect(() => {
+        let cancelled = false;
+
+        const timer = setTimeout(async () => {
+            try {
+                const result = await previewEmailTemplateAction({
+                    cle: activeKey,
+                    sujet: draft.sujet,
+                    corps: draft.corps,
+                });
+                if (cancelled) return;
+                if (result.success && result.html) {
+                    setPreview(result.html);
+                    setPreviewError(null);
+                } else {
+                    setPreviewError(result.message ?? 'Aperçu impossible.');
+                }
+            } catch (e) {
+                if (!cancelled) setPreviewError(`Aperçu impossible : ${(e as Error).message}`);
+            }
+        }, 400);
+
+        return () => {
+            cancelled = true;
+            clearTimeout(timer);
+        };
+    }, [activeKey, draft.sujet, draft.corps]);
+
     function update(patch: Partial<Draft>) {
         setDrafts(prev => ({...prev, [activeKey]: {...prev[activeKey], ...patch}}));
-        setPreview(null);
     }
 
     /** Insère la variable à la position du curseur, sinon en fin de corps. */
@@ -88,23 +131,27 @@ export default function EmailsEditor({initial}: { initial: StoredEmailTemplate[]
                     enregistré.</p>
             </div>
 
-            <nav className={styles.tabs}>
-                {EMAIL_TEMPLATES.map(t => (
-                    <button
-                        key={t.key}
-                        type="button"
-                        aria-current={t.key === activeKey ? 'true' : undefined}
-                        className={t.key === activeKey ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-                        onClick={() => {
-                            setActiveKey(t.key);
-                            setPreview(null);
-                            setStatus(null);
-                        }}
-                    >
-                        {t.label}
-                    </button>
-                ))}
-            </nav>
+            <div className={styles.selector}>
+                <label htmlFor="email-template">Modèle d&apos;e-mail</label>
+                <select
+                    id="email-template"
+                    value={activeKey}
+                    onChange={e => {
+                        setActiveKey(e.target.value);
+                        setPreview(null);
+                        setPreviewError(null);
+                        setStatus(null);
+                    }}
+                >
+                    {groups.map(([category, defs]) => (
+                        <optgroup key={category} label={category}>
+                            {defs.map(t => (
+                                <option key={t.key} value={t.key}>{t.label}</option>
+                            ))}
+                        </optgroup>
+                    ))}
+                </select>
+            </div>
 
             <div className={styles.layout}>
                 <div className={styles.panel}>
@@ -166,21 +213,6 @@ export default function EmailsEditor({initial}: { initial: StoredEmailTemplate[]
                         <button
                             type="button"
                             disabled={busy}
-                            onClick={() => run(async () => {
-                                const result = await previewEmailTemplateAction({cle: def.key, ...draft});
-                                if (result.success && result.html) {
-                                    setPreview(result.html);
-                                    return {success: true};
-                                }
-                                return {success: false, message: result.message ?? 'Aperçu impossible.'};
-                            })}
-                        >
-                            Aperçu
-                        </button>
-
-                        <button
-                            type="button"
-                            disabled={busy}
                             onClick={() => run(() => sendTestEmailAction({
                                 cle: def.key,
                                 ...draft,
@@ -231,18 +263,23 @@ export default function EmailsEditor({initial}: { initial: StoredEmailTemplate[]
                 </div>
             </div>
 
-            {preview && (
-                <div className={styles.panel}>
-                    <h2 className={styles.panelTitle}>Aperçu (valeurs d&apos;exemple)</h2>
-                    {/* `sandbox` vide : l'aperçu ne doit ni exécuter de script ni naviguer. */}
+            <div className={styles.panel}>
+                <h2 className={styles.panelTitle}>Aperçu (valeurs d&apos;exemple)</h2>
+                {previewError && (
+                    <p className={`${styles.status} ${styles.statusError}`}>{previewError}</p>
+                )}
+                {preview ? (
+                    /* `sandbox` vide : l'aperçu ne doit ni exécuter de script ni naviguer. */
                     <iframe
                         className={styles.preview}
                         title="Aperçu de l'e-mail"
                         sandbox=""
                         srcDoc={preview}
                     />
-                </div>
-            )}
+                ) : (
+                    !previewError && <p className={styles.hint}>Génération de l&apos;aperçu…</p>
+                )}
+            </div>
         </div>
     );
 }

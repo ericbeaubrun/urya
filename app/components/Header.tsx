@@ -2,19 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
-import { track } from '@/lib/analytics';
 import { Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
+import BookingCta from './BookingCta';
 
 import { useContent } from '@/app/ContentContext';
-import { usableNavItems } from '@/lib/site-content';
+import { homeNavItems } from '@/lib/site-content';
+import { SCROLL_OFFSET } from '@/app/config';
 
 interface NavigationProps {
     onContactClick?: () => void;
 }
 
 export default function Navigation({ onContactClick }: NavigationProps) {
-    const { navigation } = useContent();
+    const content = useContent();
+    const { navigation } = content;
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isHeroActive, setIsHeroActive] = useState(true);
@@ -33,7 +35,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
 
     if (!navigation) return null;
 
-    const navItems = usableNavItems(navigation.items);
+    const navItems = homeNavItems(content);
 
     const handleNav = () => {
         setMenuOpen(false);
@@ -47,9 +49,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                     <ScrollLink
                         to="hero"
                         spy={true}
-                        smooth={true}
-                        offset={-80}
-                        duration={800}
+                        offset={SCROLL_OFFSET}
                         onClick={handleNav}
                         className={`${styles.logo} ${isHeroActive ? styles.activeLink : ''}`}
                         activeClass={styles.activeLink}
@@ -68,9 +68,11 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                                 <ScrollLink
                                     to={item.to}
                                     spy={true}
-                                    smooth={true}
-                                    offset={40}
-                                    duration={800}
+                                    // Hauteur de l'en-tête fixe. Le décalage
+                                    // était positif : la section montait
+                                    // au-delà du haut de la fenêtre, puis
+                                    // l'en-tête en recouvrait le titre.
+                                    offset={SCROLL_OFFSET}
                                     onClick={() => {
                                         handleNav();
                                         if (item.to === 'faq' && onContactClick) onContactClick();
@@ -85,19 +87,9 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                         ))}
                     </ul>
 
-                    <ScrollLink
-                        to="devis"
-                        spy={true}
-                        smooth={true}
-                        offset={240}
-                        duration={800}
-                        onClick={() => track("cta_click", {source: "header"})}
-                        className={styles.ctaButton}
-                        activeClass={styles.activeCta}
-                        style={{ cursor: 'pointer' }}
-                    >
-                        {navigation.cta}
-                    </ScrollLink>
+                    <BookingCta source="header" className={styles.ctaButton}>
+                        Réserver
+                    </BookingCta>
 
                     <button
                         onClick={() => setMenuOpen(!menuOpen)}
@@ -128,9 +120,7 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                                 <ScrollLink
                                     to={item.to}
                                     spy={true}
-                                    smooth={true}
-                                    offset={-80}
-                                    duration={800}
+                                    offset={SCROLL_OFFSET}
                                     onClick={() => {
                                         handleNav();
                                         if (item.to === 'faq' && onContactClick) onContactClick();
@@ -144,22 +134,13 @@ export default function Navigation({ onContactClick }: NavigationProps) {
                             </li>
                         ))}
                     </ul>
-                    <ScrollLink
-                        to="devis"
-                        spy={true}
-                        smooth={true}
-                        offset={-80}
-                        duration={800}
-                        onClick={() => {
-                            track("cta_click", {source: "header_mobile"});
-                            handleNav();
-                        }}
+                    <BookingCta
+                        source="header_mobile"
+                        onClick={handleNav}
                         className={styles.mobileCtaButton}
-                        activeClass={styles.activeCtaMobile}
-                        style={{ cursor: 'pointer' }}
                     >
-                        {navigation.cta}
-                    </ScrollLink>
+                        Réserver
+                    </BookingCta>
                 </div>
             </div>
         </>

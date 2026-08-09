@@ -1,10 +1,10 @@
 'use client';
 
 import {motion} from 'framer-motion';
-import {Heart, Sparkles, PartyPopper, CalendarDays, Check, ArrowRight} from 'lucide-react';
+import {Heart, Sparkles, PartyPopper, CalendarDays, Check} from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
-import {Link as ScrollLink} from 'react-scroll';
 import styles from './Services.module.css';
+import BookingCta from './BookingCta';
 import {ANIMATION_ONCE} from "@/app/config";
 
 import {useContent} from '@/app/ContentContext';
@@ -46,8 +46,6 @@ export default function Services() {
 
     return (
         <section id="services" className={styles.section}>
-            <div className={styles.bgOverlay}/>
-
             <motion.div
                 className={styles.container}
                 variants={containerVariants}
@@ -121,21 +119,13 @@ export default function Services() {
 
                                         {/* Card Footer (Tarif et CTA) */}
                                         <div className={styles.cardFooter}>
-                                            <div>
+                                            <div className={styles.priceBlock}>
                                                 <div className={styles.priceLabel}>Tarif</div>
                                                 <div className={styles.priceValue}>{service.price}</div>
                                             </div>
-                                            <ScrollLink
-                                                to="devis"
-                                                smooth={true}
-                                                offset={-80}
-                                                duration={800}
-                                                className={styles.ctaLink}
-                                                style={{cursor: 'pointer'}}
-                                            >
-                                                <span>Devis</span>
-                                                <ArrowRight size={14} className={styles.arrowIcon}/>
-                                            </ScrollLink>
+                                            <BookingCta source="services" className={styles.ctaLink}>
+                                                <span>Réserver</span>
+                                            </BookingCta>
                                         </div>
                                     </div>
 

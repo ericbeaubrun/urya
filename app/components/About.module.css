@@ -145,18 +145,6 @@
     margin-top: var(--space-1);
 }
 
-.cornerBorder {
-    position: absolute;
-    -top: 1.5rem;
-    -left: 1.5rem;
-    width: 6rem;
-    height: 6rem;
-    border-top: 1px solid var(--color-border-primary);
-    border-left: 1px solid var(--color-border-primary);
-    border-radius: var(--radius-lg) 0 0 0;
-    pointer-events: none;
-}
-
 .sectionTag {
     display: inline-block;
     /*text-transform: uppercase;*/
@@ -169,21 +157,6 @@
 }
 
 
-.sectionTitle {
-}
-
-@media (max-width: 400px) {
-    .sectionTitle {
-        font-size: var(--fs-3xl);
-    }
-}
-
-
-@media (min-width: 768px) {
-    .sectionTitle {
-        font-size: var(--fs-5xl);
-    }
-}
 
 .textGradient {
     background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
@@ -251,6 +224,30 @@
 
 .gearCard:hover {
     border-color: var(--color-border-primary);
+}
+
+/* Carte cliquable (téléphone, e-mail, Instagram) : elle doit se distinguer
+   des cartes purement informatives, sans quoi rien n'indique qu'un appel est
+   à un tap de distance. */
+.gearCardLink {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.gearCardLink:hover {
+    background-color: rgba(139, 92, 246, 0.06);
+    border-color: var(--color-border-primary);
+}
+
+.gearCardLink:hover .gearLabel {
+    color: var(--color-primary-light);
+}
+
+.gearCardLink:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
 }
 
 .gearIconWrapper {

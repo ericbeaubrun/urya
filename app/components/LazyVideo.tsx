@@ -33,8 +33,11 @@ export default function LazyVideo({src, poster, className, strategy = 'onVisible
     useEffect(() => {
         if (strategy === 'onLoad') {
             if (document.readyState === 'complete') {
-                setActivated(true);
-                return;
+                // La page est déjà chargée : plus rien à attendre. On diffère
+                // d'une frame plutôt que d'appeler setState dans le corps de
+                // l'effet, ce qui provoquerait un rendu en cascade.
+                const frame = requestAnimationFrame(() => setActivated(true));
+                return () => cancelAnimationFrame(frame);
             }
             const onLoad = () => setActivated(true);
             window.addEventListener('load', onLoad, {once: true});

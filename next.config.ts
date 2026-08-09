@@ -30,7 +30,11 @@ const contentSecurityPolicy = [
     // Le poster de la vidéo About est désormais servi localement ; pexels ne
     // reste autorisé que pour les images saisies depuis l'admin (galerie,
     // prestations). À retirer si plus aucun contenu n'y pointe.
-    "img-src 'self' data: blob: https://images.pexels.com",
+    //
+    // L'origine Supabase couvre le bucket public de la galerie, où atterrissent
+    // les visuels téléversés depuis l'admin. `blob:` sert, lui, aux aperçus
+    // produits par la compression avant envoi.
+    `img-src 'self' data: blob: https://images.pexels.com ${supabaseOrigin}`.trim(),
     "media-src 'self'",
     "font-src 'self' data:",
     connectSrc,
@@ -71,6 +75,13 @@ const immutableCache = "public, max-age=31536000, immutable";
 const staticCache = "public, max-age=86400, stale-while-revalidate=604800";
 
 const nextConfig: NextConfig = {
+    experimental: {
+        // Les visuels de galerie transitent par une Server Action. La limite
+        // par défaut (1 Mo) suffit à une image compressée, mais pas au repli
+        // qui envoie l'original quand le navigateur ne sait pas produire de
+        // WebP ; `MAX_UPLOAD_BYTES` reste le plafond réellement appliqué.
+        serverActions: {bodySizeLimit: '3mb'},
+    },
     async headers() {
         return [
             {

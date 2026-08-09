@@ -1,5 +1,7 @@
 import {describe, expect, it} from "vitest";
 import {
+    detectBrowser,
+    detectOs,
     isAnalyticsEventName,
     isDevice,
     isTrackablePath,
@@ -132,9 +134,68 @@ describe("isTrackablePath", () => {
 });
 
 describe("isDevice", () => {
-    it("n'accepte que les deux catégories connues", () => {
+    it("n'accepte que les paliers de mise en page connus", () => {
         expect(isDevice("mobile")).toBe(true);
+        expect(isDevice("tablet")).toBe(true);
         expect(isDevice("desktop")).toBe(true);
-        expect(isDevice("tablet")).toBe(false);
+    });
+
+    it("écarte toute autre valeur", () => {
+        // Une largeur exacte serait un élément d'empreinte : seul le palier
+        // doit pouvoir entrer en base.
+        expect(isDevice("1440")).toBe(false);
+        expect(isDevice("iPhone 15 Pro")).toBe(false);
+        expect(isDevice(null)).toBe(false);
+    });
+});
+
+/**
+ * Le User-Agent brut n'est jamais stocké : ces deux fonctions sont le seul
+ * chemin par lequel il peut laisser une trace, et leur rôle est de le réduire
+ * à une famille. Un cas non reconnu doit donner `null`, pas la chaîne d'entrée
+ * — sans quoi un User-Agent complet finirait en base.
+ */
+describe("detectOs", () => {
+    it("reconnaît les familles courantes", () => {
+        expect(detectOs("Mozilla/5.0 (Windows NT 10.0; Win64; x64)")).toBe("Windows");
+        expect(detectOs("Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X)")).toBe("iOS");
+        expect(detectOs("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")).toBe("macOS");
+    });
+
+    it("ne confond pas Android avec Linux", () => {
+        // Un User-Agent Android contient « Linux » : sans l'ordre des motifs,
+        // tout le trafic mobile serait rangé au mauvais endroit.
+        expect(detectOs("Mozilla/5.0 (Linux; Android 14; Pixel 8)")).toBe("Android");
+        expect(detectOs("Mozilla/5.0 (X11; Linux x86_64)")).toBe("Linux");
+    });
+
+    it("renvoie null plutôt que la chaîne d'entrée quand rien ne correspond", () => {
+        expect(detectOs("UnAgentInconnu/1.0")).toBeNull();
+        expect(detectOs("")).toBeNull();
+    });
+});
+
+describe("detectBrowser", () => {
+    it("préfère le moteur le plus spécifique", () => {
+        // Les User-Agent s'imitent en cascade : Edge se déclare Chrome, qui se
+        // déclare Safari. Le plus spécifique doit gagner.
+        const edge = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/124.0 Safari/537.36 Edg/124.0";
+        expect(detectBrowser(edge)).toBe("Edge");
+
+        const chrome = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/124.0 Safari/537.36";
+        expect(detectBrowser(chrome)).toBe("Chrome");
+
+        const safari = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.4 Safari/605.1.15";
+        expect(detectBrowser(safari)).toBe("Safari");
+    });
+
+    it("reconnaît Firefox sur mobile comme sur bureau", () => {
+        expect(detectBrowser("Mozilla/5.0 (Windows NT 10.0; rv:125.0) Gecko/20100101 Firefox/125.0")).toBe("Firefox");
+        expect(detectBrowser("Mozilla/5.0 (iPhone) FxiOS/125.0 Mobile/15E148 Safari/605.1.15")).toBe("Firefox");
+    });
+
+    it("renvoie null plutôt que la chaîne d'entrée quand rien ne correspond", () => {
+        expect(detectBrowser("UnAgentInconnu/1.0")).toBeNull();
+        expect(detectBrowser("")).toBeNull();
     });
 });

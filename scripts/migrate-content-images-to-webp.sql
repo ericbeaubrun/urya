@@ -16,18 +16,25 @@ select content::text ~ '\.png' as reste_des_png from site_content where id = 1;
 -- Les icônes réseaux sociaux ne figurent pas ici : leurs chemins vivent dans
 -- l'ICON_MAP de Footer.tsx, la base ne stocke que le nom de la plateforme.
 -- Si la colonne est de type `json` et non `jsonb`, remplacer le cast final.
+--
+-- ATTENTION — le motif ne porte PAS de barre oblique de tête. La première
+-- version de ce script cherchait '/dj-urya_4.png' alors que la galerie stockait
+-- 'dj-urya_4.png' sans barre : aucun des cinq remplacements ne matchait, et les
+-- images de la galerie sont restées en 404 en production sans que rien ne le
+-- signale. Les chemins de prestations, eux, portaient bien la barre — d'où une
+-- migration qui semblait avoir réussi.
 update site_content
 set content = replace(replace(replace(replace(replace(replace(replace(replace(replace(
     content::text,
-    '/mariage.png',      '/mariage.webp'),
-    '/soiree.png',       '/soiree.webp'),
-    '/anniversaire.png', '/anniversaire.webp'),
-    '/dj-urya_1.png',    '/dj-urya_1.webp'),
-    '/dj-urya_2.png',    '/dj-urya_2.webp'),
-    '/dj-urya_3.png',    '/dj-urya_3.webp'),
-    '/dj-urya_4.png',    '/dj-urya_4.webp'),
-    '/dj-urya_5.png',    '/dj-urya_5.webp'),
-    '/dj-urya_6.png',    '/dj-urya_6.webp')::jsonb
+    'mariage.png',      'mariage.webp'),
+    'soiree.png',       'soiree.webp'),
+    'anniversaire.png', 'anniversaire.webp'),
+    'dj-urya_1.png',    'dj-urya_1.webp'),
+    'dj-urya_2.png',    'dj-urya_2.webp'),
+    'dj-urya_3.png',    'dj-urya_3.webp'),
+    'dj-urya_4.png',    'dj-urya_4.webp'),
+    'dj-urya_5.png',    'dj-urya_5.webp'),
+    'dj-urya_6.png',    'dj-urya_6.webp')::jsonb
 where id = 1;
 
 -- Contrôle : ne doit plus lister que d'éventuels chemins non prévus ici.

@@ -46,7 +46,7 @@
     background: var(--adm-bg);
     color: var(--adm-text);
     min-height: 100vh;
-    font-family: var(--font-main);
+    font-family: var(--font-system);
     font-size: 14px;
     line-height: 1.45;
 }
@@ -57,10 +57,11 @@
 .adminShell h2,
 .adminShell h3,
 .adminShell h4 {
-    font-family: var(--font-main);
+    font-family: var(--font-system);
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.25;
+    text-wrap: initial;
     margin: 0;
     color: var(--adm-text);
 }

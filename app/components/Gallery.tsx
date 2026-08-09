@@ -1,6 +1,8 @@
 'use client';
 
 import {motion} from 'framer-motion';
+import {useCallback, useEffect, useState} from 'react';
+import {X} from 'lucide-react';
 import styles from './Gallery.module.css';
 import {ANIMATION_ONCE} from "@/app/config";
 
@@ -34,10 +36,39 @@ const itemVariants = {
 
 export default function Gallery() {
     const {gallery} = useContent();
+    const [zoomed, setZoomed] = useState<number | null>(null);
+
+    const close = useCallback(() => setZoomed(null), []);
+
+    // Échap ferme la visionneuse, et le défilement de la page est bloqué tant
+    // qu'elle est ouverte : sans cela, la molette fait défiler l'arrière-plan
+    // derrière l'image agrandie.
+    useEffect(() => {
+        if (zoomed === null) return;
+
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') close();
+        };
+        window.addEventListener('keydown', onKey);
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            window.removeEventListener('keydown', onKey);
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [zoomed, close]);
 
     if (!gallery) return null;
 
     const images = Array.isArray(gallery.images) ? gallery.images : [];
+    const zoomedImage = zoomed === null ? null : images[zoomed];
+
+    const altFor = (img: { alt?: string }, idx: number) =>
+        // `alt` est saisi depuis l'admin et souvent laissé vide : sans repli,
+        // l'image sort du périmètre de Google Images.
+        img.alt?.trim() || `DJ URYA en prestation – photo ${idx + 1}`;
 
     return (
         <section id="gallery" className={styles.section}>
@@ -70,25 +101,54 @@ export default function Gallery() {
                 >
                     {
                         images.map((img, idx) => (
-                            <motion.div
+                            <motion.button
                                 key={idx}
+                                type="button"
                                 className={`${styles.imageCard} ${img.big ? styles.bigCard : ''}`}
                                 variants={itemVariants}
+                                onClick={() => setZoomed(idx)}
+                                aria-label={`Agrandir : ${altFor(img, idx)}`}
                             >
                                 <img
                                     src={img.src}
-                                    // `alt` est saisi depuis l'admin et souvent
-                                    // laissé vide : sans repli, l'image sort du
-                                    // périmètre de Google Images.
-                                    alt={img.alt?.trim() || `DJ URYA en prestation – photo ${idx + 1}`}
+                                    alt={altFor(img, idx)}
                                     className={styles.image}
                                     loading="lazy"
                                     decoding="async"
                                 />
-                            </motion.div>
+                                <span className={styles.hoverOverlay}/>
+                            </motion.button>
                         ))}
                 </motion.div>
             </motion.div>
+
+            {zoomedImage && (
+                <div
+                    className={styles.lightbox}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Photo agrandie"
+                    onClick={close}
+                >
+                    <button
+                        type="button"
+                        className={styles.lightboxClose}
+                        onClick={close}
+                        aria-label="Fermer"
+                        title="Fermer"
+                    >
+                        <X size={22}/>
+                    </button>
+                    {/* Le clic sur l'image ne doit pas refermer : seul le fond
+                        et le bouton ferment la visionneuse. */}
+                    <img
+                        src={zoomedImage.src}
+                        alt={altFor(zoomedImage, zoomed as number)}
+                        className={styles.lightboxImage}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </div>
+            )}
         </section>
     );
 }

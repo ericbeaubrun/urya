@@ -87,6 +87,29 @@ export interface ServicesContent {
     };
 }
 
+export interface TestimonialItem {
+    /** Texte de l'avis, restitué tel quel : c'est la parole du client. */
+    quote?: string;
+    author?: string;
+    /** Titre donné à l'avis par son auteur, ex. « Je recommande vivement ». */
+    title?: string;
+    /** Note sur 5. Absente ou nulle : aucune étoile n'est affichée. */
+    rating?: number;
+}
+
+export interface TestimonialsContent {
+    title?: TitleBlock;
+    subtitle?: string;
+    items?: TestimonialItem[];
+}
+
+/**
+ * Plafond d'avis affichés. Au-delà de cinq, la section cesse d'être une preuve
+ * qu'on lit pour devenir un mur qu'on saute : la sélection vaut mieux que
+ * l'exhaustivité, et la rangée incomplète reste centrée jusqu'à ce compte.
+ */
+export const MAX_TESTIMONIALS = 5;
+
 export interface FaqItem {
     question?: string;
     answer?: string;
@@ -199,6 +222,7 @@ export interface SiteContent {
     about?: AboutContent;
     gallery?: GalleryContent;
     services?: ServicesContent;
+    testimonials?: TestimonialsContent;
     faq?: FaqContent;
     faqForm?: FaqFormContent;
     prestationForm?: PrestationFormContent;
@@ -220,6 +244,76 @@ export function usableNavItems(items: NavItem[] | undefined): ResolvedNavItem[] 
     return items.filter(
         (item): item is ResolvedNavItem => typeof item.to === "string" && item.to !== ""
     );
+}
+
+/** Cible de défilement de la section « Avis ». */
+const TESTIMONIALS_TARGET = "avis";
+
+/**
+ * Entrées de menu réellement atteignables sur la page d'accueil.
+ *
+ * La section « Avis » n'est rendue que si elle a du contenu, alors que son
+ * entrée de menu, elle, reste enregistrée en base. Sans ce filtre, elle
+ * deviendrait un lien qui ne défile nulle part : react-scroll ne trouvant pas
+ * sa cible, le clic n'aurait aucun effet.
+ *
+ * Le calcul est ici plutôt que dans l'en-tête parce que le pied de page reprend
+ * exactement la même liste : c'est le genre de règle qu'on n'applique qu'à un
+ * seul des deux endroits si on la duplique.
+ */
+export function homeNavItems(content: SiteContent): ResolvedNavItem[] {
+    const hasTestimonials = usableTestimonials(content.testimonials?.items).length > 0;
+
+    return usableNavItems(content.navigation?.items).filter(
+        (item) => item.to !== TESTIMONIALS_TARGET || hasTestimonials
+    );
+}
+
+/**
+ * Avis exploitable. Sans texte, il ne reste qu'un nom et une note : une carte
+ * vide qui affaiblit les avis voisins au lieu de les renforcer. Le plafond est
+ * appliqué ici plutôt qu'à la saisie, pour qu'un contenu enregistré avant ce
+ * plafond — ou modifié à la main en base — ne déborde jamais la grille.
+ */
+export type ResolvedTestimonial = TestimonialItem & { quote: string };
+
+export function usableTestimonials(
+    items: TestimonialItem[] | undefined
+): ResolvedTestimonial[] {
+    if (!Array.isArray(items)) return [];
+
+    return items
+        .filter(
+            (item): item is ResolvedTestimonial =>
+                typeof item.quote === "string" && item.quote.trim() !== ""
+        )
+        .slice(0, MAX_TESTIMONIALS);
+}
+
+/** Note ramenée à un entier de 0 à 5 : le champ est libre côté admin. */
+export function testimonialStars(rating: unknown): number {
+    const value = Math.round(Number(rating));
+
+    if (!Number.isFinite(value) || value <= 0) return 0;
+
+    return Math.min(value, 5);
+}
+
+/**
+ * Initiale affichée dans la pastille d'avatar.
+ *
+ * Les avis viennent d'une plateforme tierce où seul le prénom est publié : il
+ * n'y a pas de photo à reprendre, et en inventer une serait un faux. La lettre
+ * suffit à donner un visage à la carte.
+ *
+ * `[...author]` plutôt que `author[0]` : découper une chaîne par indice sépare
+ * les paires de substitution, et un prénom commençant par un emoji rendrait un
+ * demi-caractère.
+ */
+export function testimonialInitial(author: string | undefined): string | null {
+    const first = [...(author ?? "").trim()][0];
+
+    return first ? first.toLocaleUpperCase("fr-FR") : null;
 }
 
 /** Lien social exploitable : `platform` sert de clé d'icône et de libellé. */

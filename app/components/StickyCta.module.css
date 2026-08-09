@@ -1,0 +1,76 @@
+/* Au-delà de 768 px, le bouton « Réserver » de l'en-tête prend le relais :
+   la barre ne doit alors jamais apparaître, dans aucun état. */
+.bar {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        /* Sous le tiroir de navigation (100) et ses recouvrements de modale,
+           au-dessus de l'en-tête (50) qu'elle ne croise jamais. */
+        z-index: 60;
+
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+
+        padding: var(--space-3) var(--space-4);
+        /* Barre d'accueil des iPhone : sans ce complément, les boutons
+           tombent sous la zone réellement tactile. */
+        padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+
+        background-color: rgba(11, 11, 14, 0.92);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-top: 1px solid var(--color-border);
+
+        transform: translateY(110%);
+        visibility: hidden;
+        pointer-events: none;
+        transition: transform var(--transition-base), visibility var(--transition-base);
+    }
+
+    .visible {
+        transform: translateY(0);
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
+.primary {
+    composes: btn btnPrimary from global;
+    flex: 1;
+}
+
+.call {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--color-primary-light);
+    background-color: rgba(139, 92, 246, 0.12);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+}
+
+.primary:focus-visible,
+.call:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+}
+
+/* La barre glisse à l'entrée ; pour qui a demandé moins d'animation, elle
+   apparaît sans transition plutôt que pas du tout. */
+@media (prefers-reduced-motion: reduce) {
+    .bar {
+        transition: none;
+    }
+}

@@ -1,0 +1,169 @@
+.section {
+    position: relative;
+    padding: var(--section-padding-y) var(--section-padding-x);
+    overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+    .section {
+        padding: var(--section-padding-y-lg) var(--section-padding-x-lg);
+    }
+}
+
+/* Le filet et la teinte diffuse qui séparaient cette section de « Prestations »
+   ont disparu : la jointure est désormais marquée par le halo violet global
+   (voir `globals.css`), identique à toutes les autres. */
+
+.container {
+    position: relative;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: var(--space-20);
+}
+
+.textGradient {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* La marge basse du `h2` global est reprise par la marge haute du sous-titre :
+   les cumuler éloignerait le sous-titre de son titre.
+
+   Le titre tient sur une seule ligne : le retour forcé a été retiré du JSX
+   plutôt qu'un `nowrap` posé ici, qui ferait déborder un titre un peu long sur
+   un écran étroit. Il se replie donc tout seul si la place manque. */
+.sectionTitle {
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+
+.sectionSubtitle {
+    font-size: var(--fs-lead);
+    color: var(--color-text-muted);
+    max-width: var(--measure);
+    margin: var(--space-4) auto 0;
+    line-height: 1.7;
+}
+
+/* GRILLE
+   Cinq avis au maximum, donc une dernière rangée presque toujours incomplète.
+   Une grille en colonnes fixes la collerait à gauche en laissant un trou à
+   droite ; le `flex` centré répartit l'orphelin au milieu. */
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-6);
+}
+
+.card {
+    position: relative;
+    /* La base de 17rem donne trois cartes par rangée sur la largeur du
+       conteneur, deux sur tablette, une sur mobile — sans media query. */
+    flex: 1 1 17rem;
+    max-width: 22rem;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: var(--space-6);
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+/* EN-TÊTE : pastille + identité, séparé du corps par un filet. */
+.head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Pastille d'initiale. Les avis sont repris d'une plateforme tierce qui ne
+   publie que le prénom : il n'y a pas de photo à reprendre.
+
+   Toutes les pastilles portent le violet de marque. Une teinte calculée par
+   nom avait été essayée : elle distinguait les cartes, mais au prix de cinq
+   couleurs qui ne renvoyaient à rien — la variation n'apportait pas
+   d'information, elle en simulait une. */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-full);
+    background: linear-gradient(
+        140deg,
+        var(--color-primary) 0%,
+        var(--color-primary-dark) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-family: var(--font-secondary);
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    line-height: 1;
+    /* La lettre est calée sur la ligne de base de sa police ; sans ce décalage
+       elle flotte visiblement haut dans le cercle. */
+    padding-top: 0.1em;
+}
+
+.identity {
+    min-width: 0;
+}
+
+.authorName {
+    display: block;
+    color: var(--color-text-main);
+    font-family: var(--font-secondary);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.stars {
+    display: flex;
+    gap: 0.1rem;
+    margin-top: var(--space-1);
+}
+
+/* Jaune plutôt que le violet de marque : c'est la couleur qu'on lit comme une
+   note sans avoir à y réfléchir. Teinte ambrée et non citron, la seule qui
+   tienne le contraste sur le fond sombre des cartes. */
+.star {
+    color: #fbbf24;
+    fill: currentColor;
+}
+
+/* `flex-grow` sur la citation : les cartes d'une même rangée gardent la même
+   hauteur même quand les avis n'ont pas la même longueur. */
+.quote {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.quoteTitle {
+    margin: 0 0 var(--space-2) 0;
+    color: var(--color-text-main);
+    font-family: var(--font-secondary);
+    font-size: var(--fs-base);
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.quoteText {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    line-height: 1.7;
+}

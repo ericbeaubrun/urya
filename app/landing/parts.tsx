@@ -1,3 +1,4 @@
+import {Fragment} from 'react';
 import Link from 'next/link';
 import styles from './Landing.module.css';
 
@@ -17,10 +18,28 @@ export function renderEmphasis(text: string) {
     );
 }
 
-export function Breadcrumb({label}: { label: string }) {
+/**
+ * `trail` porte les niveaux intermédiaires cliquables (région, département) ;
+ * `label` reste la page courante, non cliquable. Le fil d'Ariane HTML doit
+ * refléter exactement le `BreadcrumbList` du JSON-LD, faute de quoi Google
+ * ignore les deux.
+ */
+export function Breadcrumb({
+    label,
+    trail = [],
+}: {
+    label: string;
+    trail?: { slug: string; label: string }[];
+}) {
     return (
         <nav className={styles.breadcrumb} aria-label="Fil d'Ariane">
             <Link href="/">Accueil</Link>
+            {trail.map((step) => (
+                <Fragment key={step.slug}>
+                    <span aria-hidden="true">/</span>
+                    <Link href={`/${step.slug}`}>{step.label}</Link>
+                </Fragment>
+            ))}
             <span aria-hidden="true">/</span>
             <span className={styles.breadcrumbCurrent}>{label}</span>
         </nav>

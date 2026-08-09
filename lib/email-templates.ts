@@ -25,6 +25,9 @@ export interface TemplateVariable {
 
 export interface EmailTemplateDef {
     key: string;
+    /** Regroupement affiché dans le sélecteur de /admin/emails. */
+    category: string;
+    /** Libellé court, unique à l'intérieur de sa catégorie. */
     label: string;
     description: string;
     variables: TemplateVariable[];
@@ -37,7 +40,8 @@ const NR = "Non renseigné";
 export const EMAIL_TEMPLATES: EmailTemplateDef[] = [
     {
         key: "prestation_client",
-        label: "Demande de prestation — client",
+        category: "Demande de prestation",
+        label: "Client",
         description: "Accusé de réception envoyé au visiteur qui remplit le formulaire de prestation.",
         variables: [
             {key: "nom", label: "Nom du client", sample: "Camille Martin"},
@@ -62,7 +66,8 @@ Si vous avez des questions urgentes, n'hésitez pas à nous contacter directemen
     },
     {
         key: "prestation_admin",
-        label: "Demande de prestation — administration",
+        category: "Demande de prestation",
+        label: "Administration",
         description: "Notification interne à chaque nouvelle demande de prestation.",
         variables: [
             {key: "nom", label: "Nom du client", sample: "Camille Martin"},
@@ -100,7 +105,8 @@ Si vous avez des questions urgentes, n'hésitez pas à nous contacter directemen
     },
     {
         key: "appointment_admin",
-        label: "Rendez-vous gratuit — administration",
+        category: "Rendez-vous gratuit",
+        label: "Administration",
         description: "Notification interne à chaque demande de premier rendez-vous.",
         variables: [
             {key: "name", label: "Nom / organisme", sample: "Camille Martin"},
@@ -121,7 +127,8 @@ Si vous avez des questions urgentes, n'hésitez pas à nous contacter directemen
     },
     {
         key: "appointment_client",
-        label: "Rendez-vous gratuit — client",
+        category: "Rendez-vous gratuit",
+        label: "Client",
         description: "Confirmation envoyée au visiteur, uniquement si son contact est un email valide.",
         variables: [
             {key: "name", label: "Nom / organisme", sample: "Camille Martin"},
@@ -145,7 +152,8 @@ Urya`,
     },
     {
         key: "contact_admin",
-        label: "Formulaire de contact — administration",
+        category: "Formulaire de contact",
+        label: "Administration",
         description: "Notification interne à chaque message envoyé depuis le formulaire de contact.",
         variables: [
             {key: "nom", label: "Nom", sample: "Camille Martin"},

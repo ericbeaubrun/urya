@@ -3,6 +3,8 @@ import {enforceRateLimit} from "@/lib/rate-limit";
 import {supabaseAdmin} from "@/lib/supabase_client";
 import {SITE_URL} from "@/app/site-url";
 import {
+    detectBrowser,
+    detectOs,
     isAnalyticsEventName,
     isDevice,
     isTrackablePath,
@@ -17,8 +19,10 @@ import {
  * Rien de ce qui entre ici n'est stocké tel quel : le nom d'événement doit
  * figurer dans l'allowlist, les propriétés sont filtrées clé par clé, le
  * chemin est amputé de sa chaîne de requête et le référent réduit à son hôte.
- * L'IP et le User-Agent servent au filtrage puis sont jetés — ils ne sont
- * jamais écrits en base, ce qui est la condition de l'absence de bandeau.
+ * L'IP n'est jamais écrite en base ; du User-Agent, seules deux étiquettes
+ * issues de listes fermées sont conservées (famille de système, famille de
+ * navigateur), jamais la chaîne d'origine ni sa version. C'est la condition de
+ * l'absence de bandeau : rien de ce qui est stocké ne singularise un visiteur.
  */
 
 /**
@@ -96,6 +100,8 @@ export async function POST(req: NextRequest) {
                 path,
                 referrer_host: sanitizeReferrerHost(body?.referrer, SELF_HOST),
                 device: isDevice(body?.device) ? body.device : null,
+                os: detectOs(userAgent),
+                browser: detectBrowser(userAgent),
                 props: sanitizeProps(name, body?.props),
             });
 

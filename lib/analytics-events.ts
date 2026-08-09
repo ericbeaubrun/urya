@@ -49,6 +49,15 @@ export const ANALYTICS_EVENTS = {
 
     /** Ouverture d'une question de la FAQ. Signal d'intention. */
     faq_open: ["question"],
+
+    /**
+     * Clic sur un contact direct (téléphone, e-mail, Instagram).
+     *
+     * Distinct de `cta_click`, qui ne couvre que les chemins menant au
+     * formulaire : un appel est une conversion à part entière, qui n'apparaît
+     * dans aucun entonnoir puisqu'elle quitte le site.
+     */
+    contact_click: ["channel"],
 } as const satisfies Record<string, readonly string[]>;
 
 export type AnalyticsEventName = keyof typeof ANALYTICS_EVENTS;
@@ -164,9 +173,76 @@ export function sanitizeReferrerHost(value: unknown, selfHost?: string): string 
     return host.slice(0, MAX_PROP_LENGTH);
 }
 
-export const DEVICES = ["mobile", "desktop"] as const;
+/**
+ * Classe d'affichage, déduite de la largeur de la fenêtre côté client.
+ *
+ * Ce sont des paliers de mise en page, pas des types de matériel : on ne
+ * cherche pas à identifier l'appareil mais à savoir sur quelle largeur le site
+ * est réellement consulté, seule information qui guide un arbitrage de design.
+ */
+export const DEVICES = ["mobile", "tablet", "desktop"] as const;
 export type Device = (typeof DEVICES)[number];
 
 export function isDevice(value: unknown): value is Device {
     return typeof value === "string" && (DEVICES as readonly string[]).includes(value);
+}
+
+export const DEVICE_LABELS: Record<Device, string> = {
+    mobile: "Mobile",
+    tablet: "Tablette",
+    desktop: "Bureau",
+};
+
+/**
+ * Familles de système et de navigateur, déduites du User-Agent côté serveur.
+ *
+ * Le User-Agent brut n'est jamais stocké : seule une étiquette prise dans ces
+ * listes fermées l'est, et rien d'autre — ni version, ni matériel, ni langue.
+ * Un compteur « Safari » ou « Android » ne distingue aucun visiteur d'un autre
+ * et ne permet aucun recoupement, contrairement à l'empreinte de navigateur
+ * que ce filtrage grossier a précisément pour but d'exclure.
+ *
+ * L'ordre compte : les User-Agent s'imitent en cascade (Edge contient
+ * « Chrome », Chrome contient « Safari », Android contient « Linux »), donc le
+ * cas le plus spécifique doit être testé en premier.
+ */
+const OS_PATTERNS: readonly (readonly [RegExp, string])[] = [
+    [/windows/i, "Windows"],
+    [/android/i, "Android"],
+    [/iphone|ipad|ipod/i, "iOS"],
+    [/mac os x|macintosh/i, "macOS"],
+    [/cros/i, "ChromeOS"],
+    [/linux|x11|bsd/i, "Linux"],
+];
+
+const BROWSER_PATTERNS: readonly (readonly [RegExp, string])[] = [
+    [/edg[ea]?\//i, "Edge"],
+    [/opr\/|opera/i, "Opera"],
+    [/samsungbrowser/i, "Samsung Internet"],
+    [/firefox|fxios/i, "Firefox"],
+    [/chrome|crios|chromium/i, "Chrome"],
+    [/safari/i, "Safari"],
+];
+
+function matchLabel(
+    patterns: readonly (readonly [RegExp, string])[],
+    userAgent: string
+): string | null {
+    if (!userAgent) return null;
+
+    for (const [pattern, label] of patterns) {
+        if (pattern.test(userAgent)) return label;
+    }
+
+    // Aucune correspondance : on préfère ne rien écrire plutôt que de conserver
+    // une chaîne inconnue, qui pourrait être n'importe quoi.
+    return null;
+}
+
+export function detectOs(userAgent: string): string | null {
+    return matchLabel(OS_PATTERNS, userAgent);
+}
+
+export function detectBrowser(userAgent: string): string | null {
+    return matchLabel(BROWSER_PATTERNS, userAgent);
 }

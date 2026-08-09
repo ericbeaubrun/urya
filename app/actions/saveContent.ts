@@ -2,6 +2,7 @@
 
 import {updateSiteContent as updateInDB, type SiteContent} from '@/lib/content';
 import {requireAdmin} from '@/lib/require-admin';
+import {pruneGalleryStorage} from '@/lib/gallery-storage';
 import {revalidateTag} from 'next/cache';
 
 export async function saveAndRefreshContent(newContent: SiteContent) {
@@ -10,6 +11,10 @@ export async function saveAndRefreshContent(newContent: SiteContent) {
 
         const {error} = await updateInDB(newContent);
         if (error) throw new Error(error.message);
+
+        // Après l'écriture seulement : le contenu enregistré fait foi pour
+        // décider quels visuels de galerie sont encore utiles.
+        await pruneGalleryStorage(newContent.gallery?.images);
 
         revalidateTag('site-content', 'max');
 

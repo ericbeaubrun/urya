@@ -286,3 +286,79 @@
         padding: 0.7rem;
     }
 }
+
+/* --- Galerie : vignettes et envoi de visuels --- */
+
+.galleryRow {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+@media (max-width: 640px) {
+    .galleryRow {
+        flex-direction: column;
+    }
+}
+
+/* Cadre fixe : les photos arrivent en portrait comme en paysage, et une
+   vignette à hauteur variable ferait sauter la liste à chaque ajout. */
+.galleryThumb {
+    width: 132px;
+    height: 99px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: var(--adm-radius);
+    border: 1px solid var(--adm-border);
+    background: var(--adm-surface-2);
+}
+
+.galleryFields {
+    flex: 1;
+    min-width: 0;
+}
+
+.galleryCheck {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.6rem 0;
+    font-size: 0.82rem;
+    color: var(--adm-muted);
+    cursor: pointer;
+}
+
+/* Rangée de boutons d'ordonnancement, partagée par la galerie et les avis :
+   les deux listes se réordonnent de la même façon. */
+.rowActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.rowActions button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Le bouton d'ajout est un `label` qui pilote un `input[type=file]` : c'est le
+   seul moyen d'ouvrir le sélecteur de fichiers sans styler l'input lui-même,
+   dont l'apparence n'est pas modifiable de façon portable. */
+.galleryUpload {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.galleryFileInput {
+    display: none;
+}
+
+.uploadError {
+    margin-bottom: 1rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--adm-radius);
+    background: var(--adm-danger-soft);
+    border: 1px solid var(--adm-danger);
+    color: var(--adm-danger-text);
+    font-size: 0.82rem;
+}

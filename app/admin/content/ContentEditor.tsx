@@ -3,8 +3,12 @@
 import {useState} from 'react';
 import {saveAndRefreshContent} from '@/app/actions/saveContent';
 import {refreshSiteContent} from '@/app/actions/content';
+import {uploadGalleryImage} from '@/app/actions/gallery';
+import {compressImage} from '@/lib/image-compress';
+import {ALLOWED_IMAGE_TYPES, MAX_GALLERY_IMAGES} from '@/lib/gallery';
 import styles from './ContentEditor.module.css';
-import type {SiteContent} from '@/lib/site-content';
+import type {GalleryImage, SiteContent, TestimonialItem} from '@/lib/site-content';
+import {MAX_TESTIMONIALS} from '@/lib/site-content';
 
 /**
  * Vue indexable du contenu. L'éditeur adresse les champs par chemin de clés
@@ -19,6 +23,8 @@ export default function ContentEditor({initialContent}: { initialContent: SiteCo
     const [activeTab, setActiveTab] = useState('hero');
     const [saving, setSaving] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
 
     const handleSave = async () => {
         try {
@@ -119,6 +125,85 @@ export default function ContentEditor({initialContent}: { initialContent: SiteCo
     const extraOptionItems = content.services?.extraOptions?.items ?? [];
     const faqItems = content.faq?.items ?? [];
     const prestationSteps = content.prestationForm?.steps ?? [];
+    const galleryImages = content.gallery?.images ?? [];
+    const testimonials = content.testimonials?.items ?? [];
+
+    const setTestimonials = (items: TestimonialItem[]) =>
+        updateField(['testimonials', 'items'], items);
+
+    const updateTestimonial = (index: number, patch: Partial<TestimonialItem>) => {
+        setTestimonials(
+            testimonials.map((item, i) => (i === index ? {...item, ...patch} : item))
+        );
+    };
+
+    const moveTestimonial = (index: number, direction: -1 | 1) => {
+        const target = index + direction;
+        if (target < 0 || target >= testimonials.length) return;
+
+        const next = [...testimonials];
+        [next[index], next[target]] = [next[target], next[index]];
+        setTestimonials(next);
+    };
+
+    const setGalleryImages = (images: GalleryImage[]) =>
+        updateField(['gallery', 'images'], images);
+
+    const updateGalleryImage = (index: number, patch: Partial<GalleryImage>) => {
+        setGalleryImages(
+            galleryImages.map((image, i) => (i === index ? {...image, ...patch} : image))
+        );
+    };
+
+    const moveGalleryImage = (index: number, direction: -1 | 1) => {
+        const target = index + direction;
+        if (target < 0 || target >= galleryImages.length) return;
+
+        const next = [...galleryImages];
+        [next[index], next[target]] = [next[target], next[index]];
+        setGalleryImages(next);
+    };
+
+    /**
+     * Le fichier de stockage n'est pas supprimé ici : le site public le sert
+     * encore tant que la sauvegarde n'a pas eu lieu. Le ménage est fait après
+     * l'enregistrement, par `pruneGalleryStorage`.
+     */
+    const removeGalleryImage = (index: number) => {
+        setGalleryImages(galleryImages.filter((_, i) => i !== index));
+    };
+
+    const handleGalleryUpload = async (file: File) => {
+        setUploadError(null);
+
+        if (galleryImages.length >= MAX_GALLERY_IMAGES) return;
+
+        setUploading(true);
+        try {
+            const optimised = await compressImage(file);
+            const payload = new FormData();
+            payload.append('file', optimised);
+
+            const result = await uploadGalleryImage(payload);
+
+            if (!result.success || !result.url) {
+                setUploadError(result.message ?? "L'envoi a échoué.");
+                return;
+            }
+
+            setGalleryImages([
+                ...galleryImages,
+                // La première image de la grille est la grande carte : une
+                // galerie qui démarre à vide doit rester bien composée sans
+                // que l'admin ait à connaître cette règle.
+                {src: result.url, alt: '', big: galleryImages.length === 0},
+            ]);
+        } catch (e) {
+            setUploadError((e as Error).message);
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const tabs = [
         {id: 'navigation', label: 'Navigation'},
@@ -126,6 +211,7 @@ export default function ContentEditor({initialContent}: { initialContent: SiteCo
         {id: 'about', label: 'À propos'},
         {id: 'services', label: 'Services'},
         {id: 'gallery', label: 'Galerie'},
+        {id: 'testimonials', label: 'Avis'},
         {id: 'faq', label: 'Questions'},
         {id: 'prestation', label: 'Formulaire'},
         {id: 'footer', label: 'Pied de page'},
@@ -420,6 +506,236 @@ export default function ContentEditor({initialContent}: { initialContent: SiteCo
                             {renderInput('Titre (Highlight)', ['gallery', 'title', 'highlight'])}
                         </div>
                         {renderTextarea('Sous-titre', ['gallery', 'subtitle'])}
+
+                        <div className={styles.subSection}>
+                            <div className={styles.itemHead}>
+                                <h3 className={styles.subTitle}>
+                                    Images ({galleryImages.length}/{MAX_GALLERY_IMAGES})
+                                </h3>
+                            </div>
+
+                            <p className={styles.helpText}>
+                                La grille est prévue pour {MAX_GALLERY_IMAGES} images : une grande
+                                (cochée « Grande ») et quatre normales remplissent exactement la
+                                rangée sur écran large. L&apos;ordre ci-dessous est celui de
+                                l&apos;affichage. Vos photos sont réduites et converties
+                                automatiquement avant l&apos;envoi.
+                            </p>
+
+                            {uploadError && (
+                                <p className={styles.uploadError}>⚠️ {uploadError}</p>
+                            )}
+
+                            {galleryImages.map((image, index) => (
+                                <div key={image.src || index} className={styles.listItem}>
+                                    <div className={styles.galleryRow}>
+                                        {/* Les visuels d'origine sont servis depuis
+                                            `public/`, les nouveaux depuis Supabase :
+                                            une balise simple couvre les deux sans
+                                            configuration de domaine. */}
+                                        <img
+                                            src={image.src}
+                                            alt=""
+                                            className={styles.galleryThumb}
+                                        />
+
+                                        <div className={styles.galleryFields}>
+                                            <label className={styles.label}>
+                                                Description (texte alternatif)
+                                            </label>
+                                            <input
+                                                className={styles.input}
+                                                value={image.alt ?? ''}
+                                                placeholder="Ex. : ouverture de bal, mariage à Melun"
+                                                onChange={(e) =>
+                                                    updateGalleryImage(index, {alt: e.target.value})
+                                                }
+                                            />
+
+                                            <label className={styles.galleryCheck}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={Boolean(image.big)}
+                                                    onChange={(e) =>
+                                                        updateGalleryImage(index, {big: e.target.checked})
+                                                    }
+                                                />
+                                                <span>Grande (occupe deux colonnes)</span>
+                                            </label>
+
+                                            <div className={styles.rowActions}>
+                                                <button
+                                                    className={styles.addBtn}
+                                                    disabled={index === 0}
+                                                    onClick={() => moveGalleryImage(index, -1)}
+                                                >
+                                                    ↑ Monter
+                                                </button>
+                                                <button
+                                                    className={styles.addBtn}
+                                                    disabled={index === galleryImages.length - 1}
+                                                    onClick={() => moveGalleryImage(index, 1)}
+                                                >
+                                                    ↓ Descendre
+                                                </button>
+                                                <button
+                                                    className={styles.removeBtn}
+                                                    onClick={() => removeGalleryImage(index)}
+                                                >
+                                                    Retirer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {galleryImages.length < MAX_GALLERY_IMAGES ? (
+                                <label className={`${styles.addBtn} ${styles.galleryUpload}`}>
+                                    {uploading ? 'Envoi en cours…' : '+ Ajouter une image'}
+                                    <input
+                                        type="file"
+                                        accept={ALLOWED_IMAGE_TYPES.join(',')}
+                                        disabled={uploading}
+                                        className={styles.galleryFileInput}
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            // Le champ est remis à zéro pour que
+                                            // renvoyer le même fichier après une
+                                            // erreur redéclenche bien l'événement.
+                                            e.target.value = '';
+                                            if (file) handleGalleryUpload(file);
+                                        }}
+                                    />
+                                </label>
+                            ) : (
+                                <p className={styles.helpText}>
+                                    Maximum atteint. Retirez une image pour en ajouter une autre.
+                                </p>
+                            )}
+
+                            <p className={styles.helpText}>
+                                Une image retirée reste en ligne jusqu&apos;à
+                                l&apos;enregistrement : tant que vous n&apos;avez pas cliqué sur
+                                « Enregistrer », le site public affiche encore la galerie
+                                précédente et vous pouvez quitter la page pour tout annuler.
+                            </p>
+                        </div>
+                    </>
+                )}
+
+                {activeTab === 'testimonials' && (
+                    <>
+                        <div className={styles.grid}>
+                            {renderInput('Titre (Texte)', ['testimonials', 'title', 'text'])}
+                            {renderInput('Titre (Highlight)', ['testimonials', 'title', 'highlight'])}
+                        </div>
+                        {renderTextarea('Sous-titre', ['testimonials', 'subtitle'])}
+
+                        <div className={styles.subSection}>
+                            <div className={styles.itemHead}>
+                                <h3 className={styles.subTitle}>
+                                    Avis ({testimonials.length}/{MAX_TESTIMONIALS})
+                                </h3>
+                            </div>
+
+                            <p className={styles.helpText}>
+                                Tant qu&apos;aucun avis n&apos;est saisi, la section
+                                n&apos;apparaît pas sur le site : mieux vaut aucun avis
+                                qu&apos;une rubrique vide. Un avis sans texte est ignoré,
+                                même si le titre, le nom et la note sont remplis. La pastille
+                                colorée reprend la première lettre du nom affiché.
+                                L&apos;ordre ci-dessous est celui de l&apos;affichage.
+                            </p>
+
+                            {testimonials.map((item, index) => (
+                                <div key={index} className={styles.listItem}>
+                                    <div className={styles.itemHead}>
+                                        <h4 className={styles.itemTitle}>Avis #{index + 1}</h4>
+                                        <button
+                                            className={styles.removeBtn}
+                                            onClick={() => {
+                                                if (confirm('Supprimer cet avis ?')) {
+                                                    setTestimonials(
+                                                        testimonials.filter((_, i) => i !== index)
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            Supprimer
+                                        </button>
+                                    </div>
+
+                                    {renderInput('Titre de l\'avis', ['testimonials', 'items', index.toString(), 'title'])}
+                                    {renderTextarea('Avis', ['testimonials', 'items', index.toString(), 'quote'])}
+
+                                    <div className={styles.grid}>
+                                        {renderInput('Prénom / Nom affiché', ['testimonials', 'items', index.toString(), 'author'])}
+
+                                        <div className={styles.fieldGroup}>
+                                            <label className={styles.label}>Note</label>
+                                            {/* Stockée en nombre : la valeur d'un
+                                                `<select>` étant toujours une chaîne,
+                                                la conversion est faite ici plutôt que
+                                                laissée à l'affichage. */}
+                                            <select
+                                                className={styles.input}
+                                                value={String(item.rating ?? '')}
+                                                onChange={(e) =>
+                                                    updateTestimonial(index, {
+                                                        rating: e.target.value
+                                                            ? Number(e.target.value)
+                                                            : undefined,
+                                                    })
+                                                }
+                                            >
+                                                <option value="">Aucune étoile</option>
+                                                {[5, 4, 3, 2, 1].map((note) => (
+                                                    <option key={note} value={note}>
+                                                        {'★'.repeat(note)} ({note}/5)
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.rowActions}>
+                                        <button
+                                            className={styles.addBtn}
+                                            disabled={index === 0}
+                                            onClick={() => moveTestimonial(index, -1)}
+                                        >
+                                            ↑ Monter
+                                        </button>
+                                        <button
+                                            className={styles.addBtn}
+                                            disabled={index === testimonials.length - 1}
+                                            onClick={() => moveTestimonial(index, 1)}
+                                        >
+                                            ↓ Descendre
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {testimonials.length < MAX_TESTIMONIALS ? (
+                                <button
+                                    className={styles.addBtn}
+                                    onClick={() =>
+                                        setTestimonials([
+                                            ...testimonials,
+                                            {title: '', quote: '', author: '', rating: 5},
+                                        ])
+                                    }
+                                >
+                                    + Ajouter un avis
+                                </button>
+                            ) : (
+                                <p className={styles.helpText}>
+                                    Maximum atteint. Supprimez un avis pour en ajouter un autre.
+                                </p>
+                            )}
+                        </div>
                     </>
                 )}
 
